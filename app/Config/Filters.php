@@ -58,6 +58,7 @@ class Filters extends BaseFilters
             'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
             'toolbar',     // Debug Toolbar
+            'honeypot',
         ],
     ];
 
@@ -72,6 +73,13 @@ class Filters extends BaseFilters
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'honeypot',
+            'csrf'  => [
+                'except' => [
+                    'uniqore/forge/starts',
+                    'uniqore/session/*',
+                ]
+            ],
         ],
         'after' => [
             // 'honeypot',

@@ -92,3 +92,31 @@ define('EVENT_PRIORITY_NORMAL', 100);
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_HIGH instead.
  */
 define('EVENT_PRIORITY_HIGH', 10);
+
+defined ('GOOGLE_RECAPTCHAV3_SITEKEY')      || define ('GOOGLE_RECAPTCHAV3_SITEKEY', '6LetgzQqAAAAAC2pL2jTdajJfI5JEwmL6PENqsAE');
+defined ('GOOGLE_RECAPTCHAV3_SECRETKEY ')   || define ('GOOGLE_RECAPTCHAV3_SECRETKEY ', '6LetgzQqAAAAAMU1J98txpddlNq_eOZz6ucm18-M');
+defined ('SYS__DATABASE_NAME')              || define ('SYS__DATABASE_NAME', 'admin_uniqore');
+defined ('SYS__DATABASE_ROOTC')             || define ('SYS__DATABASE_ROOTC', 
+    [
+        'DSN'           => '',
+        'hostname'      => 'localhost',
+        'username'      => 'root',
+        'password'      => '6O98TI8m!]psDR62',
+        'database'      => 'mysql',
+        'DBDriver'      => 'MySQLi',
+        'DBPrefix'      => '',
+        'pConnect'      => FALSE,
+        'DBDebug'       => FALSE,
+        'charset'       => 'utf8mb4',
+        'DBCollat'      => 'utf8mb4_general_ci',
+        'swapPre'       => '',
+        'encrypt'       => FALSE,
+        'compress'      => FALSE,
+        'strictOn'      => FALSE,
+        'failover'      => [],
+        'port'          => 3306
+    ]);
+defined ('SYS__UNIQORE_CACHEFILE')          || define ('SYS__UNIQORE_CACHEFILE', '../writable/uniqore_honeypot.lic');
+defined ('HEADER_APP_FORM')                 || define ('HEADER_APP_FORM', 'application/x-www-form-urlencoded');
+defined ('HEADER_APP_MULTIPART')            || define ('HEADER_APP_MULTIPART', 'multipart/form-data');
+defined ('HEADER_APP_JSON')                 || define ('HEADER_APP_JSON', 'application/json');

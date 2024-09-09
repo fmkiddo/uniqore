@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Libraries\AssetType;
 
 /**
  * Class BaseController
@@ -19,8 +20,12 @@ use Psr\Log\LoggerInterface;
  *
  * For security be sure to declare any new methods as protected or private.
  */
-abstract class BaseController extends Controller
-{
+abstract class BaseController extends Controller {
+    
+    private $pageData = [];
+    private $parser;
+    private $styleAssets = [];
+    private $scriptAssets = [];
     /**
      * Instance of the main Request object.
      *
@@ -36,6 +41,58 @@ abstract class BaseController extends Controller
      * @var list<string>
      */
     protected $helpers = [];
+    
+    protected $validation;
+    
+    protected $session;
+    
+    protected function addPageData ($name, $value) {
+        $this->pageData[$name] = $value;
+    }
+    
+    protected function generateJSON404 () {
+        $this->response->setHeader('Content-Type', 'application/json');
+        $this->response->setJSON(['status' => 404, 'message' => 'Page Not Found', 'go-home' => base_url('admin')]);
+        $this->response->send();
+    }
+    
+    protected function initAssets (AssetType $type, array $assetPaths): bool {
+        switch ($type) {
+            default:
+                return FALSE;
+            case AssetType::STYLE: 
+                foreach ($assetPaths as $path) array_push ($this->styleAssets, ['value' => $path]);
+                break;
+            case AssetType::SCRIPT:
+                foreach ($assetPaths as $path) array_push ($this->scriptAssets, ['value' => $path]);
+                break;
+        }
+        return TRUE;
+    }
+    
+    protected function initComponents () {
+        // Preload any models, libraries, etc, here.
+        // E.g.: $this->session = \Config\Services::session();
+        helper($this->helpers);
+        service ('security');
+        $this->parser       = \Config\Services::parser();
+        $this->validation   = \Config\Services::validation();
+        $this->session      = \Config\Services::session();
+        $this->addPageData('base_url', base_url());
+        $this->addPageData('site_url', site_url());
+        $this->addPageData('styles', $this->styleAssets);
+        $this->addPageData('scripts', $this->scriptAssets);
+    }
+    
+    protected function renderView ($viewPaths, array $pageData): string {
+        foreach ($pageData as $key => $value) $this->addPageData($key, $value);
+        $this->parser->setData($this->pageData);
+        $renderView = '';
+        if (is_string ($viewPaths)) $renderView = $this->parser->render ($viewPaths);
+        if (is_array ($viewPaths)) 
+            foreach ($viewPaths as $viewPath) $renderView .= $this->parser->render ($viewPath);
+        return $renderView;
+    }
 
     /**
      * Be sure to declare properties for any property fetch you initialized.
@@ -46,13 +103,9 @@ abstract class BaseController extends Controller
     /**
      * @return void
      */
-    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
-    {
+    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger) {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-
-        // Preload any models, libraries, etc, here.
-
-        // E.g.: $this->session = \Config\Services::session();
+        $this->initComponents();
     }
 }

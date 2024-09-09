@@ -3,6 +3,7 @@
 	<name>project.uniqore</name>
 	<comment></comment>
 	<projects>
+		<project>RemoteSystemsTempFiles</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
