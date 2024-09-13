@@ -6,30 +6,39 @@ abstract class Database implements DatabaseTemplate {
     
     private string $dbuser;
     private string $dbpswd;
-    protected string $dbname;
+    private string $dbname;
     protected string $dbprefix;
     protected array $tables;
     
     protected abstract function __initDatabaseTemplate ();
     
-    public function __construct() {
+    public function __construct (string $dbname = '') {
+        $this->dbname = $dbname;
         $this->__initDatabaseTemplate();
     }
     
     /**
      * {@inheritDoc}
-     * @see \App\Libraries\Forgery\DatabaseTemplate::setDatabaseUser()
+     * @see \App\Libraries\Forgery\DatabaseTemplate::setDatabaseName()
      */
-    public function setDatabaseUser(string $dbuser){
-        $this->dbuser = $dbuser;
+    public function setDatabaseName (string $dbname) {
+        $this->dbname = $dbname;
     }
     
     /**
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::setDatabasePassword()
      */
-    public function setDatabasePassword(string $dbpswd) {
+    public function setDatabasePassword (string $dbpswd) {
         $this->dbpswd = $dbpswd;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Libraries\Forgery\DatabaseTemplate::setDatabaseUser()
+     */
+    public function setDatabaseUser (string $dbuser){
+        $this->dbuser = $dbuser;
     }
     
     
@@ -37,7 +46,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::getDatabaseName()
      */
-    public function getDatabaseName(): string {
+    public function getDatabaseName (): string {
         return $this->dbname;
     }
     
@@ -45,7 +54,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::getDatabasePassword()
      */
-    public function getDatabasePassword(): string {
+    public function getDatabasePassword (): string {
         return $this->dbpswd;
     }
     
@@ -53,7 +62,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::getDatabaseUser()
      */
-    public function getDatabaseUser(): string {
+    public function getDatabaseUser (): string {
         return $this->dbuser;
     }
     
@@ -61,7 +70,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::getDatabasePrefix()
      */
-    public function getDatabasePrefix(): string {
+    public function getDatabasePrefix (): string {
         return $this->dbprefix;
     }
     
@@ -69,7 +78,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\Template::getName()
      */
-    public function getName(): string {
+    public function getName (): string {
         return serialize ($this->getDatabaseName());
     }
     
@@ -77,7 +86,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::getTablesNum()
      */
-    public function getTablesNum(): int {
+    public function getTablesNum (): int {
         return count ($this->tables);
     }
     
@@ -86,7 +95,7 @@ abstract class Database implements DatabaseTemplate {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\DatabaseTemplate::getTable()
      */
-    public function getTable(int $tableIndex): TableTemplate {
+    public function getTable (int $tableIndex): TableTemplate {
         return $this->tables[$tableIndex];
     }
 }

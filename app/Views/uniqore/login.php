@@ -1,16 +1,39 @@
-		<div class="row mt-5">
-			<div class="col-md-6 offset-md-3">
-				<form method="post" action="" enctype="application/x-www-form-urlencoded">
+		<div class="row uniqore-login">
+			<div class="col-md-4 offset-md-4">
+				<form method="post" enctype="application/x-www-form-urlencoded">
 					<input type="hidden" name="{csrf_name}" value="{csrf_value}" />
     				<div class="card">
-    					<div class="card-body">
+    					<div class="card-body m-3">
     						<div class="row">
-    							<div class="col-md-3">
+    							<div class="col-md-8">
+    								<h3>Uniqore Login</h3>
+    							</div>
+    							<div class="col-md-4">
+									<div class="logo-landscape-white"></div>
+								</div>
+    						</div>
+    						<hr />
+    						<div class="row">
+    							<div class="col">
+    								<div class="form-group my-3">
+    									<label for="login-uname">Username:</label>
+    									<input type="text" name="login-uname" class="form-control" placeholder="Input your username" required />
+    								</div>
+    								<div class="form-group my-3">
+    									<label for="login-pword">Password:</label>
+    									<input type="password" name="login-pword" class="form-control" placeholder="Input your password" required />
+    								</div>
+    								<div class="form-check my-3">
+    									<input class="form-check-input" type="checkbox" name="login-stays" />
+    									<label class="form-check-label" for="login-stays">Stay signed in</label>
+    								</div>{if !$validated}
+    								<div class="my-3 text-danger">
+    									<p>Please enter a correct username and password.</p>
+    								</div>{endif}
     							</div>
     						</div>
-    						<div class="row">
-    						</div>
-    						<div class="row">
+    						<div class="mt-3 text-end">
+    							<button class="btn btn-primary"><i class="fas fa-paper-plane fa-fw"></i></button>
     						</div>
     					</div>
     				</div>

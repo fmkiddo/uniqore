@@ -95,7 +95,7 @@ define('EVENT_PRIORITY_HIGH', 10);
 
 defined ('GOOGLE_RECAPTCHAV3_SITEKEY')      || define ('GOOGLE_RECAPTCHAV3_SITEKEY', '6LetgzQqAAAAAC2pL2jTdajJfI5JEwmL6PENqsAE');
 defined ('GOOGLE_RECAPTCHAV3_SECRETKEY ')   || define ('GOOGLE_RECAPTCHAV3_SECRETKEY ', '6LetgzQqAAAAAMU1J98txpddlNq_eOZz6ucm18-M');
-defined ('SYS__DATABASE_NAME')              || define ('SYS__DATABASE_NAME', 'admin_uniqore');
+defined ('SYS__UNIQORE_RANDAUTH_PATH')      || define ('SYS__UNIQORE_RANDAUTH_PATH', '../.randauth');
 defined ('SYS__DATABASE_ROOTC')             || define ('SYS__DATABASE_ROOTC', 
     [
         'DSN'           => '',
@@ -116,7 +116,6 @@ defined ('SYS__DATABASE_ROOTC')             || define ('SYS__DATABASE_ROOTC',
         'failover'      => [],
         'port'          => 3306
     ]);
-defined ('SYS__UNIQORE_CACHEFILE')          || define ('SYS__UNIQORE_CACHEFILE', '../writable/uniqore_honeypot.lic');
 defined ('HEADER_APP_FORM')                 || define ('HEADER_APP_FORM', 'application/x-www-form-urlencoded');
 defined ('HEADER_APP_MULTIPART')            || define ('HEADER_APP_MULTIPART', 'multipart/form-data');
 defined ('HEADER_APP_JSON')                 || define ('HEADER_APP_JSON', 'application/json');

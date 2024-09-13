@@ -4,9 +4,11 @@ namespace App\Libraries\Forgery;
 
 interface DatabaseTemplate extends Template {
     
-    function setDatabaseUser (string $dbuser);
-    
     function setDatabasePassword (string $dbpswd);
+    
+    function setDatabaseName (string $dbname);
+    
+    function setDatabaseUser (string $dbuser);
     
     function getDatabaseName (): string;
     

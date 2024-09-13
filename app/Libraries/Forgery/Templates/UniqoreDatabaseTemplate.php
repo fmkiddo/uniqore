@@ -14,8 +14,7 @@ use App\Libraries\Forgery\Templates\Uniqore\OPRT;
 
 class UniqoreDatabaseTemplate extends Database {
     
-    protected function __initDatabaseTemplate() {
-        $this->dbname   = 'admin_uniqore';
+    protected function __initDatabaseTemplate () {
         $this->dbprefix = 'fmk_';
         $this->tables   = [
             new OUSR (),

@@ -4,8 +4,10 @@
 				<form id="newsuperuserform" action="{base_url}uniqore/forge/1" 
 						method="post" enctype="application/x-www-form-urlencoded">
 					<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
+					<input type="hidden" name="newsukey" value="{newsukey}" />
+					<input type="hidden" name="newsudb" value="{newsudb}" />
 					<div class="card card-primary">
-						<div class="card-body">
+						<div class="card-body m-3">
 							<p>Please create your new super user account here by filling in your new user 
 							name, email and password in the form below.</p>
 							<hr />	
@@ -24,13 +26,18 @@
 							</div>
 							<div class="form-group">
 								<label for="newsupswd">Password:</label>
-								<input type="password" class="form-control" name="newsupswd" placeholder="Your password" required />
+								<div class="input-group">
+									<input type="password" class="form-control" name="newsupswd" placeholder="Your password" required />
+									<span class="input-group-text">
+										<i class="fas fa-eye fa-fw"></i>
+									</span>
+								</div>
 							</div>
 							<div class="form-group">
 								<label for="cnfmpswd">Confirm your password:</label>
 								<input type="password" class="form-control" name="cnfmpswd"  placeholder="Re-type your password" required />
 							</div>{if $validated}
-							<div class="text-danger">
+							<div class="text-danger mt-3">
 								<p>You have error in your input data, please re-entry your data for revalidation.</p>
 							</div>{endif}
 							<hr />

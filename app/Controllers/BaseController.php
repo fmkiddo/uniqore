@@ -26,6 +26,8 @@ abstract class BaseController extends Controller {
     private $parser;
     private $styleAssets = [];
     private $scriptAssets = [];
+    private $curl;
+    
     /**
      * Instance of the main Request object.
      *
@@ -45,6 +47,8 @@ abstract class BaseController extends Controller {
     protected $validation;
     
     protected $session;
+    
+    protected $encryptor;
     
     protected function addPageData ($name, $value) {
         $this->pageData[$name] = $value;
@@ -70,14 +74,17 @@ abstract class BaseController extends Controller {
         return TRUE;
     }
     
-    protected function initComponents () {
+    protected function __initComponents () {
         // Preload any models, libraries, etc, here.
         // E.g.: $this->session = \Config\Services::session();
         helper($this->helpers);
         service ('security');
-        $this->parser       = \Config\Services::parser();
-        $this->validation   = \Config\Services::validation();
-        $this->session      = \Config\Services::session();
+        $this->curl         = \Config\Services::curlrequest ();
+        $this->parser       = \Config\Services::parser ();
+        $this->validation   = \Config\Services::validation ();
+        $this->session      = \Config\Services::session ();
+        $config             = config ('Encryption');
+        if (strlen ($config->key) > 0) $this->encryptor    = \Config\Services::encrypter ();
         $this->addPageData('base_url', base_url());
         $this->addPageData('site_url', site_url());
         $this->addPageData('styles', $this->styleAssets);
@@ -93,6 +100,10 @@ abstract class BaseController extends Controller {
             foreach ($viewPaths as $viewPath) $renderView .= $this->parser->render ($viewPath);
         return $renderView;
     }
+    
+    protected function sendRequest ($url, $options, $method='get'): ResponseInterface {
+        return $this->curl->$method ($url, $options);
+    }
 
     /**
      * Be sure to declare properties for any property fetch you initialized.
@@ -103,9 +114,12 @@ abstract class BaseController extends Controller {
     /**
      * @return void
      */
-    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger) {
+    public function initController(
+            RequestInterface $request, 
+            ResponseInterface $response, 
+            LoggerInterface $logger) {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
-        $this->initComponents();
+        $this->__initComponents();
     }
 }

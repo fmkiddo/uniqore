@@ -8,41 +8,33 @@ use CodeIgniter\Database\BaseConnection;
 class DBForger { 
     
     private DatabaseTemplate $dbtemplate;
+    
     private Forge $forge;
-    
-    public function __construct (DatabaseTemplate $template, string $dbuser, string $dbpswd) {
-        $this->dbtemplate   = $template;
-        $this->dbtemplate->setDatabaseUser($dbuser);
-        $this->dbtemplate->setDatabasePassword($dbpswd);
-        $this->forge        = \Config\Database::forge(SYS__DATABASE_ROOTC);
-    }
-    
-    public function isDatabaseExists (): bool {
-        $db             = $this->forge->getConnection ();
-        $databases      = $db->query ("SHOW DATABASES;")->getResult ();
-        foreach ($databases as $database) 
-            if ($database->Database === $this->dbtemplate->getDatabaseName()) return TRUE;
-        return FALSE;
-    }
-    
-    private function createDatabaseUser (): bool {
-        $db = $this->forge->getConnection();
-        $sql = "CREATE USER '{$this->dbtemplate->getDatabaseUser()}'@'localhost' IDENTIFIED BY '{$this->dbtemplate->getDatabasePassword()}';";
-        $userCreated = $db->simpleQuery($sql);
-        $sql = "GRANT ALL PRIVILEGES ON {$this->dbtemplate->getDatabaseName()}.* TO '{$this->dbtemplate->getDatabaseUser()}'@'localhost';";
-        $userGranted = $db->simpleQuery($sql);
-        if ($userCreated && $userGranted) return TRUE;
-        return FALSE;
-    }
     
     private function createDatabase (): bool {
         return $this->forge->createDatabase ($this->dbtemplate->getDatabaseName());
     }
     
-    private function clearOnFailedBuild () {
+    private function createDatabaseUser (): bool {
         $db = $this->forge->getConnection ();
-        $db->simpleQuery ("DROP USER '{$this->dbtemplate->getDatabaseUser()}'@'localhost';");
-        $this->forge->dropDatabase ($this->dbtemplate->getDatabaseName());
+        $dbuser = $this->dbtemplate->getDatabaseUser ();
+        $dbpswd = $this->dbtemplate->getDatabasePassword ();
+        $sql = "CREATE OR REPLACE USER `{$dbuser}`@`localhost` IDENTIFIED BY '{$dbpswd}';";
+        return $db->simpleQuery ($sql);
+    }
+    
+    private function grantDatabaseUser (): bool {
+        $db     = $this->forge->getConnection ();
+        $dbuser = $this->dbtemplate->getDatabaseUser ();
+        $sql    = "GRANT ALL PRIVILEGES ON {$this->dbtemplate->getDatabaseName ()}.* TO `{$dbuser}`@`localhost`;";
+        return $db->simpleQuery ($sql);
+    }
+    
+    private function dropDatabaseUser (): bool {
+        $db     = $this->forge->getConnection ();
+        $dbuser = $this->dbtemplate->getDatabaseUser ();
+        $sql    = "DROP USER IF EXISTS `{$dbuser}`@`localhost`;";
+        return $db->simpleQuery ($sql);
     }
     
     private function formForgeFieldParameter (FieldTemplate $field): array {
@@ -55,7 +47,7 @@ class DBForger {
         
         if (!$field->isPrimaryKey ())
             $arrayField[$field->getFieldName ()]['default'] = $field->getDefaultValue ();
-        
+            
         switch ($field->getFieldType()) {
             default:
                 break;
@@ -80,15 +72,53 @@ class DBForger {
         return $arrayField;
     }
     
+    public function __construct (DatabaseTemplate $template) {
+        $this->dbtemplate   = $template;
+        $this->forge        = \Config\Database::forge (SYS__DATABASE_ROOTC);
+    }
+    
+    public function isDatabaseExists (): bool {
+        $db             = $this->forge->getConnection ();
+        $databases      = $db->query ("SHOW DATABASES;")->getResult ();
+        foreach ($databases as $database) 
+            if ($database->Database === $this->dbtemplate->getDatabaseName ()) return TRUE;
+        return FALSE;
+    }
+    
     /**
      * 
      * @return BaseConnection|bool
      */
     public function buildDatabase (): BaseConnection|bool {
         $retVal = FALSE;
-        if ($this->createDatabase ()) 
-            if ($this->createDatabaseUser ()) {
-                $forge = \Config\Database::forge ();
+        
+        if ($this->createDatabase ()) {
+            $createUser = $this->createDatabaseUser ();
+            $grantUser  = $this->grantDatabaseUser ();
+            
+            if (!($createUser && $grantUser)) $this->forge->dropDatabase ($this->dbtemplate->getDatabaseName ());
+            else {
+                $dbconfig   = [
+                    'DSN'           => '',
+                    'hostname'      => 'localhost',
+                    'username'      => $this->dbtemplate->getDatabaseUser (),
+                    'password'      => $this->dbtemplate->getDatabasePassword (),
+                    'database'      => $this->dbtemplate->getDatabaseName (),
+                    'DBDriver'      => 'MySQLi',
+                    'DBPrefix'      => $this->dbtemplate->getDatabasePrefix (),
+                    'pConnect'      => FALSE,
+                    'DBDebug'       => FALSE,
+                    'charset'       => 'utf8mb4',
+                    'DBCollat'      => 'utf8mb4_general_ci',
+                    'swapPre'       => '',
+                    'encrypt'       => FALSE,
+                    'compress'      => FALSE,
+                    'strictOn'      => FALSE,
+                    'failover'      => [],
+                    'port'          => 3306
+                ];
+                $forge      = \Config\Database::forge ($dbconfig);
+                $built      = TRUE;
                 for ($i = 0; $i < $this->dbtemplate->getTablesNum (); $i++) {
                     $table = $this->dbtemplate->getTable ($i);
                     $uk = [];
@@ -101,7 +131,7 @@ class DBForger {
                             array_push ($uk, $field->getFieldName ());
                             $ukname = $field->getUniqueKeyName ();
                         }
-                        if ($field->isForeignKey ()) 
+                        if ($field->isForeignKey ())
                             $forge->addForeignKey($field->getFieldName(), $field->getForeignTableName(), $field->getForeignFieldName());
                     }
                     
@@ -129,13 +159,21 @@ class DBForger {
                                 'default'       => new RawSql('NULL')
                             ],
                         ]);
-                    
+                        
                     if (count ($uk) > 0) $forge->addUniqueKey ($uk, $ukname);
                     $built = $forge->createTable ($table->getTableName ());
+                    if (!$built) break;
                 }
-                if (!$built) $this->clearOnFailedBuild ();
-                else $retVal = $forge->getConnection ();
+                
+                if (!$built) {
+                    $this->forge->dropDatabase ($this->dbtemplate->getDatabaseName ());
+                    $this->dropDatabaseUser ();
+                }
+                $retVal = $forge->getConnection ();
             }
+        }
+        
+        $this->forge->getConnection ()->close ();
         return $retVal;
     }
 }

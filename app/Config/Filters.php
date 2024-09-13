@@ -58,7 +58,6 @@ class Filters extends BaseFilters
             'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
             'toolbar',     // Debug Toolbar
-            'honeypot',
         ],
     ];
 
@@ -71,15 +70,13 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             // 'honeypot',
-            // 'csrf',
-            // 'invalidchars',
-            'honeypot',
             'csrf'  => [
                 'except' => [
                     'uniqore/forge/starts',
-                    'uniqore/session/*',
+                    'api-uniqore/*'
                 ]
             ],
+            // 'invalidchars',
         ],
         'after' => [
             // 'honeypot',

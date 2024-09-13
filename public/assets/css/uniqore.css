@@ -1,6 +1,24 @@
 @charset "UTF-8";
 
 #uniqore-background {
+	font-family: "Raleway", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
 	background-color: #E0E0E0;
+}
+
+.forger {
+	padding-top: 5em;
+}
+
+.uniqore-login {
 	padding-top: 10em;
+}
+
+.logo-landscape-white {
+	height: 40px;
+	background-image: url('../imgs/fmkiddo-logo-landscape-white.png');
+	background-size: cover;
+	background-repeat: no-repeat;
 }
