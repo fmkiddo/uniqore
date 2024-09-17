@@ -57,7 +57,7 @@ abstract class BaseController extends Controller {
     
     protected function generateJSON404 () {
         $this->response->setHeader('Content-Type', 'application/json');
-        $this->response->setJSON(['status' => 404, 'message' => 'Page Not Found', 'go-home' => base_url('admin')]);
+        $this->response->setJSON(['status' => 404, 'message' => 'Page Not Found', 'go-home' => base_url('uniqore/admin')]);
         $this->response->send();
     }
     
