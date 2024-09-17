@@ -23,7 +23,7 @@ class UniqoreDatabaseTemplate extends Database {
             new OCAC (),
             new CAC1 (),
             new CAC2 (),
-            new OPRT (FALSE)
+            new OPRT (FALSE),
         ];
     }
 }

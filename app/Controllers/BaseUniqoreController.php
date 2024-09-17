@@ -5,6 +5,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use CodeIgniter\Files\File;
+use CodeIgniter\Encryption\Exceptions\EncryptionException;
 
 
 abstract class BaseUniqoreController extends BaseController {
@@ -23,14 +24,30 @@ abstract class BaseUniqoreController extends BaseController {
     
     /**
      * {@inheritDoc}
-     * @see \App\Controllers\BaseController::initController()
+     * @see \App\Controllers\BaseController::decrypt ()
      */
-    public function initController(
-            RequestInterface $request, 
-            ResponseInterface $response, 
-            LoggerInterface $logger) {
-        parent::initController($request, $response, $logger);
-        $this->loadToken ();
+    protected function decrypt ($encrypted): string|bool {
+        $encConfig          = config ('Encryption');
+        $this->encryptor    = \Config\Services::encrypter ($encConfig);
+        try {
+            return $this->encryptor->decrypt ($encrypted);
+        } catch (EncryptionException $exc) {
+            return FALSE;
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseController::encrypt ()
+     */
+    protected function encrypt ($plainText): string|bool {
+        $encConfig          = config ('Encryption');
+        $this->encryptor    = \Config\Services::encrypter ($encConfig);
+        try {
+            return $this->encryptor->encrypt ($plainText);
+        } catch (EncryptionException $exc) {
+            return FALSE;
+        }
     }
     
     protected function getAuthToken (): string {
@@ -41,5 +58,17 @@ abstract class BaseUniqoreController extends BaseController {
     protected function isAuthFileExists (): bool {
         $authFile = new File (SYS__UNIQORE_RANDAUTH_PATH);
         return file_exists ($authFile->getPath ());
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseController::initController()
+     */
+    public function initController(
+            RequestInterface $request, 
+            ResponseInterface $response, 
+            LoggerInterface $logger) {
+        parent::initController($request, $response, $logger);
+        $this->loadToken ();
     }
 }

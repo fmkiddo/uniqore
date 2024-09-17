@@ -8,6 +8,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
 use Psr\Log\LoggerInterface;
 use CodeIgniter\HTTP\Message;
+use Config\Encryption;
+use CodeIgniter\Encryption\Exceptions\EncryptionException;
 
 abstract class BaseRESTfulController extends ResourceController {
     
@@ -29,6 +31,8 @@ abstract class BaseRESTfulController extends ResourceController {
     
     protected $encryptor;
     
+    protected $apiName;
+    
     protected function __initComponents () { }
     
     protected function addHelper (string $helperName): self {
@@ -43,6 +47,24 @@ abstract class BaseRESTfulController extends ResourceController {
     abstract protected function validateRequestAuthorization (): bool;
     
     /**
+     * 
+     * @param string $encrypted
+     * @return string|bool
+     */
+    abstract protected function decrypt ($encrypted): string|bool;
+    
+    /**
+     * 
+     * @param string $plainText
+     * @return string|bool
+     */
+    abstract protected function encrypt ($plainText): string|bool;
+    
+    protected function getRequestUserID (): string {
+        return "";
+    }
+    
+    /**
      * {@inheritDoc}
      * @see \CodeIgniter\RESTful\BaseResource::initController()
      */
@@ -50,9 +72,8 @@ abstract class BaseRESTfulController extends ResourceController {
             RequestInterface $request,
             ResponseInterface $response,
             LoggerInterface $logger) {
-        parent::initController($request, $response, $logger);
+        parent::initController ($request, $response, $logger);
         $this->__initComponents ();
         helper ($this->helpers);
-        $this->encryptor = \Config\Services::encrypter ();
     }
 }

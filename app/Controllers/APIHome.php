@@ -3,7 +3,6 @@ namespace App\Controllers;
 
 
 use App\Libraries\AssetType;
-use App\Libraries\Forgery\Templates\UniqoreDatabaseTemplate;
 use CodeIgniter\Files\File;
 
 class APIHome extends BaseUniqoreController {
@@ -38,32 +37,83 @@ class APIHome extends BaseUniqoreController {
     }
     
     public function index (): string {
-        if (!$this->isReady ()) $this->response->redirect (base_url ('uniqore/forge/0'), 'get');
+        if ($this->session->get ('logintime')) $this->response->redirect(base_url('uniqore/admin/dashboard?route=welcome'), 'get'); 
         
-        $good = TRUE;
+        if (!$this->isReady ()) $this->response->redirect (base_url ('uniqore/forge/0'), 'get');
+        $good   = TRUE;
+        $error  = '';
         if ($this->request->getMethod () === 'POST') {
+            $good   = FALSE;
             $this->validation->setRules ([
                 'login-uname'       => 'required',
                 'login-pword'       => 'required'
             ]);
-            $res = $this->validation->withRequest($this->request)->run();
-            if ($res) {
+            $res = $this->validation->withRequest ($this->request)->run();
+            if (!$res) $error  = 'You have to provide username and password for signing in!';
+            else {
                 $post           = $this->request->getPost ();
-                $encryptedAuth  = $this->encryptor->encrypt ($this->getAuthToken());
-                $curlOptions    = [
-                    'auth'      => [
-                        bin2hex($encryptedAuth),
-                        '',
-                        'basic'
-                    ],
-                    'headers'   => [
-                        'Content-Type'  => HEADER_APP_JSON,
-                        'Accept' => HEADER_APP_JSON
-                    ]
-                ];
-                var_dump ($curlOptions);
-                $response = $this->sendRequest(base_url ('api-uniqore/users'), $curlOptions, 'get');
-                var_dump (json_decode(json_decode($response->getJSON(), TRUE)));
+                $encryptedAuth  = $this->encrypt ($this->getAuthToken ());
+                if (!$encryptedAuth) 
+                    $error  = 'An error has occured!';
+                else {
+                    $curlOptions    = [
+                        'auth'      => [
+                            bin2hex ($encryptedAuth),
+                            '',
+                            'basic'
+                        ],
+                        'headers'   => [
+                            'Content-Type'  => HEADER_APP_JSON,
+                            'Accept'        => HEADER_APP_JSON,
+                            'User-Agent'    => $this->request->getUserAgent (),
+                            'Address'       => $this->request->getIPAddress ()
+                        ],
+                        'json'      => [
+                            'execute'       => 'login'
+                        ]
+                    ];
+                    $response   = $this->sendRequest (base_url ('api-uniqore/users'), $curlOptions, 'get');
+                    $getJSON    = json_decode ($response->getBody (), TRUE);
+                    if ($getJSON['status'] !== 200) $error      = $getJSON['messages']['error'];
+                    else {
+                        $payload    = $getJSON['data']['payload'];
+                        $payload    = hex2bin ($payload);
+                        $payload    = $this->decrypt ($payload);
+                        $payload    = unserialize ($payload);
+                        
+                        $userFound  = FALSE;
+                        $username   = '';
+                        $password   = '';
+                        $uuid       = '';
+                        foreach ($payload as $user) 
+                            if ($user['username'] === $post['login-uname'] ||
+                                    $user['email'] === $post['login-uname'] ||
+                                    $user['phone'] === $post['login-uname']) {
+                                $userFound  = TRUE;
+                                $uuid       = $user['uid'];
+                                $username   = $user['username'];
+                                $password   = $user['password'];
+                                break;
+                            }
+                        
+                        $passwordOK = FALSE;
+                        if (!$userFound) $error  = 'Please enter the correct username and password.';
+                        else $passwordOK = password_verify($post['login-pword'], $password);
+                        
+                        if (!$passwordOK) $error = 'Please enter the correct username and password.';
+                        else {
+                            $good   = TRUE;
+                            $this->session  = \Config\Services::session ();
+                            $sessionData    = [
+                                'logintime'     => time (),
+                                'ip_address'    => $this->request->getIPAddress (),
+                                'uuid'          => $uuid
+                            ];
+                            $this->session->set ($sessionData);
+                            $this->response->redirect (base_url ('uniqore/admin/dashboard?route=welcome'), 'get');
+                        }
+                    }
+                }
             }
         }
         
@@ -77,7 +127,8 @@ class APIHome extends BaseUniqoreController {
         $pageData = [
             'csrf_name'     => csrf_token (),
             'csrf_value'    => csrf_hash (),
-            'validated'     => $good
+            'validity'      => $good,
+            'error'         => $error
         ];
         return $this->renderView ($viewPaths, $pageData);
     }

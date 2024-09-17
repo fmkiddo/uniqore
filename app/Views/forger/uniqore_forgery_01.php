@@ -28,14 +28,19 @@
 								<label for="newsupswd">Password:</label>
 								<div class="input-group">
 									<input type="password" class="form-control" name="newsupswd" placeholder="Your password" required />
-									<span class="input-group-text">
-										<i class="fas fa-eye fa-fw"></i>
-									</span>
+                					<button type="button" class="btn btn-outline-secondary" id="btn-see" onmousedown="eyePassword(this)" onmouseup="eyePassword(this)">
+                						<i class="fas fa-eye fa-fw"></i>
+                					</button>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="cnfmpswd">Confirm your password:</label>
-								<input type="password" class="form-control" name="cnfmpswd"  placeholder="Re-type your password" required />
+								<div class="input-group">
+									<input type="password" class="form-control" name="cnfmpswd"  placeholder="Re-type your password" required />
+                					<button type="button" class="btn btn-outline-secondary" id="btn-see" onmousedown="eyePassword(this)" onmouseup="eyePassword(this)">
+                						<i class="fas fa-eye fa-fw"></i>
+                					</button>
+                				</div>
 							</div>{if $validated}
 							<div class="text-danger mt-3">
 								<p>You have error in your input data, please re-entry your data for revalidation.</p>
@@ -61,3 +66,16 @@
 				</form>
     		</div>
     	</div>
+        <script type="text/javascript">
+        {noparse}
+        function eyePassword (el) {
+            var siblings = el.parentNode.children;
+            for (let i = 0; i < siblings.length; i++) {
+                if (siblings[i].tagName === 'INPUT') {
+                    if (siblings[i].type === 'password') siblings[i].type = 'text';
+                    else siblings[i].type = 'password';
+                    break;
+                }
+            }
+        } {/noparse}
+        </script>

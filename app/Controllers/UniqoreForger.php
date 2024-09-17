@@ -7,6 +7,7 @@ use App\Libraries\Forgery\DBForger;
 use App\Libraries\Forgery\Templates\UniqoreDatabaseTemplate;
 use App\Libraries\Forgery\DatabaseTemplate;
 use CodeIgniter\Files\File;
+use CodeIgniter\Encryption\Encryption;
 
 
 class UniqoreForger extends BaseController {
@@ -32,10 +33,23 @@ class UniqoreForger extends BaseController {
         $dbtpl->setDatabaseName ($db_conf[0]);
         $dbtpl->setDatabaseUser ($db_conf[1]);
         $dbtpl->setDatabasePassword ($db_conf[2]);
-        $envContent = "\n\ndatabase.default.hostname\t= localhost\ndatabase.default.database\t= {$db_conf[0]}
-database.default.username\t= {$db_conf[1]}\ndatabase.default.password\t= {$db_conf[2]}\ndatabase.default.DBDriver\t= MySQLi
-database.default.DBPrefix\t= {$dbtpl->getDatabasePrefix ()}\ndatabase.default.charset\t= utf8mb4
-database.default.DBCOllat\t= utf8mb4_general_ci\ndatabase.default.port\t\t= 3306\n\nencryption.key\t\t\t\t= {$secretKey}";
+        $envContent = "
+
+database.default.hostname   = localhost
+database.default.database   = {$db_conf[0]}
+database.default.username   = {$db_conf[1]}
+database.default.password   = {$db_conf[2]}
+database.default.DBDriver   = MySQLi
+database.default.DBPrefix   = {$dbtpl->getDatabasePrefix ()}
+database.default.charset    = utf8mb4
+database.default.DBCOllat   = utf8mb4_general_ci
+database.default.port       = 3306
+
+encryption.driver           = Sodium
+encryption.cipher           = XChaCha20-Poly1305
+encryption.key              = hex2bin:{$secretKey}
+
+";
         return write_file('../.env', $envContent, 'a');
     }
     
@@ -55,7 +69,8 @@ database.default.DBCOllat\t= utf8mb4_general_ci\ndatabase.default.port\t\t= 3306
         $this->helpers = [
             'url',
             'filesystem',
-            'key_generator'
+            'key_generator',
+            'uuid'
         ];
         $styles     = [
             'assets/vendors/bootstrap-5.3.3/css/bootstrap.min.css',
@@ -69,6 +84,22 @@ database.default.DBCOllat\t= utf8mb4_general_ci\ndatabase.default.port\t\t= 3306
         ];
         $this->initAssets(AssetType::SCRIPT, $scripts);
         parent::__initComponents();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseController::decrypt()
+     */
+    protected function decrypt($encrypted): string|bool {
+        return FALSE;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseController::encrypt()
+     */
+    protected function encrypt($plainText): string|bool {
+        return FALSE;
     }
     
     public function index ($pageNum=0): string {
@@ -151,7 +182,7 @@ database.default.DBCOllat\t= utf8mb4_general_ci\ndatabase.default.port\t\t= 3306
                             ];
                             
                             $view = $this->renderView ($viewPaths, $pageData);
-                            $this->response->setHeader ('Refresh', '10,url=' . base_url('admin'));
+                            $this->response->setHeader ('Refresh', '10,url=' . base_url('uniqore/admin'));
                         }
                     } else {
                         $this->validation->setRules([
@@ -213,10 +244,11 @@ database.default.DBCOllat\t= utf8mb4_general_ci\ndatabase.default.port\t\t= 3306
                                     ];
                                 } else {
                                     $passwd = password_hash ($post['newsupswd'], PASSWORD_BCRYPT);
+                                    $uid    = generate_random_uuid_v4 ();
                                     $phone  = str_replace ('-', '', $post['newsuphone']);
                                     $now    = date ('Y-m-d H:i:s');
-                                    $query  = "INSERT INTO fmk_ousr (username, email, phone, password, created_by, updated_at, updated_by)
-                                                VALUES ('{$post['newsuname']}', '{$post['newsumail']}', '{$phone}', '{$passwd}', 1, '{$now}', 1);";
+                                    $query  = "INSERT INTO fmk_ousr (uid, username, email, phone, password, created_by, updated_at, updated_by)
+                                                VALUES ('{$uid}', '{$post['newsuname']}', '{$post['newsumail']}', '{$phone}', '{$passwd}', 1, '{$now}', 1);";
                                     $res = $built->query ($query);
                                     if (!$res) $json = [
                                             'status'    => 500,
@@ -241,5 +273,42 @@ database.default.DBCOllat\t= utf8mb4_general_ci\ndatabase.default.port\t\t= 3306
                 break;
         }
         return $view;
+    }
+    
+    public function passwordRandomize () {
+        $pswd   = generate_password(32);
+        $json   = [
+            'status'    => 200,
+            'error'     => null,
+            'messages'  => [
+                'success: Password successfully generated!',
+                'status: OK!'
+            ],
+            'data'      => [
+                'password'  => "{$pswd}"
+            ]
+        ];
+        $this->response->setContentType (HEADER_APP_JSON);
+        $this->response->setJSON ($json);
+        $this->response->send ();
+    }
+    
+    public function sodiumKey () {
+        $key    = Encryption::createKey (SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_KEYBYTES);
+        $key    = bin2hex ($key);
+        $json   = [
+            'status'    => 200,
+            'error'     => null,
+            'messages'  => [
+                'success: Key successfully generated!',
+                'status: OK!'
+            ],
+            'data'      => [
+                'key'       => "{$key}"
+            ]
+        ];
+        $this->response->setContentType (HEADER_APP_JSON);
+        $this->response->setJSON ($json);
+        $this->response->send ();
     }
 }

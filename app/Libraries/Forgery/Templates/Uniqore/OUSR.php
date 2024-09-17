@@ -11,6 +11,7 @@ class OUSR extends Table {
         $this->tableName = 'ousr';
         $this->tableFields = [
             Field::__constructField ('id', 'INT', 0, 0, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE, TRUE),
+            Field::__constructField ('uid', 'VARCHAR', 50, '', FALSE, TRUE, 'OUSR_UUID'),
             Field::__constructField ('username', 'VARCHAR', 50, '', FALSE, TRUE),
             Field::__constructField ('email', 'VARCHAR', 50, '', FALSE, TRUE),
             Field::__constructField ('phone', 'VARCHAR', 50, '', FALSE, TRUE),

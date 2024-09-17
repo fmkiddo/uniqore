@@ -9,6 +9,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use App\Libraries\AssetType;
+use Config\Encryption;
 
 /**
  * Class BaseController
@@ -74,6 +75,20 @@ abstract class BaseController extends Controller {
         return TRUE;
     }
     
+    /**
+     * 
+     * @param string $encrypted
+     * @return string|bool
+     */
+    abstract protected function decrypt ($encrypted): string|bool;
+    
+    /**
+     * 
+     * @param string $plainText
+     * @return string|bool
+     */
+    abstract protected function encrypt ($plainText): string|bool;
+    
     protected function __initComponents () {
         // Preload any models, libraries, etc, here.
         // E.g.: $this->session = \Config\Services::session();
@@ -83,8 +98,6 @@ abstract class BaseController extends Controller {
         $this->parser       = \Config\Services::parser ();
         $this->validation   = \Config\Services::validation ();
         $this->session      = \Config\Services::session ();
-        $config             = config ('Encryption');
-        if (strlen ($config->key) > 0) $this->encryptor    = \Config\Services::encrypter ();
         $this->addPageData('base_url', base_url());
         $this->addPageData('site_url', site_url());
         $this->addPageData('styles', $this->styleAssets);
@@ -122,4 +135,6 @@ abstract class BaseController extends Controller {
         parent::initController($request, $response, $logger);
         $this->__initComponents();
     }
+    
+    abstract public function index (): string;
 }

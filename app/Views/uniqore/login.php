@@ -1,6 +1,6 @@
 		<div class="row uniqore-login">
 			<div class="col-md-4 offset-md-4">
-				<form method="post" enctype="application/x-www-form-urlencoded">
+				<form method="post" enctype="application/x-www-form-urlencoded" {if !$validity}class="was-validated"{endif}>
 					<input type="hidden" name="{csrf_name}" value="{csrf_value}" />
     				<div class="card">
     					<div class="card-body m-3">
@@ -26,9 +26,9 @@
     								<div class="form-check my-3">
     									<input class="form-check-input" type="checkbox" name="login-stays" />
     									<label class="form-check-label" for="login-stays">Stay signed in</label>
-    								</div>{if !$validated}
+    								</div>{if !$validity}
     								<div class="my-3 text-danger">
-    									<p>Please enter a correct username and password.</p>
+    									<p>{error}</p>
     								</div>{endif}
     							</div>
     						</div>
