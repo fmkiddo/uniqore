@@ -92,6 +92,7 @@ abstract class BaseController extends Controller {
     protected function __initComponents () {
         // Preload any models, libraries, etc, here.
         // E.g.: $this->session = \Config\Services::session();
+        
         helper($this->helpers);
         service ('security');
         $this->curl         = \Config\Services::curlrequest ();

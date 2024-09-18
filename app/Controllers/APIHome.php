@@ -17,7 +17,6 @@ class APIHome extends BaseUniqoreController {
      * @see \App\Controllers\BaseController::initComponents()
      */
     protected function __initComponents() {
-        // TODO Auto-generated method stub
         $this->helpers = [
             'url',
             'key_generator',
@@ -82,7 +81,6 @@ class APIHome extends BaseUniqoreController {
                         $payload    = unserialize ($payload);
                         
                         $userFound  = FALSE;
-                        $username   = '';
                         $password   = '';
                         $uuid       = '';
                         foreach ($payload as $user) 
@@ -91,7 +89,6 @@ class APIHome extends BaseUniqoreController {
                                     $user['phone'] === $post['login-uname']) {
                                 $userFound  = TRUE;
                                 $uuid       = $user['uid'];
-                                $username   = $user['username'];
                                 $password   = $user['password'];
                                 break;
                             }
@@ -103,11 +100,10 @@ class APIHome extends BaseUniqoreController {
                         if (!$passwordOK) $error = 'Please enter the correct username and password.';
                         else {
                             $good   = TRUE;
-                            $this->session  = \Config\Services::session ();
                             $sessionData    = [
                                 'logintime'     => time (),
                                 'ip_address'    => $this->request->getIPAddress (),
-                                'uuid'          => $uuid
+                                'payload'       => bin2hex ($this->encrypt ($uuid))
                             ];
                             $this->session->set ($sessionData);
                             $this->response->redirect (base_url ('uniqore/admin/dashboard?route=welcome'), 'get');

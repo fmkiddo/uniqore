@@ -40,3 +40,6 @@
     			</form>
 			</div>
 		</div>
+		<footer class="footer-login">
+			Copyright &copy; 2024 - fmkiddo
+		</footer>

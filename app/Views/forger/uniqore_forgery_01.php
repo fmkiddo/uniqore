@@ -79,3 +79,5 @@
             }
         } {/noparse}
         </script>
+        <footer>
+        </footer>
