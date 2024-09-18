@@ -7,7 +7,7 @@
 						<div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                             <a class="navbar-brand brand-logo" href=""><img src="{base_url}assets/imgs/fmkiddo-logo-landscape-white.png" alt="logo"/></a>
                             <a class="navbar-brand brand-logo-mini" href=""><img src="{base_url}assets/imgs/fmkiddo-logo-only-square-white.png" alt="logo"/></a>
-                            <div class="welcome-message d-lg-flex d-none">Hi, welcome back!</div>
+                            <div class="welcome-message d-lg-flex d-none">Hi, {if $realname === ''}{username}{else}{realname}{endif}, welcome back!</div>
 						</div>
 						<div class="navbar-menu-wrapper d-flex align-items-center justify-content-center">
                             <ul class="navbar-nav mr-lg-2">

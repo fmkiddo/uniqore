@@ -75,6 +75,34 @@ a:not([href]):hover {
 	cursor: default;
 }
 
+.grid-margin {
+	margin-bottom: 1.25rem;
+}
+
+@media (min-width: 576px) {
+	.grid-margin-sm-0 {
+		margin-bottom: 0;
+	}
+}
+
+@media (min-width: 768px) {
+	.grid-margin-md-0 {
+		margin-bottom: 0;
+	}
+}
+
+@media (min-width: 992px) {
+	.grid-margin-lg-0 {
+		margin-bottom: 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.grid-margin-xl-0 {
+		margin-bottom: 0;
+	}
+}
+
 .accordion > .card {
 	overflow: hidden;
 }

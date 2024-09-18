@@ -81,6 +81,7 @@ class APIHome extends BaseUniqoreController {
                         $payload    = unserialize ($payload);
                         
                         $userFound  = FALSE;
+                        $username   = '';
                         $password   = '';
                         $uuid       = '';
                         foreach ($payload as $user) 
@@ -89,6 +90,7 @@ class APIHome extends BaseUniqoreController {
                                     $user['phone'] === $post['login-uname']) {
                                 $userFound  = TRUE;
                                 $uuid       = $user['uid'];
+                                $username   = $user['username'];
                                 $password   = $user['password'];
                                 break;
                             }
@@ -103,7 +105,10 @@ class APIHome extends BaseUniqoreController {
                             $sessionData    = [
                                 'logintime'     => time (),
                                 'ip_address'    => $this->request->getIPAddress (),
-                                'payload'       => bin2hex ($this->encrypt ($uuid))
+                                'payload'       => [
+                                    bin2hex ($this->encrypt ($uuid)),
+                                    bin2hex ($this->encrypt ($username))
+                                ]
                             ];
                             $this->session->set ($sessionData);
                             $this->response->redirect (base_url ('uniqore/admin/dashboard?route=welcome'), 'get');

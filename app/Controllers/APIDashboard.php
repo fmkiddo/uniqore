@@ -6,8 +6,13 @@ use App\Libraries\AssetType;
 
 class APIDashboard extends BaseUniqoreController {
     
+    private function getUserName (): string {
+        $payload    = $this->session->get ('payload');
+        return $this->decrypt (hex2bin ($payload[1]));
+    }
+    
     private function getUserInfo () {
-        
+        $payload    = $this->session->get ('payload');
     }
     
     private function doSignOut (): string {
@@ -35,15 +40,19 @@ class APIDashboard extends BaseUniqoreController {
         ];
         $styles     = [
             'assets/vendors/bootstrap-5.3.3/css/bootstrap.min.css',
+            'assets/vendors/datatables-2.1.6/css/datatables.min.css',
             'assets/vendors/fontawesome-6.6.0/css/all.min.css',
             'assets/vendors/materialdesignicons-7.4.47/css/materialdesignicons.min.css',
             'assets/css/uniqore.css'
         ];
         $this->initAssets(AssetType::STYLE, $styles);
         $scripts    = [
+            'assets/vendors/jquery-3.7.1/jquery-3.7.1.min.js',
             'assets/vendors/bootstrap-5.3.3/js/bootstrap.min.js',
+            'assets/vendors/datatables-2.1.6/js/datatables.min.js',
             'assets/vendors/fontawesome-6.6.0/js/all.min.js',
             'assets/vendors/materialdesignicons-7.4.47/scripts/verify.js',
+            'assets/js/uniqore.js'
         ];
         $this->initAssets(AssetType::SCRIPT, $scripts);
         parent::__initComponents ();
@@ -86,6 +95,8 @@ class APIDashboard extends BaseUniqoreController {
             $pageData   = [
                 'base_url'      => base_url (),
                 'dashboard_url' => base_url ('uniqore/admin/dashboard'),
+                'username'      => $this->getUserName (),
+                'realname'      => '',
                 'year'          => date ('Y'),
             ];
             $retVal     = $this->renderView($viewPaths, $pageData);
