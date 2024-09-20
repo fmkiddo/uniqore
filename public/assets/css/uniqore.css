@@ -379,6 +379,387 @@ a:not([href]):hover {
 	content: "\F140";
 }
 
+.table,
+.jsgrid .jsgrid-table {
+	width: 100%;
+	margin-bottom: 1rem;
+	color: #212529;
+}
+
+.table-100 {
+	width: 100%;
+}
+
+.table th,
+.jsgrid .jsgrid-table th,
+.table td,
+.jsgrid .jsgrid-table td {
+	padding: 0.625rem 0.9375rem;
+	vertical-align: top;
+	border-top: 1px solid rgba(200, 186, 186, 0.5);
+}
+
+.table thead th,
+.jsgrid .jsgrid-table thead th {
+	vertical-align: bottom;
+	border-bottom: 2px solid rgba(200, 186, 186, 0.5);
+}
+
+.table tbody+tbody,
+.jsgrid .jsgrid-table tbody+tbody {
+	border-top: 2px solid rgba(200, 186, 186, 0.5);
+}
+
+.table-sm th,
+.table-sm td {
+	padding: 0.3rem;
+}
+
+.table-bordered {
+	border: 1px solid rgba(200, 186, 186, 0.5);
+}
+
+.table-bordered th,
+.table-bordered td {
+	border: 1px solid rgba(200, 186, 186, 0.5);
+}
+
+.table-bordered thead th,
+.table-bordered thead td {
+	border-bottom-width: 2px;
+}
+
+.table-borderless th,
+.table-borderless td,
+.table-borderless thead th,
+.table-borderless tbody+tbody {
+	border: 0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+	background-color: #f1f1f4;
+}
+
+.table-hover tbody tr:hover {
+	color: #212529;
+	background-color: #eaeaf1;
+}
+
+.table-primary,
+.table-primary>th,
+.table-primary>td {
+	background-color: #d2cbfa;
+}
+
+.table-primary th,
+.table-primary td,
+.table-primary thead th,
+.table-primary tbody+tbody {
+	border-color: #ac9ef5;
+}
+
+.table-hover .table-primary:hover {
+	background-color: #beb4f8;
+}
+
+.table-hover .table-primary:hover>td,
+.table-hover .table-primary:hover>th {
+	background-color: #beb4f8;
+}
+
+.table-secondary,
+.table-secondary>th,
+.table-secondary>td {
+	background-color: #d7d8db;
+}
+
+.table-secondary th,
+.table-secondary td,
+.table-secondary thead th,
+.table-secondary tbody+tbody {
+	border-color: #b4b7bd;
+}
+
+.table-hover .table-secondary:hover {
+	background-color: #cacbcf;
+}
+
+.table-hover .table-secondary:hover>td,
+.table-hover .table-secondary:hover>th {
+	background-color: #cacbcf;
+}
+
+.table-success,
+.table-success>th,
+.table-success>td {
+	background-color: #bcedc7;
+}
+
+.table-success th,
+.table-success td,
+.table-success thead th,
+.table-success tbody+tbody {
+	border-color: #82de96;
+}
+
+.table-hover .table-success:hover {
+	background-color: #a8e8b6;
+}
+
+.table-hover .table-success:hover>td,
+.table-hover .table-success:hover>th {
+	background-color: #a8e8b6;
+}
+
+.table-info,
+.table-info>th,
+.table-info>td {
+	background-color: #c2d9fb;
+}
+
+.table-info th,
+.table-info td,
+.table-info thead th,
+.table-info tbody+tbody {
+	border-color: #8eb8f7;
+}
+
+.table-hover .table-info:hover {
+	background-color: #aacaf9;
+}
+
+.table-hover .table-info:hover>td,
+.table-hover .table-info:hover>th {
+	background-color: #aacaf9;
+}
+
+.table-warning,
+.table-warning>th,
+.table-warning>td {
+	background-color: #ffeeb8;
+}
+
+.table-warning th,
+.table-warning td,
+.table-warning thead th,
+.table-warning tbody+tbody {
+	border-color: #ffe07a;
+}
+
+.table-hover .table-warning:hover {
+	background-color: #ffe89f;
+}
+
+.table-hover .table-warning:hover>td,
+.table-hover .table-warning:hover>th {
+	background-color: #ffe89f;
+}
+
+.table-danger,
+.table-danger>th,
+.table-danger>td {
+	background-color: #fbc2c6;
+}
+
+.table-danger th,
+.table-danger td,
+.table-danger thead th,
+.table-danger tbody+tbody {
+	border-color: #f78e94;
+}
+
+.table-hover .table-danger:hover {
+	background-color: #f9aab0;
+}
+
+.table-hover .table-danger:hover>td,
+.table-hover .table-danger:hover>th {
+	background-color: #f9aab0;
+}
+
+.table-light,
+.table-light>th,
+.table-light>td {
+	background-color: #fbfbfc;
+}
+
+.table-light th,
+.table-light td,
+.table-light thead th,
+.table-light tbody+tbody {
+	border-color: #f8f8f9;
+}
+
+.table-hover .table-light:hover {
+	background-color: #ececf1;
+}
+
+.table-hover .table-light:hover>td,
+.table-hover .table-light:hover>th {
+	background-color: #ececf1;
+}
+
+.table-dark,
+.table-dark>th,
+.table-dark>td {
+	background-color: #bfc3c8;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark thead th,
+.table-dark tbody+tbody {
+	border-color: #898f9a;
+}
+
+.table-hover .table-dark:hover {
+	background-color: #b1b6bc;
+}
+
+.table-hover .table-dark:hover>td,
+.table-hover .table-dark:hover>th {
+	background-color: #b1b6bc;
+}
+
+.table-active,
+.table-active>th,
+.table-active>td {
+	background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover .table-active:hover {
+	background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover .table-active:hover>td,
+.table-hover .table-active:hover>th {
+	background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table .thead-dark th,
+.jsgrid .jsgrid-table .thead-dark th {
+	color: #fff;
+	background-color: #343a40;
+	border-color: #454d55;
+}
+
+.table .thead-light th,
+.jsgrid .jsgrid-table .thead-light th {
+	color: #495057;
+	background-color: #e9ecef;
+	border-color: rgba(200, 186, 186, 0.5);
+}
+
+.table-dark {
+	color: #fff;
+	background-color: #343a40;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark thead th {
+	border-color: #454d55;
+}
+
+.table-dark.table-bordered {
+	border: 0;
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-dark.table-hover tbody tr:hover {
+	color: #fff;
+	background-color: rgba(255, 255, 255, 0.075);
+}
+
+@media (max-width: 575.98px) {
+	.table-responsive-sm {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.table-responsive-sm>.table-bordered {
+		border: 0;
+	}
+}
+
+@media (max-width: 767.98px) {
+	.table-responsive-md {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.table-responsive-md>.table-bordered {
+		border: 0;
+	}
+}
+
+@media (max-width: 991.98px) {
+	.table-responsive-lg {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.table-responsive-lg>.table-bordered {
+		border: 0;
+	}
+}
+
+@media (max-width: 1199.98px) {
+	.table-responsive-xl {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.table-responsive-xl>.table-bordered {
+		border: 0;
+	}
+}
+
+.table-responsive {
+	display: block;
+	width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.table-responsive>.table-bordered {
+	border: 0;
+}
+
+.table.table-centered thead tr th,
+.table.table-centered tbody tr td {
+	text-align: center;
+}
+
+.table.table-centered-header thead tr th {
+	text-align: center;
+}
+
+.table.table-centered-header.center-first-column tbody tr td:first-child {
+	text-align: center;
+}
+
+.table.last-col-textend tbody tr td:not(.dt-empty):last-child {
+	text-align: right;
+}
+
+.info-box,
+.info-box:active,
+.info-box:hover {
+	text-decoration: none;
+}
+
 .card {
 	position: relative;
 	display: flex;
@@ -1093,52 +1474,66 @@ a:not([href]):hover {
 		text-shadow: none !important;
 		box-shadow: none !important;
 	}
+	
 	a:not(.btn) {
 		text-decoration: underline;
 	}
+	
 	abbr[title]::after {
 		content: " (" attr(title) ")";
 	}
+	
 	pre {
 		white-space: pre-wrap !important;
 	}
+	
 	pre,
 	blockquote {
 		border: 1px solid #adb5bd;
 		page-break-inside: avoid;
 	}
+	
 	thead {
 		display: table-header-group;
 	}
+	
 	tr,
 	img {
 		page-break-inside: avoid;
 	}
+	
 	p,
 	h2,
 	h3 {
 		orphans: 3;
 		widows: 3;
 	}
+	
 	h2,
 	h3 {
 		page-break-after: avoid;
 	}
+	
 	@page {
 		size: a3;
 	}
+	
 	body {
 		min-width: 992px !important;
 	}
+	
 	.container {
 		min-width: 992px !important;
 	}
+	
 	.navbar {
 		display: none;
 	}
+	
 	.badge {
 		border: 1px solid #000;
 	}
+	
 	.table, .jsgrid .jsgrid-table {
 		border-collapse: collapse !important;
 	}
@@ -1147,19 +1542,23 @@ a:not([href]):hover {
 	.jsgrid .jsgrid-table td, .table th, .jsgrid .jsgrid-table th {
 		background-color: #ffffff !important;
 	}
+	
 	.table-bordered th,
 	.table-bordered td {
 		border: 1px solid #dee2e6 !important;
 	}
+	
 	.table-dark {
 		color: inherit;
 	}
+	
 	.table-dark th,
 	.table-dark td,
 	.table-dark thead th,
 	.table-dark tbody + tbody {
 		border-color: rgba(200, 186, 186, 0.5);
 	}
+	
 	.table .thead-dark th, .jsgrid .jsgrid-table .thead-dark th {
 		color: inherit;
 		border-color: rgba(200, 186, 186, 0.5);

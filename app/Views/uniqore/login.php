@@ -1,5 +1,5 @@
 		<div class="row uniqore-login">
-			<div class="col-md-4 offset-md-4">
+			<div class="col-md-6 offset-md-3">
 				<form method="post" enctype="application/x-www-form-urlencoded" {if !$validity}class="was-validated"{endif}>
 					<input type="hidden" name="{csrf_name}" value="{csrf_value}" />
     				<div class="card">

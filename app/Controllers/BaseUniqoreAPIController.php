@@ -39,7 +39,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         return explode ('.', $decrypted);
     }
     
-    private function generateUnauthorizedCommand ($code='401') {
+    protected function generateUnauthorizedCommand ($code='401') {
         $ip_address = $this->request->getIPAddress ();
         $info   = [
             'timestamps'    => time (),

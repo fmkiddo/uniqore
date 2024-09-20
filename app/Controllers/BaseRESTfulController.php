@@ -7,9 +7,6 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
 use Psr\Log\LoggerInterface;
-use CodeIgniter\HTTP\Message;
-use Config\Encryption;
-use CodeIgniter\Encryption\Exceptions\EncryptionException;
 
 abstract class BaseRESTfulController extends ResourceController {
     
@@ -74,6 +71,7 @@ abstract class BaseRESTfulController extends ResourceController {
             LoggerInterface $logger) {
         parent::initController ($request, $response, $logger);
         $this->__initComponents ();
+        array_push ($this->helpers, 'json');
         helper ($this->helpers);
     }
 }

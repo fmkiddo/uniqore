@@ -1,7 +1,7 @@
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
 				<hr />
-				<form id="newsuperuserform" action="{base_url}uniqore/forge/1" 
+				<form id="newsuperuserform" action="{+ siteURL uniqore/forge/1 +}" 
 						method="post" enctype="application/x-www-form-urlencoded">
 					<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 					<input type="hidden" name="newsukey" value="{newsukey}" />
@@ -48,7 +48,7 @@
 							<hr />
 							<div class="d-flex justify-content-between">
 								<div>
-									<a href="{base_url}admin" class="btn btn-primary" title="Go Home...">
+									<a href="{+ siteURL / +}" class="btn btn-primary" title="Go Home...">
 										<i class="fas fa-home fa-fw"></i>
 									</a>
 								</div>

@@ -11,17 +11,37 @@ class Users extends BaseUniqoreAPIController {
     
     protected $apiName      = 'Uniqore\Users';
     
+    protected $format       = 'json';
     
     /**
      * {@inheritDoc}
      * @see \App\Controllers\BaseUniqoreAPIController::doIndex()
      */
     protected function doIndex() {
-        $res    = $this->model->find ();
+        $get    = $this->request->getGet ();
+        
+        $res    = NULL;
+        
+        if (!count ($get)) $res = $this->model->findAll ();
+        elseif (!array_key_exists('payload', $get)) $res = $this->model->findAll ();
+        else {
+            $payload    = explode ('#', $get['payload']);
+            $filter     = $payload[1];
+            if (strlen (trim ($filter))) {
+                $match   = [
+                    'username'  => $filter,
+                    'email'     => $filter,
+                    'phone'     => $filter
+                ];
+                $this->model->orLike ($match);
+            }
+            $res = $this->model->find ();
+        }
+        
         if ($res === NULL) return $this->failServerError ("Null Pointer Exception", 500);
         
         $users  = [];
-        foreach ($res as $data) 
+        foreach ($res as $data)
             array_push ($users, [
                 'uid'           => $data->uid,
                 'username'      => $data->username,
@@ -29,14 +49,23 @@ class Users extends BaseUniqoreAPIController {
                 'phone'         => $data->phone,
                 'password'      => $data->password,
                 'created_at'    => $data->created_at,
-                'updated_at'    => $data->updated_at
+                'created_by'    => $data->created_by,
+                'updated_at'    => $data->updated_at,
+                'updated_by'    => $data->updated_by
             ]);
             
         $rowsData = count ($users);
         $userid = 0;
         if ($rowsData === 0) {
             $this->doLog ('warning', $userid);
-            return $this->failNotFound ("Data Empty or No Data Found!", 404);
+            $json   = [
+                'status'    => 404,
+                'error'     => 404,
+                'messages'  => [
+                    'error'     => 'Server returned empty row or data not found!'
+                ]
+            ];
+            return $this->respond ($json, 200);
         } else {
             $serializedData = serialize ($users);
             $encrypted      = $this->encrypt ($serializedData);

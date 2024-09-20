@@ -118,11 +118,7 @@ encryption.key              = hex2bin:{$secretKey}
                     'forger/uniqore_forgery_00',
                     'template_footer',
                 ];
-                $pageData   = [
-                    'csrf_name'     => csrf_token(),
-                    'csrf_data'     => csrf_hash()
-                ];
-                $view = $this->renderView($viewPaths, $pageData);
+                $view = $this->renderView($viewPaths);
                 break;
             case 1:
                 if ($this->isInitiated ()) $this->response->redirect (base_url ('admin'));
@@ -147,8 +143,6 @@ encryption.key              = hex2bin:{$secretKey}
                                 'template_footer',
                             ];
                             $pageData   = [
-                                'csrf_name'     => csrf_token(),
-                                'csrf_data'     => csrf_hash(),
                                 'validated'     => TRUE,
                                 'newsukey'      => $post['newsukey'],
                                 'newsudb'       => $post['newsudb']
@@ -207,8 +201,6 @@ encryption.key              = hex2bin:{$secretKey}
                             $newsudb    = "{$post['dbname']}.{$post['dbuser']}.{$post['dbpswd']}";
                             
                             $pageData   = [
-                                'csrf_name'     => csrf_token(),
-                                'csrf_data'     => csrf_hash(),
                                 'validated'     => FALSE,
                                 'newsukey'      => $post['key'],
                                 'newsudb'       => $newsudb

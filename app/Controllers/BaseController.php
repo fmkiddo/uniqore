@@ -45,6 +45,8 @@ abstract class BaseController extends Controller {
      */
     protected $helpers = [];
     
+    protected $appConfig;
+    
     protected $validation;
     
     protected $session;
@@ -92,21 +94,26 @@ abstract class BaseController extends Controller {
     protected function __initComponents () {
         // Preload any models, libraries, etc, here.
         // E.g.: $this->session = \Config\Services::session();
-        
+        array_push ($this->helpers, 'json');
         helper($this->helpers);
         service ('security');
+        $this->appConfig	= config ('App');
         $this->curl         = \Config\Services::curlrequest ();
         $this->parser       = \Config\Services::parser ();
         $this->validation   = \Config\Services::validation ();
         $this->session      = \Config\Services::session ();
-        $this->addPageData('base_url', base_url());
-        $this->addPageData('site_url', site_url());
-        $this->addPageData('styles', $this->styleAssets);
-        $this->addPageData('scripts', $this->scriptAssets);
+        $this->addPageData ('base_url', base_url ());
+        $this->addPageData ('site_url', site_url ());
+        $this->addPageData ('styles', $this->styleAssets);
+        $this->addPageData ('scripts', $this->scriptAssets);
     }
     
-    protected function renderView ($viewPaths, array $pageData): string {
+    protected function renderView ($viewPaths, array $pageData=[]): string {
         foreach ($pageData as $key => $value) $this->addPageData($key, $value);
+        $this->addPageData ('charset', $this->appConfig->charset);
+        $this->addPageData ('csrf_name', csrf_token ());
+        $this->addPageData ('csrf_value', csrf_hash ());
+        $this->addPageData ('year', date ('Y'));
         $this->parser->setData($this->pageData);
         $renderView = '';
         if (is_string ($viewPaths)) $renderView = $this->parser->render ($viewPaths);

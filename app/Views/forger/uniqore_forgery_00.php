@@ -1,7 +1,7 @@
 		<div class="row">
 			<div class="col-md-6 offset-md-3">
 				<hr />
-        		<form id="superuser-form" method="post" action="{base_url}uniqore/forge/1" enctype="application/x-www-form-urlencoded">
+        		<form id="superuser-form" method="post" action="{+ siteURL uniqore/forge/1 +}" enctype="application/x-www-form-urlencoded">
         			<input type="hidden" name="{csrf_name}" value="{csrf_data}" tabindex="-1" autocomplete="off" />
         			<input type="hidden" name="begin" value="true" />
         			<div class="text-center my-3">
@@ -61,7 +61,7 @@
                 if (reply.status === 200) 
                 	document.getElementById ('key').value = reply.data.key;
             }
-            xhttp.open ('get', '{base_url}/uniqore/generate-key', true);
+            xhttp.open ('get', '{+ siteURL /uniqore/generate-key +}', true);
             xhttp.send ();
         }
 
@@ -74,7 +74,7 @@
                     document.getElementById ('cfpswd').value = reply.data.password;
                 }
             }
-            xhttp.open ('get', '{base_url}/uniqore/fortknox-password', true);
+            xhttp.open ('get', '{+ siteURL /uniqore/fortknox-password +}', true);
             xhttp.send ();
         }
         
