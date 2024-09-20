@@ -219,7 +219,7 @@ encryption.key              = hex2bin:{$secretKey}
                         $json = [
                             'status'    => 500,
                             'message'   => 'Unable to process input',
-                            'go-home'   => base_url ('admin')
+                            'go-home'   => base_url ('uniqore/admin')
                         ];
                     } else {
                         $dbtpl  = new UniqoreDatabaseTemplate ();
@@ -235,9 +235,9 @@ encryption.key              = hex2bin:{$secretKey}
                                         'go-home'   => base_url ('admin')
                                     ];
                                 } else {
-                                    $passwd = password_hash ($post['newsupswd'], PASSWORD_BCRYPT);
                                     $uid    = generate_random_uuid_v4 ();
                                     $phone  = str_replace ('-', '', $post['newsuphone']);
+                                    $passwd = password_hash ($post['newsupswd'], PASSWORD_BCRYPT);
                                     $now    = date ('Y-m-d H:i:s');
                                     $query  = "INSERT INTO fmk_ousr (uid, username, email, phone, password, created_by, updated_at, updated_by)
                                                 VALUES ('{$uid}', '{$post['newsuname']}', '{$post['newsumail']}', '{$phone}', '{$passwd}', 1, '{$now}', 1);";
