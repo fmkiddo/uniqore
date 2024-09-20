@@ -2,7 +2,7 @@
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 								<form method="post" enctype="application/x-www-form-urlencoded">
-									<input type="hidden" name="{csrf_name}" value="{csrf_value}" />
+									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 									<div class="modal-header">
 										<h5 class="modal-title">Adminisrator User Form</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"></button>

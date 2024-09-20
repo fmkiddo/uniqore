@@ -122,7 +122,7 @@ encryption.key              = hex2bin:{$secretKey}
                 break;
             case 1:
                 if ($this->isInitiated ()) $this->response->redirect (base_url ('admin'));
-                if ($this->request->getMethod() === 'GET') $this->generateJSON404 ();
+                if ($this->request->is ('get')) $this->generateJSON404 ();
                 else {
                     $post   = $this->request->getPost ();
                     if (!array_key_exists('begin', $post)) {
@@ -211,7 +211,7 @@ encryption.key              = hex2bin:{$secretKey}
                 }
                 break;
             case 'starts':
-                if ($this->request->getMethod() === 'GET') $this->generateJSON404 ();
+                if ($this->request->is ('get')) $this->generateJSON404 ();
                 else {
                     $json   = [];
                     $post   = $this->request->getPost ();

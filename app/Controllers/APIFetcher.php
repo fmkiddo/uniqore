@@ -46,7 +46,7 @@ class APIFetcher extends BaseUniqoreController {
             $payload    = $json['data']['payload'];
             $payload    = unserialize ($this->decrypt (hex2bin ($payload)));
             $theData    = [];
-            $this->dataFormatter($fetcher, $payload, $theData);
+            $this->dataFormatter ($fetcher, $payload, $theData);
         }
         
         $fetched    = [
@@ -74,7 +74,7 @@ class APIFetcher extends BaseUniqoreController {
                         $user['username'],
                         $user['email'],
                         $user['phone'],
-                        "<a href=\"#\" class=\"info-box\">More Info <span class=\"mdi mdi-menu-right\"></span></a>"
+                        "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
                     ];
                     $i++;
                     array_push ($theData, $row);

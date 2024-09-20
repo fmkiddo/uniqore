@@ -41,7 +41,7 @@ class APIHome extends BaseUniqoreController {
         if (!$this->isReady ()) $this->response->redirect (base_url ('uniqore/forge/0'), 'get');
         $good   = TRUE;
         $error  = '';
-        if ($this->request->getMethod () === 'POST') {
+        if ($this->request->is ('post')) {
             $good   = FALSE;
             $this->validation->setRules ([
                 'login-uname'       => 'required',
@@ -67,7 +67,7 @@ class APIHome extends BaseUniqoreController {
                             'Accept'        => HEADER_APP_JSON,
                             'User-Agent'    => $this->request->getUserAgent (),
                             'Address'       => $this->request->getIPAddress ()
-                        ]
+                        ],
                     ];
                     $response   = $this->sendRequest (site_url ("api-uniqore/users?payload=find%23{$loginname}"), $curlOptions);
                     $json       = json_get ($response);

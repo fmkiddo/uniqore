@@ -9,7 +9,7 @@
 									</div>
 									<div class="d-block">
 										<input type="hidden" name="{csrf_name}" value="{csrf_value}" data-csrf="true" />
-										<table class="dataTable table table-striped table-hover table-centered center-first-column last-col-textend" data-fetch="{dts_fetch}">
+										<table class="dataTable table table-striped table-hover table-centered center-first-column last-col-textend" data-fetch="{dts_fetch}" data-page-length="25">
 											<thead>
 												<tr>
 													<th>User #</th>

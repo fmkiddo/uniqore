@@ -2,30 +2,25 @@
 namespace App\Controllers;
 
 use App\Libraries\AssetType;
+use App\Libraries\PageViews;
 
 class APIDashboard extends BaseUniqoreController {
     
-    private function getUserName(): string {
+    private $pageViews;
+    
+    private function getUserName (): string {
         $payload = $this->session->get('payload');
         return $this->decrypt(hex2bin($payload[1]));
     }
     
-    private function getUserInfo() {
+    private function getUserInfo () {
         $payload = $this->session->get("payload");
     }
     
     private function doSignOut(): string {
         $this->session->destroy();
-        $this->response->redirect(base_url("uniqore/admin"));
+        $this->response->redirect (base_url ("uniqore/admin"));
         return "OK!";
-    }
-    
-    private function showWelcome(): string {
-        return "";
-    }
-    
-    private function showAdministrators(): string {
-        return "";
     }
     
     /**
@@ -33,7 +28,8 @@ class APIDashboard extends BaseUniqoreController {
      * @see \App\Controllers\BaseController::__initComponents()
      */
     protected function __initComponents() {
-        $this->helpers = ["url", "key_generator"];
+        $this->helpers      = ["url", "key_generator"];
+        $this->pageViews    = new PageViews ();
         $styles = [
             'assets/vendors/bootstrap-5.3.3/css/bootstrap.min.css',
             'assets/vendors/datatables-2.1.6/css/datatables.min.css',
@@ -54,63 +50,52 @@ class APIDashboard extends BaseUniqoreController {
     }
     
     public function index(): string {
-        if (!$this->session->get("logintime")) {
-            $this->response->redirect(base_url("uniqore/admin"));
-        }
+        if (!$this->session->get("logintime")) $this->response->redirect(base_url("uniqore/admin"));
+        
         $get = $this->request->getGet();
         
-        if (count($get) > 0 && array_key_exists("route", $get)) {
-            $route = $get["route"];
-        } else {
-            $route = "welcome";
+        if (count($get) > 0 && array_key_exists("route", $get)) $route = $get["route"];
+        else $route = "welcome";
+        
+        if ($this->request->is ('post')) {
+            $auth       = $this->encrypt ($this->getAuthToken ());
+            $curlOpts   = [
+                'auth'      => [
+                    bin2hex ($auth),
+                    '',
+                    'basic'
+                ],
+                'headers'   => [
+                    'Content-Type'  => HEADER_APP_JSON,
+                    'Accept'        => HEADER_APP_JSON,
+                    'User-Agent'    => $this->request->getUserAgent (),
+                    'Address'       => $this->request->getIPAddress ()
+                ],
+            ];
+            var_dump ($curlOpts);
         }
         
-        $render     = true;
+        $render     = TRUE;
         
         $retVal     = "";
         $viewPaths  = [];
         $dtsFetch   = '';
         
-        switch ($route) {
-            default:
-                $dtsFetch   = '';
-                $viewPaths  = [
-                    'template_html',
-                    'uniqore/tpl_dashboard_header',
-                    'uniqore/welcome',
-                    'uniqore/tpl_dashboard_footer',
-                    'template_footer',
-                ];
-                break;
-            case 'sign-out':
-                $viewPaths  = [];
-                $render     = false;
-                $retVal     = $this->doSignOut();
-                break;
-            case 'apiadmin':
-                if ($this->request->is ('post')) {
-                    // Do some damage here
-                }
-                $dtsFetch   = 'users';
-                $viewPaths  = [
-                    'template_html',
-                    'uniqore/tpl_dashboard_header',
-                    'uniqore/users',
-                    'uniqore/forms/form_users',
-                    'uniqore/tpl_dashboard_footer',
-                    'template_footer',
-                ];
-                break;
-        }
+        if ($route !== 'sign-out') $this->pageViews->fetchPage($route, $dtsFetch, $viewPaths);
+        else {
+            $viewPaths  = [];
+            $render     = FALSE;
+            $retVal     = $this->doSignOut();
+        } 
         
         if ($render) {
             $pageData = [
                 'dashboard_url' => base_url('uniqore/admin/dashboard'),
-                'username'      => $this->getUserName(),
+                'username'      => $this->getUserName (),
                 'realname'      => '',
                 'dts_fetch'     => $dtsFetch,
             ];
-            $retVal = $this->renderView($viewPaths, $pageData);
+            $retVal = $this->renderView ($viewPaths, $pageData);
         }
         return $retVal;
     }

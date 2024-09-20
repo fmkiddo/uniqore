@@ -7,6 +7,7 @@ use App\Controllers\BaseUniqoreAPIController;
 
 class Users extends BaseUniqoreAPIController {
     
+    
     protected $modelName    = 'App\Models\Uniqore\UserModel';
     
     protected $apiName      = 'Uniqore\Users';
