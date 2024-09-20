@@ -112,7 +112,7 @@ abstract class BaseController extends Controller {
         foreach ($pageData as $key => $value) $this->addPageData($key, $value);
         $this->addPageData ('charset', $this->appConfig->charset);
         $this->addPageData ('csrf_name', csrf_token ());
-        $this->addPageData ('csrf_value', csrf_hash ());
+        $this->addPageData ('csrf_data', csrf_hash ());
         $this->addPageData ('year', date ('Y'));
         $this->parser->setData($this->pageData);
         $renderView = '';
