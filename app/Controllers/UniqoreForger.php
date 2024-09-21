@@ -126,14 +126,13 @@ encryption.key              = hex2bin:{$secretKey}
                 else {
                     $post   = $this->request->getPost ();
                     if (!array_key_exists('begin', $post)) {
-                        $this->validation->setRules ([
+                        $res = $this->validate ([
                             'newsuname'     => 'required',
                             'newsumail'     => 'required|valid_email',
                             'newsuphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
                             'newsupswd'     => 'required|password_strength',
                             'cnfmpswd'      => 'required|matches[newsupswd]'
                         ]);
-                        $res = $this->validation->withRequest ($this->request)->run ();
                         if (!$res) {
                             $viewPaths  = [
                                 'template_html',
@@ -179,15 +178,14 @@ encryption.key              = hex2bin:{$secretKey}
                             $this->response->setHeader ('Refresh', '10,url=' . base_url('uniqore/admin'));
                         }
                     } else {
-                        $this->validation->setRules([
+                        $res = $this->validate ([
                             'begin'     => 'required|string',
                             'key'       => 'required|string',
                             'dbname'    => 'required|string',
                             'dbuser'    => 'required|string',
                             'dbpswd'    => 'required|min_length[8]|password_strength',
-                            'cfpswd'    => 'required|matches[dbpswd]'
+                            'cfpswd'    => 'required|matches[dbpswd]',
                         ]);
-                        $res = $this->validation->withRequest ($this->request)->run ();
                         if (!$res) return $this->response->redirect (base_url ('admin')); 
                         else {
                             $viewPaths  = [

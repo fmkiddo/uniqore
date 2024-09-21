@@ -47,8 +47,6 @@ abstract class BaseController extends Controller {
     
     protected $appConfig;
     
-    protected $validation;
-    
     protected $session;
     
     protected $encryptor;
@@ -100,7 +98,6 @@ abstract class BaseController extends Controller {
         $this->appConfig	= config ('App');
         $this->curl         = \Config\Services::curlrequest ();
         $this->parser       = \Config\Services::parser ();
-        $this->validation   = \Config\Services::validation ();
         $this->session      = \Config\Services::session ();
         $this->addPageData ('base_url', base_url ());
         $this->addPageData ('site_url', site_url ());

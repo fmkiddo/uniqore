@@ -43,11 +43,10 @@ class APIHome extends BaseUniqoreController {
         $error  = '';
         if ($this->request->is ('post')) {
             $good   = FALSE;
-            $this->validation->setRules ([
+            $res = $this->validate ([
                 'login-uname'       => 'required',
-                'login-pword'       => 'required'
+                'login-pword'       => 'required',
             ]);
-            $res = $this->validation->withRequest ($this->request)->run();
             if (!$res) $error  = 'You have to provide username and password for signing in!';
             else {
                 $post           = $this->request->getPost ();
@@ -66,7 +65,6 @@ class APIHome extends BaseUniqoreController {
                             'Content-Type'  => HEADER_APP_JSON,
                             'Accept'        => HEADER_APP_JSON,
                             'User-Agent'    => $this->request->getUserAgent (),
-                            'Address'       => $this->request->getIPAddress ()
                         ],
                     ];
                     $response   = $this->sendRequest (site_url ("api-uniqore/users?payload=find%23{$loginname}"), $curlOptions);

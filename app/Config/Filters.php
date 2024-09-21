@@ -75,6 +75,7 @@ class Filters extends BaseFilters
                     'uniqore/fetch-data',
                     'uniqore/forge/starts',
                     'api-uniqore/*',
+                    'uniqore/admin/dashboard/validate'
                 ]
             ],
             // 'invalidchars',

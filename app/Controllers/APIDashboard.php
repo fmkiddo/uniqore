@@ -10,7 +10,7 @@ class APIDashboard extends BaseUniqoreController {
     
     private function getUserName (): string {
         $payload = $this->session->get('payload');
-        return $this->decrypt(hex2bin($payload[1]));
+        return $this->decrypt (hex2bin($payload[1]));
     }
     
     private function getUserInfo () {
@@ -50,30 +50,15 @@ class APIDashboard extends BaseUniqoreController {
     }
     
     public function index(): string {
-        if (!$this->session->get("logintime")) $this->response->redirect(base_url("uniqore/admin"));
+        if ($this->session->get("logintime") === NULL) {
+            $this->response->redirect(base_url("uniqore/admin"));
+            return "OK!";
+        }
         
         $get = $this->request->getGet();
         
         if (count($get) > 0 && array_key_exists("route", $get)) $route = $get["route"];
         else $route = "welcome";
-        
-        if ($this->request->is ('post')) {
-            $auth       = $this->encrypt ($this->getAuthToken ());
-            $curlOpts   = [
-                'auth'      => [
-                    bin2hex ($auth),
-                    '',
-                    'basic'
-                ],
-                'headers'   => [
-                    'Content-Type'  => HEADER_APP_JSON,
-                    'Accept'        => HEADER_APP_JSON,
-                    'User-Agent'    => $this->request->getUserAgent (),
-                    'Address'       => $this->request->getIPAddress ()
-                ],
-            ];
-            var_dump ($curlOpts);
-        }
         
         $render     = TRUE;
         
@@ -90,7 +75,8 @@ class APIDashboard extends BaseUniqoreController {
         
         if ($render) {
             $pageData = [
-                'dashboard_url' => base_url('uniqore/admin/dashboard'),
+                'dashboard_url' => site_url ('uniqore/admin/dashboard'),
+                'validate_url'  => site_url ('uniqore/admin/dashboard/validate'),
                 'username'      => $this->getUserName (),
                 'realname'      => '',
                 'dts_fetch'     => $dtsFetch,
@@ -98,5 +84,12 @@ class APIDashboard extends BaseUniqoreController {
             $retVal = $this->renderView ($viewPaths, $pageData);
         }
         return $retVal;
+    }
+    
+    public function formValidator () {
+        if ($this->request->is ('post')) {
+            $this->response->setJSON (['status' => 200]);
+            $this->response->send ();
+        }
     }
 }

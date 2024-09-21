@@ -1,4 +1,17 @@
 $(function () {
+	$.fn.isFormReady = function () {
+		if ($(this).is ('form')) {
+			$isReady = true;
+			$(this).find (':input[required]').each (function () {
+				if ($.trim ($(this).val ()).length === 0) {
+					$isReady = false;
+					return false;
+				}
+			});
+			return $isReady;
+		}
+	};
+	
 	$(document).ready (function () {
 		$.base_url = function ($relativePath) {
 			return $base_url + '/' + $relativePath;
@@ -23,6 +36,24 @@ $(function () {
 					});
 				});
 			}
+		});
+		
+		$('button#submitter').click (function ($event) {
+			$event.preventDefault ();
+			$form	= $(this).parents ('form');
+			$url	= $form.attr ('data-validator');
+			if (!$form.isFormReady ()) $(this).prev ().click ();
+			else {
+				$.ajax ({
+					url: $url,
+					method: 'post',
+					data: $form.serialize (),
+				}).done (function ($res) {
+					
+				}).fail (function () {
+					
+				});
+			}			
 		});
 	});
 });
