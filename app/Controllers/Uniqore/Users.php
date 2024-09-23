@@ -22,6 +22,7 @@ class Users extends BaseUniqoreAPIController {
             'email'         => $json['email'],
             'phone'         => $json['phone'],
             'password'      => password_hash ($json['password'], PASSWORD_BCRYPT),
+            'active'        => $json['active'],
             'created_by'    => $userid,
             'updated_at'    => date ('Y-m-d H:i:s'),
             'updated_by'    => $userid
@@ -65,6 +66,7 @@ class Users extends BaseUniqoreAPIController {
             'email'         => $json['email'],
             'phone'         => $json['phone'],
             'password'      => password_hash ($json['password'], PASSWORD_BCRYPT),
+            'active'        => $json['active'],
             'updated_at'    => date ('Y-m-d H:i:s'),
             'updated_by'    => $userid
         ];
@@ -129,6 +131,7 @@ class Users extends BaseUniqoreAPIController {
                 'email'         => $data->email,
                 'phone'         => $data->phone,
                 'password'      => $data->password,
+                'active'        => $data->active,
                 'created_at'    => $data->created_at,
                 'created_by'    => $data->created_by,
                 'updated_at'    => $data->updated_at,

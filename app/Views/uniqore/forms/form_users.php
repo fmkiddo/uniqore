@@ -40,6 +40,10 @@
 											<label for="input-cnfpswd">Confirm Password:</label>
 											<input type="password" class="form-control" name="input-cnfpswd" placeholder="Retype your password" required />
 										</div>
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" name="input-active" checked />
+											<label class="form-check-label" for="input-active">Active</label>
+										</div>
 										<div class="d-none text-danger">
 											<p id="validate-messages"></p>
 										</div>

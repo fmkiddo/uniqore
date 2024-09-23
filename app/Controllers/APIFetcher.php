@@ -17,12 +17,13 @@ class APIFetcher extends BaseUniqoreController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseController::index()
      */
-    public function index(): string {
+    public function index (): string {
         $post       = $this->request->getPost ();
         $fetcher    = $post ['fetch'];
         $searchVal  = $post ['search']['value'];
         $sortTarget = 0;
         $sort       = '';
+        
         if (array_key_exists ('order', $post)) {
             $sortTarget = $this->columnTranslator ($fetcher, $post ['order'][0]['column']);
             $sort       = (!$sortTarget) ? '' : $post ['order'][0]['dir'];
@@ -84,6 +85,7 @@ class APIFetcher extends BaseUniqoreController {
                         $user['username'],
                         $user['email'],
                         $phone,
+                        ($user['active'] ? 'active' : 'inactive'),
                         "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
                     ];
                     $i++;
@@ -91,6 +93,19 @@ class APIFetcher extends BaseUniqoreController {
                 }
                 break;
             case 'programming':
+                $i = 1;
+                foreach ($payload as $api) {
+                    $row    = [
+                        "<span class=\"text-center\" data-uuid=\"{$api['uid']}\">{$i}</span>",
+                        $api['api_code'],
+                        $api['api_name'],
+                        $api['api_dscript'],
+                        ($api['active'] ? 'active' : 'inactive'),
+                        "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
+                    ];
+                    $i++;
+                    array_push ($theData, $row);
+                }
                 break;
             case 'apiuser':
                 break;
@@ -121,6 +136,7 @@ class APIFetcher extends BaseUniqoreController {
                 ];
                 break;
         }
+        if ($col >= count ($cols)) return FALSE;
         return $cols[$col-1];
     }
 }

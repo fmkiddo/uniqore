@@ -3,10 +3,56 @@ namespace App\Controllers\Uniqore;
 
 
 use App\Controllers\BaseUniqoreAPIController;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class Programming extends BaseUniqoreAPIController {
     
     protected $modelName    = 'App\Models\Uniqore\ApiModel';
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
+     */
+    protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+        $insertParams   = [
+            'uid'           => generate_random_uuid_v4 (),
+            'api_code'      => $json['api_code'],
+            'api_name'      => $json['api_name'],
+            'api_dscript'   => $json['api_dscript'],
+            'active'        => $json['active'],
+            'created_by'    => $userid,
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
+        $this->model->insert ($insertParams);
+        $insertID   = $this->model->getInsertID ();
+        if (!$insertID)
+            $retJSON    = [
+                'status'    => 500,
+                'error'     => 500,
+                'messages'  => [
+                    'error'     => 'Failed to create new user'
+                ]
+            ];
+        else {
+            $payload    = [
+                'returnid'  => $insertID
+            ];
+            $retJSON    = [
+                'status'    => 200,
+                'error'     => NULL,
+                'messages'  => [
+                    'success'   => 'Data successfully stored to database'
+                ],
+                'data'      => [
+                    'uuid'      => time (),
+                    'timestamp' => date ('Y-m-d H:i:s'),
+                    'payload'   => bin2hex ($this->encrypt (serialize($payload)))
+                ]
+            ];
+        }
+        return $retJSON;
+    }
     
     /**
      * 
@@ -24,8 +70,7 @@ class Programming extends BaseUniqoreAPIController {
                 'uid'           => $filter,
                 'api_code'      => $filter,
                 'api_name'      => $filter,
-                'api_dscript'   => $filter,
-                'status'        => $filter
+                'api_dscript'   => $filter
             ];
             $this->model->orLike ($match);
         }
@@ -48,7 +93,7 @@ class Programming extends BaseUniqoreAPIController {
                 'api_code'      => $data->api_code,
                 'api_name'      => $data->api_name,
                 'api_dscript'   => $data->api_dscript,
-                'status'        => $data->status,
+                'active'        => $data->active,
                 'created_at'    => $data->created_at,
                 'created_by'    => $data->created_by,
                 'updated_at'    => $data->updated_at,

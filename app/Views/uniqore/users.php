@@ -16,6 +16,7 @@
 													<th>Username</th>
 													<th>Email</th>
 													<th>Phone</th>
+													<th>Status</th>
 													<th>
 														<i class="mdi mdi-information-box"></i>
 													</th>

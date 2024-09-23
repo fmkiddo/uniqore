@@ -22,7 +22,8 @@ $(function () {
 			if ($dts.length > 0) {
 				$.each ($dts, function () {
 					$fetch = $(this).attr ('data-fetch');
-					$(this).addClass ('table-100').DataTable ({
+					$.fn.dataTable.ext.errMode = 'throw';
+					$(this).addClass ('table-100').delay (10000).DataTable ({
 						ajax: {
 							url: $.base_url ('uniqore/fetch-data'),
 							type: 'POST',
@@ -36,6 +37,12 @@ $(function () {
 					});
 				});
 			}
+		});
+
+		$('a.info-box').mouseenter (function ($event) {
+			console.log ('Hovering');
+		}).mouseleave (function ($event) {
+			console.log ('Leaving');
 		});
 		
 		$('button#submitter').click (function ($event) {

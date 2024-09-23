@@ -22,7 +22,7 @@ class OCAC extends Table {
             Field::__constructField ('client_passcode', 'VARCHAR', 200, ''),
             Field::__constructField ('client_keycode', 'VARCHAR', 200, ''),
             Field::__constructField ('client_apicode', 'INT', 0, 0, TRUE),
-            Field::__constructField ('status', 'BOOLEAN', 0, new RawSql('TRUE')),
+            Field::__constructField ('active', 'BOOLEAN', 0, new RawSql('TRUE')),
         ];
     }
     

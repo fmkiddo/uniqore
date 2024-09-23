@@ -9,6 +9,6 @@ class ApiModel extends BaseModel {
     protected $table            = 'oapi';
     protected $primaryKey       = 'id';
     protected $allowedFields    = [
-        'uid', 'api_code', 'api_name', 'api_dscript', 'status', 'created_by', 'updated_at', 'updated_by' 
+        'uid', 'api_code', 'api_name', 'api_dscript', 'active', 'created_by', 'updated_at', 'updated_by' 
     ];
 }

@@ -10,6 +10,8 @@ class APIDashboard extends BaseUniqoreController {
     
     private $routes = [
         'apiadmin'  => 'users',
+        'api'       => 'programming',
+        'clients'   => 'apiuser'
     ];
     
     private function doSignOut(): string {
@@ -27,11 +29,21 @@ class APIDashboard extends BaseUniqoreController {
             default:
                 break;
             case 'users': 
+                $active = array_key_exists('input-active', $post) ? TRUE : FALSE;
                 return [
                     'username'      => $post['input-newuser'],
                     'email'         => $post['input-newmail'],
                     'phone'         => str_replace ('-', '', $post['input-newphone']),
                     'password'      => $post['input-newpswd'],
+                    'active'        => $active
+                ];
+            case 'programming':
+                $active = array_key_exists('input-newstatus', $post) ? TRUE : FALSE;
+                return [
+                    'api_code'      => $post['input-newcode'],
+                    'api_name'      => $post['input-newname'],
+                    'api_dscript'   => $post['input-newdscript'],
+                    'active'        => $active
                 ];
         }
     }
@@ -156,7 +168,11 @@ class APIDashboard extends BaseUniqoreController {
                     break;
                 case 'programming':
                     $rules  = [
+                        'input-newcode'     => 'required|alpha|max_length[4]',
+                        'input-newname'     => 'required',
+                        'input-newdscript'  => 'required'
                     ];
+                    break;
                 case 'users':
                     $rules  = [
                         'input-newuser'     => 'required|alpha',
