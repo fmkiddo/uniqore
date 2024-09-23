@@ -49,7 +49,8 @@ $(function () {
 					method: 'post',
 					data: $form.serialize (),
 				}).done (function ($res) {
-					
+					if ($res.status != 200) $form.find ('#validate-messages').text ($res.messages.error);
+					else $form.submit ();
 				}).fail (function () {
 					
 				});

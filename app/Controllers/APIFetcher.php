@@ -21,7 +21,12 @@ class APIFetcher extends BaseUniqoreController {
         $post       = $this->request->getPost ();
         $fetcher    = $post ['fetch'];
         $searchVal  = $post ['search']['value'];
-        $searchReg  = $post ['search']['regex'];
+        $sortTarget = 0;
+        $sort       = '';
+        if (array_key_exists ('order', $post)) {
+            $sortTarget = $this->columnTranslator ($fetcher, $post ['order'][0]['column']);
+            $sort       = (!$sortTarget) ? '' : $post ['order'][0]['dir'];
+        }
         
         $curlOpts   = [
             'auth'      => [
@@ -31,11 +36,14 @@ class APIFetcher extends BaseUniqoreController {
             ],
             'headers'   => [
                 'Content-Type'  => HEADER_APP_JSON,
-                'Accept'        => HEADER_APP_JSON
+                'Accept'        => HEADER_APP_JSON,
+                'User-Agent'    => $this->request->getUserAgent (),
             ]
         ];
         
-        $url = site_url ("api-uniqore/{$fetcher}?payload=find%23{$searchVal}");
+        $uuid   = base64_encode ($this->getLoggedUUID ());
+        $load   = "find%23{$searchVal}&colsort={$sortTarget}&typesort={$sort}";
+        $url    = site_url ("api-uniqore/{$fetcher}?payload={$load}&pollute=$uuid");
         
         $response   = $this->sendRequest($url, $curlOpts);
         $json       = json_get ($response);
@@ -69,17 +77,50 @@ class APIFetcher extends BaseUniqoreController {
             case 'users':
                 $i = 1;
                 foreach ($payload as $user) {
+                    $phone  = $user['phone'];
+                    $phone  = substr ($phone, 0, 4) . '-' . substr ($phone, 4, 4) . '-' . substr ($phone, 8); 
                     $row    = [
                         "<span class=\"text-center\" data-uuid=\"{$user['uid']}\">{$i}</span>",
                         $user['username'],
                         $user['email'],
-                        $user['phone'],
+                        $phone,
                         "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
                     ];
                     $i++;
                     array_push ($theData, $row);
                 }
                 break;
+            case 'programming':
+                break;
+            case 'apiuser':
+                break;
         }
+    }
+    
+    private function columnTranslator ($fetcher, $col) {
+        if ($col == 0) return FALSE;
+        switch ($fetcher) {
+            default:
+                $cols   = [
+                    'wew'
+                ];
+                break;
+            case 'users':
+                $cols   = [
+                    'username', 'email', 'phone'
+                ];
+                break;
+            case 'programming':
+                $cols   = [
+                    'api_code', 'api_name', 'api_dscript', 'status'
+                ];
+                break;
+            case 'apiuser':
+                $cols   = [
+                    'client_code', 'client_name', 'client_apicode', 'status'
+                ];
+                break;
+        }
+        return $cols[$col-1];
     }
 }

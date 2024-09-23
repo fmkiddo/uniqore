@@ -119,3 +119,4 @@ defined ('SYS__DATABASE_ROOTC')             || define ('SYS__DATABASE_ROOTC',
 defined ('HEADER_APP_FORM')                 || define ('HEADER_APP_FORM', 'application/x-www-form-urlencoded');
 defined ('HEADER_APP_MULTIPART')            || define ('HEADER_APP_MULTIPART', 'multipart/form-data');
 defined ('HEADER_APP_JSON')                 || define ('HEADER_APP_JSON', 'application/json');
+defined ('UNIQORE_NAME')                    || define ('UNIQORE_NAME', 'Uniqore');

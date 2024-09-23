@@ -22,6 +22,16 @@ abstract class BaseUniqoreController extends BaseController {
         }
     }
     
+    protected function getLoggedUUID (): string {
+        $payload    = $this->session->get ('payload');
+        return $this->decrypt (hex2bin ($payload[0]));
+    }
+    
+    protected function getUserName (): string {
+        $payload    = $this->session->get('payload');
+        return $this->decrypt (hex2bin ($payload[1]));
+    }
+    
     /**
      * {@inheritDoc}
      * @see \App\Controllers\BaseController::decrypt ()

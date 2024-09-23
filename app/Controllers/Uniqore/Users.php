@@ -3,46 +3,126 @@ namespace App\Controllers\Uniqore;
 
 
 use App\Controllers\BaseUniqoreAPIController;
+use CodeIgniter\HTTP\ResponseInterface;
 
 
 class Users extends BaseUniqoreAPIController {
     
-    
     protected $modelName    = 'App\Models\Uniqore\UserModel';
     
-    protected $apiName      = 'Uniqore\Users';
-    
-    protected $format       = 'json';
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
+     */
+    protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+        $insertParams   = [
+            'uid'           => generate_random_uuid_v4 (),
+            'username'      => $json['username'],
+            'email'         => $json['email'],
+            'phone'         => $json['phone'],
+            'password'      => password_hash ($json['password'], PASSWORD_BCRYPT),
+            'created_by'    => $userid,
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
+        $this->model->insert ($insertParams);
+        $insertID   = $this->model->getInsertID ();
+        if (!$insertID) 
+            $retJSON    = [
+                'status'    => 500,
+                'error'     => 500,
+                'messages'  => [
+                    'error'     => 'Failed to create new user'
+                ]
+            ];
+        else {
+            $payload    = [
+                'returnid'  => $insertID
+            ];
+            $retJSON    = [
+                'status'    => 200,
+                'error'     => NULL,
+                'messages'  => [
+                    'success'   => 'Data successfully stored to database'
+                ],
+                'data'      => [
+                    'uuid'      => time (),
+                    'timestamp' => date ('Y-m-d H:i:s'),
+                    'payload'   => bin2hex ($this->encrypt (serialize($payload)))
+                ]
+            ];
+        }
+        return $retJSON;
+    }
     
     /**
      * {@inheritDoc}
-     * @see \App\Controllers\BaseUniqoreAPIController::doIndex()
+     * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
-    protected function doIndex() {
-        $get    = $this->request->getGet ();
+    protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
+        $updateParams   = [
+            'email'         => $json['email'],
+            'phone'         => $json['phone'],
+            'password'      => password_hash ($json['password'], PASSWORD_BCRYPT),
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
         
-        $res    = NULL;
+        $this->model->set ($updateParams)
+        ->where ('uid', $id)
+        ->update ();
         
-        if (!count ($get)) $res = $this->model->findAll ();
-        elseif (!array_key_exists('payload', $get)) $res = $this->model->findAll ();
-        else {
-            $payload    = explode ('#', $get['payload']);
-            $filter     = $payload[1];
-            if (strlen (trim ($filter))) {
-                $match   = [
-                    'username'  => $filter,
-                    'email'     => $filter,
-                    'phone'     => $filter
-                ];
-                $this->model->orLike ($match);
-            }
-            $res = $this->model->find ();
+        $affectedRows   = $this->model->affectedRows ();
+        $payload        = [
+            'affectedrows'  => $affectedRows
+        ];
+        return [
+            'status'    => 200,
+            'error'     => NULL,
+            'messages'  => [
+                'success'   => 'OK!'
+            ],
+            'data'      => [
+                'uuid'      => time (),
+                'timestamp' => date ('Y-m-d H:i:s'),
+                'payload'   => bin2hex ($this->encrypt (serialize ($payload)))
+            ]
+        ];
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::findWithFilter()
+     */
+    protected function findWithFilter ($get) {
+        $payload    = explode ('#', $get['payload']);
+        $filter     = $payload[1];
+        $sortType   = (!array_key_exists ('typesort', $get)) ? '' : $get['typesort'];
+        $sortCol    = (!array_key_exists ('colsort', $get)) ? '' : $get['colsort'];
+        
+        if (strlen (trim ($filter))) {
+            $match   = [
+                'uid'           => $filter,
+                'username'      => $filter,
+                'email'         => $filter,
+                'phone'         => $filter
+            ];
+            $this->model->orLike ($match);
         }
         
-        if ($res === NULL) return $this->failServerError ("Null Pointer Exception", 500);
+        if (strlen ($sortType) > 0) $this->model->orderBy ($sortCol, $sortType);
         
+        return $this->model->findAll ();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::responseFormatter()
+     */
+    protected function responseFormatter ($queryResult): array {
         $users  = [];
-        foreach ($res as $data)
+        foreach ($queryResult as $data)
             array_push ($users, [
                 'uid'           => $data->uid,
                 'username'      => $data->username,
@@ -55,10 +135,8 @@ class Users extends BaseUniqoreAPIController {
                 'updated_by'    => $data->updated_by
             ]);
             
-        $rowsData = count ($users);
-        $userid = 0;
+        $rowsData   = count ($users);
         if ($rowsData === 0) {
-            $this->doLog ('warning', $userid);
             $json   = [
                 'status'    => 404,
                 'error'     => 404,
@@ -66,11 +144,17 @@ class Users extends BaseUniqoreAPIController {
                     'error'     => 'Server returned empty row or data not found!'
                 ]
             ];
-            return $this->respond ($json, 200);
         } else {
             $serializedData = serialize ($users);
             $encrypted      = $this->encrypt ($serializedData);
             if (! $encrypted) {
+                $json   = [
+                    'status'    => 500,
+                    'error'     => 500,
+                    'messages'  => [
+                        'error'     => 'Internal server error has occured!'
+                    ]
+                ];
                 log_message('error', 'Error: Server failed to generate API Response. Cause: Encryption Error!');
                 return $this->failServerError ('Cannot generate response data!', 500);
             } else {
@@ -87,11 +171,8 @@ class Users extends BaseUniqoreAPIController {
                         'payload'   => $hexed
                     ]
                 ];
-                
-                $this->doLog ('warning', $userid);
             }
         }
-        
-        return $this->respond($json, 200);
+        return $json;
     }
 }

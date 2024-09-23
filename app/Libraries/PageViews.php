@@ -20,6 +20,8 @@ class PageViews {
             'viewPaths'     => [
                 'template_html',
                 'uniqore/tpl_dashboard_header',
+                'uniqore/api',
+                'uniqore/forms/form_api',
                 'uniqore/tpl_dashboard_footer',
                 'template_footer',
             ]
@@ -29,6 +31,8 @@ class PageViews {
             'viewPaths'     => [
                 'template_html',
                 'uniqore/tpl_dashboard_header',
+                'uniqore/clients',
+                'uniqore/forms/form_client',
                 'uniqore/tpl_dashboard_footer',
                 'template_footer',
             ]

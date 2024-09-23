@@ -4,11 +4,33 @@ namespace App\Controllers;
 
 use CodeIgniter\Files\File;
 use CodeIgniter\Encryption\Exceptions\EncryptionException;
-use Config\Encryption;
 use CodeIgniter\HTTP\ResponseInterface;
 
 abstract class BaseUniqoreAPIController extends BaseRESTfulController {
     
+    protected $modelName    = NULL;
+    
+    protected $apiName      = 'Uniqore';
+    
+    protected $format       = 'json';
+    
+    private function getPollute () {
+        $get = $this->request->getGet ();
+        if (! count ($get) || ! array_key_exists ('pollute', $get)) return FALSE;
+        return base64_decode ($get['pollute'], TRUE);
+    }
+    
+    private function getUserID () {
+        $uuid   = $this->getPollute ();
+        if (!$uuid) return 0;
+        else {
+            $db     = \Config\Database::connect ();
+            $sql    = "SELECT id FROM fmk_ousr WHERE uid='$uuid'";
+            $res    = $db->query ($sql)->getResult ();
+            if (!count ($res)) return 0;
+            else return $res[0]->id;
+        }
+    }
     
     /**
      * 
@@ -37,6 +59,15 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         $decrypted = $this->decrypt ($auth);
         if (!$decrypted) return FALSE;
         return explode ('.', $decrypted);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseRESTfulController::__initComponents()
+     */
+    protected function __initComponents() {
+        $this->addHelper ('uuid');
+        parent::__initComponents ();
     }
     
     protected function generateUnauthorizedCommand ($code='401') {
@@ -95,45 +126,57 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         else return json_decode ($this->request->getBody (), TRUE);
     }
     
-    protected function doCreate () {
-        return $this->fail(lang('RESTful.notImplemented', ['create']), 501);
-    }
-    
-    protected function doIndex () {
-        return $this->fail(lang('RESTful.notImplemented', ['index']), 501);
+    /**
+     * 
+     * @param array $json
+     * @param number $userid
+     * @return array|ResponseInterface
+     */
+    protected function doCreate (array $json, $userid=0): array|ResponseInterface {
+        return $this->fail (lang ('RESTful.notImplemented', ['create']), 501);
     }
     
     protected function doNew () {
-        return $this->fail(lang('RESTful.notImplemented', ['new']), 501);
+        return $this->fail (lang ('RESTful.notImplemented', ['new']), 501);
     }
     
     protected function doEdit ($id) {
-        return $this->fail(lang('RESTful.notImplemented', ['edit']), 501);
+        return $this->fail (lang ('RESTful.notImplemented', ['edit']), 501);
     }
     
-    protected function doUpdate ($id) {
-        return $this->fail(lang('RESTful.notImplemented', ['update']), 501);
+    /**
+     * 
+     * @param string|array $id
+     * @param array $json
+     * @param number $userid
+     * @return array|ResponseInterface
+     */
+    protected function doUpdate ($id, array $json, $userid=0): array|ResponseInterface {
+        return $this->fail (lang ('RESTful.notImplemented', ['update']), 501);
     }
     
-    protected function doDelete ($id) {
-        return $this->fail(lang('RESTful.notImplemented', ['delete']), 501);
+    protected function doDelete ($id): array|ResponseInterface {
+        return $this->fail (lang ('RESTful.notImplemented', ['delete']), 501);
     }
     
-    protected function doShow ($id) {
-        return $this->fail(lang('RESTful.notImplemented', ['show']), 501);
-    }
+    abstract protected function findWithFilter ($get);
     
-    protected function doLog ($level, $access_id=0) {
-        $info = [
-            'host'           => $this->request->getUri ()->getHost (),
-            'method'        => $this->request->getMethod (),
-            'type'          => $this->request->header ('Content-Type')->getValue (),
-            'api_name'      => $this->apiName,
-            'id'            => $access_id,
-            'ip_address'    => $this->request->getIPAddress (),
-            'user_agent'    => $this->request->getUserAgent(),
-        ];
-        log_message ($level, "API Access to {api_name} successfully, host: {host}, method: {method}, type: {type}, agent: {user_agent}, ip: {ip_address}, id: {id}, ", $info);
+    abstract protected function responseFormatter ($queryResult): array;
+    
+    protected function doLog ($level, $messages='', $access_id=0) {
+        $host       = $this->request->getUri ()->getHost ();
+        $method     = $this->request->getMethod ();
+        $type       = $this->request->header ('Content-Type')->getValue ();
+        $api_name   = $this->apiName;
+        $ip_address = $this->request->getIPAddress ();
+        $user_agent = $this->request->getUserAgent();
+        if (!strlen (trim ($messages))) 
+            $messages   = "API Access to {$api_name} successfully, host: {$host}, method: {$method}, type: {$type}, agent: {$user_agent}, ip: {$ip_address}, id: {$access_id}";
+        $query      = "INSERT INTO fmk_oalg (level, message, host, method, ctype, app_userid, agent, ip) 
+        VALUES ('{$level}', '{$messages}', '{$host}', '{$method}', '{$type}', '{$access_id}', '{$user_agent}', '{$ip_address}');";
+        $db         = \Config\Database::connect ($this->getDatabaseConnection ());
+        $db->simpleQuery ($query);
+        $db->close ();
     }
     
     /**
@@ -141,8 +184,25 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * @see \CodeIgniter\RESTful\ResourceController::create()
      */
     public function create () {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
-        if ($this->validateRequestAuthorization ()) return $this->doCreate ();
+        if ($this->modelName === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+        if ($this->validateRequestAuthorization ()) {
+            $userid = $this->getUserID ();
+            $json   = json_decode ($this->request->getBody(), TRUE);
+            $retVal = $this->doCreate ($json, $userid);
+            if (!is_array ($retVal)) return $retVal;
+            else {
+                $time   = time ();
+                if ($retVal['status'] === 200) {
+                    $level      = 'warning';
+                    $messages   = "Query to $this->modelName::create was called on $time and was successfully executed";
+                } else {
+                    $level      = 'error';
+                    $messages   = "Query to $this->modelName::create was called on $time and return reported as failed";
+                }
+                $this->doLog ($level, $messages, $userid);
+                return $this->respond ($retVal);
+            } 
+        }
         return $this->generateUnauthorizedCommand ();
     }
     
@@ -151,8 +211,22 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * @see \CodeIgniter\RESTful\ResourceController::index()
      */
     public function index () {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
-        if ($this->validateRequestAuthorization ()) return $this->doIndex ();
+        if ($this->modelName === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+        if ($this->validateRequestAuthorization ()) {
+            $time   = time ();
+            $get    = $this->request->getGet ();
+            $userid = $this->getUserID ();
+            $res    = NULL;
+            if (! count ($get) || ! array_key_exists ('payload', $get)) $res    = $this->model->findAll ();
+            else $res = $this->findWithFilter ($get, $userid);
+            $rows   = count ($res);
+            $time   = time ();
+            $this->doLog ('warning', "Query to $this->modelName::index was called on $time and returned $rows result(s)", $userid);
+            
+            if ($res === NULL) return $this->failServerError ("Null Pointer Exception", 500);
+            
+            return $this->respond ($this->responseFormatter ($res));
+        }
         return $this->generateUnauthorizedCommand ();
     }
     
@@ -161,7 +235,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * @see \CodeIgniter\RESTful\ResourceController::new()
      */
     public function new () {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+        if ($this->modelName === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) return $this->doNew ();
         return $this->generateUnauthorizedCommand ();
     }
@@ -172,7 +246,8 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * @see \CodeIgniter\RESTful\ResourceController::edit()
      */
     public function edit ($id = null) {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+        if ($this->modelName === NULL || $id === NULL) 
+            return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) return $this->doEdit ($id);
         return $this->generateUnauthorizedCommand ();
     }
@@ -182,9 +257,31 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * {@inheritDoc}
      * @see \CodeIgniter\RESTful\ResourceController::update()
      */
-    public function update($id = null) {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
-        if ($this->validateRequestAuthorization ()) return $this->doUpdate ($id);
+    public function update ($id = null) {
+        if ($this->modelName === NULL || $id === NULL) 
+            return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+        if ($this->validateRequestAuthorization ()) {
+            $userid     = $this->getUserID ();
+            $isBase64   = is_base64 ($id);
+            if ($isBase64) {
+                $theId      = base64_decode ($id);
+                $json       = json_decode ($this->request->getBody (), TRUE);
+                $retVal     = $this->doUpdate ($theId, $json, $userid);
+                if (!is_array ($retVal)) return $retVal;
+                else {
+                    $time   = time ();
+                    if ($retVal['status'] === 200) {
+                        $level      = 'warning';
+                        $messages   = "Query to $this->modelName::update was called on $time reported query was executed successfully";
+                    } else {
+                        $level      = 'error';
+                        $messages   = "Query to $this->modelName::update was called on $time reported query execution was failed";
+                    }
+                    $this->doLog ($level, $messages, $userid);
+                    return $this->respond ($retVal);
+                }
+            }
+        }
         return $this->generateUnauthorizedCommand ();
     }
     
@@ -192,8 +289,9 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * {@inheritDoc}
      * @see \CodeIgniter\RESTful\ResourceController::delete()
      */
-    public function delete($id = null) {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+    public function delete ($id = null) {
+        if ($this->modelName === NULL || $id === NULL) 
+            return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) return $this->doDelete ($id);
         return $this->generateUnauthorizedCommand ();
     }
@@ -202,9 +300,37 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * {@inheritDoc}
      * @see \CodeIgniter\RESTful\ResourceController::show()
      */
-    public function show($id = null) {
-        if ($this->model === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
-        if ($this->validateRequestAuthorization ()) return $this->doShow ($id);
+    public function show ($id = null) {
+        if ($this->modelName === NULL || $id === NULL) 
+            return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
+        if ($this->validateRequestAuthorization ()) {
+            $userid     = $this->getUserID ();
+            $isBase64   = is_base64 ($id);
+            if (!$isBase64) {
+                $json   = [
+                    'status'    => 442,
+                    'error'     => 442,
+                    'messages'  => [
+                        'error'     => 'Unknown input parameter format!'
+                    ]
+                ];
+                $this->doLog ('alert', "Query to $this->modelName::show was call returned with {$json['messages']['error']}", $userid);
+            } else {
+                $uuid   = base64_decode ($id);
+                $get    = [
+                    'payload'   => "find#$uuid"
+                ];
+                $res    = $this->findWithFilter ($get);
+                $time   = time ();
+                $rows   = count ($res);
+                $this->doLog ('warning', "Query to $this->modelName::show was called on $time and returned $rows result(s)", $userid);
+                
+                if ($res === NULL) return $this->failServerError ("Null Pointer Exception", 500);
+                
+                $json = $this->responseFormatter ($res);
+            }
+            return $this->respond ($json);
+        }
         return $this->generateUnauthorizedCommand ();
     }
 }

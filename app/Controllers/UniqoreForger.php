@@ -226,7 +226,7 @@ encryption.key              = hex2bin:{$secretKey}
                             if (!$forger->isDatabaseExists ()) {
                                 $built = $forger->buildDatabase ();
                                 if (!$built) {
-                                    delete_files(SYS__UNIQORE_RANDAUTH_PATH);
+                                    delete_files (SYS__UNIQORE_RANDAUTH_PATH);
                                     $json = [
                                         'status'    => 400,
                                         'message'   => 'Uniqore database forgery failed!',

@@ -3,6 +3,7 @@ namespace App\Libraries\Forgery\Templates;
 
 
 use App\Libraries\Forgery\Database;
+use App\Libraries\Forgery\Templates\Uniqore\OALG;
 use App\Libraries\Forgery\Templates\Uniqore\OUSR;
 use App\Libraries\Forgery\Templates\Uniqore\OAPI;
 use App\Libraries\Forgery\Templates\Uniqore\USR1;
@@ -24,6 +25,7 @@ class UniqoreDatabaseTemplate extends Database {
             new CAC1 (),
             new CAC2 (),
             new OPRT (FALSE),
+            new OALG (FALSE)
         ];
     }
 }

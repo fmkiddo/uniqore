@@ -15,8 +15,8 @@ class CAC1 extends Table {
     protected function __initTableAttributes() {
         $this->tableName    = 'cac1';
         $this->tableFields  = [
-            Field::__constructField ('id', 'INT', 0, 0, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE, TRUE),
-            Field::__constructField ('client_id', 'INT', 0, 0, FALSE, TRUE),
+            Field::__constructField ('id', 'INT', 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE),
+            Field::__constructField ('client_id', 'INT', TRUE, 0, 0, FALSE, TRUE),
             Field::__constructField ('client_name', 'VARCHAR', 100, ''),
             Field::__constructField ('address1', 'TEXT', 0, ''),
             Field::__constructField ('address2', 'TEXT', 0, ''),

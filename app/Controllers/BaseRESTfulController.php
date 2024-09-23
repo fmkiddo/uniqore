@@ -61,6 +61,24 @@ abstract class BaseRESTfulController extends ResourceController {
         return "";
     }
     
+    protected function getDatabaseConnection (): string|array {
+        if ($this->apiName === UNIQORE_NAME) return 'default';
+        return '';
+    }
+    
+    /**
+     * 
+     * @param string $level
+     * @param number $access_id
+     * @return string|array
+     */
+    protected function doLog ($level, $access_id=0) {
+        if ($this->apiName === UNIQORE_NAME) return 'default';
+        else {
+            
+        }
+    }
+    
     /**
      * {@inheritDoc}
      * @see \CodeIgniter\RESTful\BaseResource::initController()

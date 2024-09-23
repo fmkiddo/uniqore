@@ -16,9 +16,9 @@ class OAPI extends Table {
     protected function __initTableAttributes () {
         $this->tableName    = 'oapi';
         $this->tableFields  = [
-            Field::__constructField ('id', 'INT', 0, 0, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE, TRUE),
-            Field::__constructField ('uid', 'VARCHAR', 50, '', FALSE, TRUE, 'OAPI_UUID'),
-            Field::__constructField ('api_code', 'CHAR', 4, '', FALSE, TRUE),
+            Field::__constructField ('id', 'INT', 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE),
+            Field::__constructField ('uid', 'VARCHAR', 50, '', FALSE, FALSE, TRUE, 'OAPI_UUID'),
+            Field::__constructField ('api_code', 'CHAR', 4, '', FALSE, FALSE, TRUE),
             Field::__constructField ('api_name', 'VARCHAR', 200, ''),
             Field::__constructField ('api_dscript', 'TEXT', 0, ''),
             Field::__constructField ('status', 'BOOLEAN', 0, new RawSql("TRUE"))

@@ -12,10 +12,11 @@
 										<table class="dataTable table table-striped table-hover table-centered center-first-column last-col-textend" data-fetch="{dts_fetch}" data-page-length="25">
 											<thead>
 												<tr>
-													<th>User #</th>
-													<th>Username</th>
-													<th>Email</th>
-													<th>Phone</th>
+													<th>Client #</th>
+													<th>Code</th>
+													<th>Name</th>
+													<th>API</th>
+													<th>Status</th>
 													<th>
 														<i class="mdi mdi-information-box"></i>
 													</th>

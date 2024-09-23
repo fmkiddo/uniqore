@@ -15,7 +15,7 @@ class USR1 extends Table {
     protected function __initTableAttributes() {
         $this->tableName = 'usr1';
         $this->tableFields = [
-            Field::__constructField ('user_id', 'INT', 0, 0, TRUE),
+            Field::__constructField ('user_id', 'INT', 0, 0, TRUE, TRUE),
             Field::__constructField ('fname', 'VARCHAR', 100, ''),
             Field::__constructField ('mname', 'VARCHAR', 100, ''),
             Field::__constructField ('lname', 'VARCHAR', 100, ''),

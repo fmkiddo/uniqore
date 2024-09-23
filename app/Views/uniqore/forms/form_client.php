@@ -6,39 +6,25 @@
 									<input type="hidden" name="target" value="{dts_fetch}" />
 									<input type="hidden" id="input-uuid" name="input-uuid" value="none" />
 									<div class="modal-header">
-										<h5 class="modal-title">Adminisrator User Form</h5>
+										<h5 class="modal-title">API System Forms</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 									</div>
 									<div class="modal-body">
 										<div class="form-group">
-											<label for="input-newuser">Username:</label>
-											<input type="text" class="form-control" name="input-newuser" placeholder="e.g. johndoe" required />
-										</div>
-										<div class="row">
-											<div class="col-md-6">
-        										<div class="form-group">
-        											<label for="input-newmail">Email:</label>
-        											<input type="email" class="form-control" name="input-newmail" placeholder="e.g. johndoe@domain.com" required />
-        										</div>
-											</div>
-											<div class="col-md-6">
-        										<div class="form-group">
-        											<label for="input-cnfmail">Confirm Email:</label>
-        											<input type="email" class="form-control" name="input-cnfmail" placeholder="Retype your email" required />
-        										</div>
-											</div>
+											<label for="input-newcode">Code:</label>
+											<input type="text" class="form-control" name="input-newcode" placeholder="New API code" required />
 										</div>
 										<div class="form-group">
-											<label for="input-newphone">Phone:</label>
-											<input type="tel" class="form-control" name="input-newphone" placeholder="e.g. 0812-3456-7890" pattern="0[0-9]{3}-[0-9]{4}-[0-9]{2, 5}" required />
+											<label for="input-newname">Name:</label>
+											<input type="text" class="form-control" name="input-newname" placeholder="New API name" required />
 										</div>
 										<div class="form-group">
-											<label for="input-newpswd">Password:</label>
-											<input type="password" class="form-control" name="input-newpswd" placeholder="Your password" required />
+											<label for="input-newdscript">Descriptions:</label>
+											<textarea class="form-control" name="input-newdscript" placeholder="Describe your API here"></textarea>
 										</div>
-										<div class="form-group">
-											<label for="input-cnfpswd">Confirm Password:</label>
-											<input type="password" class="form-control" name="input-cnfpswd" placeholder="Retype your password" required />
+										<div class="form-check">
+    										<input class="form-check-input" type="checkbox" name="input-newstatus" checked />
+    										<label class="form-check-label" for="input-newstatus">Active</label>
 										</div>
 										<div class="d-none text-danger">
 											<p id="validate-messages"></p>

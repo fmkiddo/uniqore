@@ -16,10 +16,10 @@ class DBForger {
     }
     
     private function createDatabaseUser (): bool {
-        $db = $this->forge->getConnection ();
+        $db     = $this->forge->getConnection ();
         $dbuser = $this->dbtemplate->getDatabaseUser ();
         $dbpswd = $this->dbtemplate->getDatabasePassword ();
-        $sql = "CREATE OR REPLACE USER `{$dbuser}`@`localhost` IDENTIFIED BY '{$dbpswd}';";
+        $sql    = "CREATE OR REPLACE USER `{$dbuser}`@`localhost` IDENTIFIED BY '{$dbpswd}';";
         return $db->simpleQuery ($sql);
     }
     
@@ -53,7 +53,7 @@ class DBForger {
                 break;
             case 'CHAR':
             case 'VARCHAR':
-                $arrayField[$field->getFieldName()]['constraint']       = $field->getConstraint ();
+                $arrayField[$field->getFieldName ()]['constraint']       = $field->getConstraint ();
                 break;
             CASE 'TINYINT':
             CASE 'SMALLINT':
@@ -64,8 +64,8 @@ class DBForger {
             case 'FLOAT':
             case 'DOUBLE':
             case 'REAL':
-                $arrayField[$field->getFieldName()]['auto_increment']   = $field->isAutoIncrement ();
-                $arrayField[$field->getFieldName()]['unsigned']         = $field->isUnsigned ();
+                $arrayField[$field->getFieldName ()]['auto_increment']   = $field->isAutoIncrement ();
+                $arrayField[$field->getFieldName ()]['unsigned']         = $field->isUnsigned ();
                 break;
         }
         
