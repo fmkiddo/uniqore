@@ -1149,6 +1149,16 @@ a:not([href]):hover {
 	min-width: 100%;
 }
 
+.dropstart a.dropdown-toggle:hover,
+.dropdown a.dropdown-toggle:hover,
+.dropend a.dropdown-toggle:hover {
+	text-decoration: none;
+}
+
+.dropdown-menu a.dropdown-item:hover {
+	text-decoration: none;
+}
+
 .font-weight-light {
 	font-weight: 300 !important;
 }

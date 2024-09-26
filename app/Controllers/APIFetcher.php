@@ -19,7 +19,7 @@ class APIFetcher extends BaseUniqoreController {
      */
     public function index (): string {
         $post       = $this->request->getPost ();
-        $fetcher    = $post ['fetch'];
+        $fetcher    = base64_decode ($post ['fetch'], TRUE);
         $searchVal  = $post ['search']['value'];
         $sortTarget = 0;
         $sort       = '';
@@ -46,7 +46,7 @@ class APIFetcher extends BaseUniqoreController {
         $load   = "find%23{$searchVal}&colsort={$sortTarget}&typesort={$sort}";
         $url    = site_url ("api-uniqore/{$fetcher}?payload={$load}&pollute=$uuid");
         
-        $response   = $this->sendRequest($url, $curlOpts);
+        $response   = $this->sendRequest ($url, $curlOpts);
         $json       = json_get ($response);
         
         if ($json['status'] !== 200) {
@@ -78,15 +78,45 @@ class APIFetcher extends BaseUniqoreController {
             case 'users':
                 $i = 1;
                 foreach ($payload as $user) {
+                    $uuid   = base64_encode ($user['uid']);
+                    $uname  = $user['username'];
+                    $email  = $user['email'];
+                    $status = $user['active'];
                     $phone  = $user['phone'];
                     $phone  = substr ($phone, 0, 4) . '-' . substr ($phone, 4, 4) . '-' . substr ($phone, 8); 
+                    $status = $user['active'] ? 'true' : 'false';
+                    if ($status) $link   = "<a class=\"dropdown-item\" id=\"action\" href=\"#deactivate-user\">Deactivate</a>";
+                    else $link   = "<a class=\"dropdown-item\" id=\"action\" href=\"#activate-user\">Active</a>";
                     $row    = [
-                        "<span class=\"text-center\" data-uuid=\"{$user['uid']}\">{$i}</span>",
-                        $user['username'],
-                        $user['email'],
+                        $i,
+                        $uname,
+                        $email,
                         $phone,
-                        ($user['active'] ? 'active' : 'inactive'),
-                        "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
+                        ($status ? 'active' : 'inactive'),
+                        "<div class=\"dropend\">
+                            <div id=\"data\" class=\"d-none\">
+                                <input type=\"hidden\" id=\"uuid\" value=\"{$uuid}\" />
+                                <input type=\"hidden\" id=\"username\" value=\"{$uname}\" />
+                                <input type=\"hidden\" id=\"email\" value=\"{$email}\" />
+                                <input type=\"hidden\" id=\"phone\" value=\"{$phone}\" />
+                                <input type=\"hidden\" id=\"status\" value=\"{$status}\" />
+                            </div>
+                            <a class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\">
+                                More <i class=\"mdi mdi-right-arrow\"></i>
+                            </a>
+                            <ul class=\"dropdown-menu\">
+                                <li>
+                                    <a class=\"dropdown-item\" href=\"#\">Deactivate</a>
+                                </li>
+                                <li>
+                                    <a class=\"dropdown-item\" href=\"#modal-changepassword\" id=\"pswdchange\" data-bs-toggle=\"modal\">Change Password</a>
+                                </li>
+                                <li class=\"dropdown-divider\"></li>
+                                <li>
+                                    <a class=\"dropdown-item\" id=\"edit-data\" href=\"#modal-form\" data-bs-toggle=\"modal\">Edit</a>
+                                </li>
+                            </ul> 
+                        </div>",
                     ];
                     $i++;
                     array_push ($theData, $row);
@@ -101,7 +131,17 @@ class APIFetcher extends BaseUniqoreController {
                         $api['api_name'],
                         $api['api_dscript'],
                         ($api['active'] ? 'active' : 'inactive'),
-                        "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
+                        "<div class=\"dropdown dropend\">
+                            <a class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\">
+                                More <i class=\"mdi mdi-right-arrow\"></i>
+                            </a>
+                            <ul class=\"dropdown-menu\">
+                                <li class=\"dropdown-divider\"></li>
+                                <li>
+                                    <a class=\"dropdown-item\" href=\"#modal-form\" data-bs-toggle=\"modal\">Edit</a>
+                                </li>
+                            </ul>
+                        </div>"
                     ];
                     $i++;
                     array_push ($theData, $row);

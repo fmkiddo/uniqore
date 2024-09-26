@@ -27,7 +27,6 @@ abstract class BaseController extends Controller {
     private $parser;
     private $styleAssets = [];
     private $scriptAssets = [];
-    private $curl;
     
     /**
      * Instance of the main Request object.
@@ -96,7 +95,6 @@ abstract class BaseController extends Controller {
         helper($this->helpers);
         service ('security');
         $this->appConfig	= config ('App');
-        $this->curl         = \Config\Services::curlrequest ();
         $this->parser       = \Config\Services::parser ();
         $this->session      = \Config\Services::session ();
         $this->addPageData ('base_url', base_url ());
@@ -120,7 +118,10 @@ abstract class BaseController extends Controller {
     }
     
     protected function sendRequest ($url, $options, $method='get'): ResponseInterface {
-        return $this->curl->$method ($url, $options);
+        $options['delay'] = 400;
+        $curl       = \Config\Services::curlrequest ();
+        $response   = $curl->request ($method, $url, $options);
+        return $response;
     }
 
     /**
