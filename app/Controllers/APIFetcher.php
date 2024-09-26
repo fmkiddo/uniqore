@@ -17,13 +17,12 @@ class APIFetcher extends BaseUniqoreController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseController::index()
      */
-    public function index (): string {
+    public function index(): string {
         $post       = $this->request->getPost ();
-        $fetcher    = base64_decode ($post ['fetch'], TRUE);
+        $fetcher    = $post ['fetch'];
         $searchVal  = $post ['search']['value'];
         $sortTarget = 0;
         $sort       = '';
-        
         if (array_key_exists ('order', $post)) {
             $sortTarget = $this->columnTranslator ($fetcher, $post ['order'][0]['column']);
             $sort       = (!$sortTarget) ? '' : $post ['order'][0]['dir'];
@@ -46,7 +45,7 @@ class APIFetcher extends BaseUniqoreController {
         $load   = "find%23{$searchVal}&colsort={$sortTarget}&typesort={$sort}";
         $url    = site_url ("api-uniqore/{$fetcher}?payload={$load}&pollute=$uuid");
         
-        $response   = $this->sendRequest ($url, $curlOpts);
+        $response   = $this->sendRequest($url, $curlOpts);
         $json       = json_get ($response);
         
         if ($json['status'] !== 200) {
@@ -78,74 +77,20 @@ class APIFetcher extends BaseUniqoreController {
             case 'users':
                 $i = 1;
                 foreach ($payload as $user) {
-                    $uuid   = base64_encode ($user['uid']);
-                    $uname  = $user['username'];
-                    $email  = $user['email'];
-                    $status = $user['active'];
                     $phone  = $user['phone'];
                     $phone  = substr ($phone, 0, 4) . '-' . substr ($phone, 4, 4) . '-' . substr ($phone, 8); 
-                    $status = $user['active'] ? 'true' : 'false';
-                    if ($status) $link   = "<a class=\"dropdown-item\" id=\"action\" href=\"#deactivate-user\">Deactivate</a>";
-                    else $link   = "<a class=\"dropdown-item\" id=\"action\" href=\"#activate-user\">Active</a>";
                     $row    = [
-                        $i,
-                        $uname,
-                        $email,
+                        "<span class=\"text-center\" data-uuid=\"{$user['uid']}\">{$i}</span>",
+                        $user['username'],
+                        $user['email'],
                         $phone,
-                        ($status ? 'active' : 'inactive'),
-                        "<div class=\"dropend\">
-                            <div id=\"data\" class=\"d-none\">
-                                <input type=\"hidden\" id=\"uuid\" value=\"{$uuid}\" />
-                                <input type=\"hidden\" id=\"username\" value=\"{$uname}\" />
-                                <input type=\"hidden\" id=\"email\" value=\"{$email}\" />
-                                <input type=\"hidden\" id=\"phone\" value=\"{$phone}\" />
-                                <input type=\"hidden\" id=\"status\" value=\"{$status}\" />
-                            </div>
-                            <a class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\">
-                                More <i class=\"mdi mdi-right-arrow\"></i>
-                            </a>
-                            <ul class=\"dropdown-menu\">
-                                <li>
-                                    <a class=\"dropdown-item\" href=\"#\">Deactivate</a>
-                                </li>
-                                <li>
-                                    <a class=\"dropdown-item\" href=\"#modal-changepassword\" id=\"pswdchange\" data-bs-toggle=\"modal\">Change Password</a>
-                                </li>
-                                <li class=\"dropdown-divider\"></li>
-                                <li>
-                                    <a class=\"dropdown-item\" id=\"edit-data\" href=\"#modal-form\" data-bs-toggle=\"modal\">Edit</a>
-                                </li>
-                            </ul> 
-                        </div>",
+                        "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
                     ];
                     $i++;
                     array_push ($theData, $row);
                 }
                 break;
             case 'programming':
-                $i = 1;
-                foreach ($payload as $api) {
-                    $row    = [
-                        "<span class=\"text-center\" data-uuid=\"{$api['uid']}\">{$i}</span>",
-                        $api['api_code'],
-                        $api['api_name'],
-                        $api['api_dscript'],
-                        ($api['active'] ? 'active' : 'inactive'),
-                        "<div class=\"dropdown dropend\">
-                            <a class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\">
-                                More <i class=\"mdi mdi-right-arrow\"></i>
-                            </a>
-                            <ul class=\"dropdown-menu\">
-                                <li class=\"dropdown-divider\"></li>
-                                <li>
-                                    <a class=\"dropdown-item\" href=\"#modal-form\" data-bs-toggle=\"modal\">Edit</a>
-                                </li>
-                            </ul>
-                        </div>"
-                    ];
-                    $i++;
-                    array_push ($theData, $row);
-                }
                 break;
             case 'apiuser':
                 break;
@@ -176,7 +121,6 @@ class APIFetcher extends BaseUniqoreController {
                 ];
                 break;
         }
-        if ($col >= count ($cols)) return FALSE;
         return $cols[$col-1];
     }
 }

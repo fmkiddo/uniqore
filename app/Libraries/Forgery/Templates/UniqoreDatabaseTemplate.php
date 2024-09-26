@@ -11,6 +11,7 @@ use App\Libraries\Forgery\Templates\Uniqore\OCAC;
 use App\Libraries\Forgery\Templates\Uniqore\CAC1;
 use App\Libraries\Forgery\Templates\Uniqore\CAC2;
 use App\Libraries\Forgery\Templates\Uniqore\OPRT;
+use App\Libraries\Forgery\Templates\Uniqore\OCIS;
 
 
 class UniqoreDatabaseTemplate extends Database {
@@ -25,7 +26,8 @@ class UniqoreDatabaseTemplate extends Database {
             new CAC1 (),
             new CAC2 (),
             new OPRT (FALSE),
-            new OALG (FALSE)
+            new OALG (FALSE),
+            new OCIS (FALSE),
         ];
     }
 }

@@ -34,6 +34,10 @@ class UniqoreForger extends BaseController {
         $dbtpl->setDatabaseUser ($db_conf[1]);
         $dbtpl->setDatabasePassword ($db_conf[2]);
         $envContent = "
+session.driver				= 'CodeIgniter\Session\Handlers\DatabaseHandler'
+session.cookieName			= 'uniqore_session_cookie'
+session.expiration			= 3600
+session.savePath			= fmk_ocis
 
 database.default.hostname   = localhost
 database.default.database   = {$db_conf[0]}
@@ -48,7 +52,6 @@ database.default.port       = 3306
 encryption.driver           = Sodium
 encryption.cipher           = XChaCha20-Poly1305
 encryption.key              = hex2bin:{$secretKey}
-
 ";
         return write_file('../.env', $envContent, 'a');
     }

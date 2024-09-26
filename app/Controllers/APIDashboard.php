@@ -10,8 +10,6 @@ class APIDashboard extends BaseUniqoreController {
     
     private $routes = [
         'apiadmin'  => 'users',
-        'api'       => 'programming',
-        'clients'   => 'apiuser'
     ];
     
     private function doSignOut(): string {
@@ -29,23 +27,11 @@ class APIDashboard extends BaseUniqoreController {
             default:
                 break;
             case 'users': 
-                $target = base64_decode ($post['target'], TRUE);
-                if ($target === 'users')
-                $active = array_key_exists('input-active', $post) ? TRUE : FALSE;
                 return [
                     'username'      => $post['input-newuser'],
                     'email'         => $post['input-newmail'],
                     'phone'         => str_replace ('-', '', $post['input-newphone']),
                     'password'      => $post['input-newpswd'],
-                    'active'        => $active
-                ];
-            case 'programming':
-                $active = array_key_exists('input-newstatus', $post) ? TRUE : FALSE;
-                return [
-                    'api_code'      => $post['input-newcode'],
-                    'api_name'      => $post['input-newname'],
-                    'api_dscript'   => $post['input-newdscript'],
-                    'active'        => $active
                 ];
         }
     }
@@ -53,83 +39,36 @@ class APIDashboard extends BaseUniqoreController {
     private function apiProcessor ($get): array|bool {
         if ($this->request->is ('post')) {
             $post       = $this->request->getPost ();
-            $target     = base64_decode ($post['target']);
-            $uuid       = $post['input-uuid'];
-            $auth       = $this->encrypt ($this->getAuthToken ());
             $pollute    = base64_encode($this->getLoggedUUID ());
+            $uuid       = $post['input-uuid'];
+            $routes     = $this->routes[$get['route']];
             
-            if ($target === 'change-password') {
-                $curlOpts   = [
-                    'auth'      => [
-                        bin2hex ($auth),
-                        '',
-                        'basic'
-                    ],
-                    'headers'   => [
-                        'Content-Type'  => HEADER_APP_JSON,
-                        'Accept'        => HEADER_APP_JSON,
-                        'User-Agent'    => $this->request->getUserAgent ()
-                    ]
-                ];
-                $response   = $this->sendRequest (site_url ("api-uniqore/users/$uuid"), $curlOpts);
-                /** 
-                $json       = json_decode ($response->getBody (), TRUE);
-                if ($json['status'] === 200) {
-                    $payload    = unserialize ($this->decrypt (hex2bin ($json['data']['payload'])))[0];
-                    if (password_verify ($post['input-oldpswd'], $payload['password'])) {
-                        $params = [
-                            'username'      => $payload['username'],
-                            'email'         => $payload['email'],
-                            'phone'         => $payload['phone'],
-                            'password'      => $post['input-newpswd'],
-                            'active'        => ($payload['active'] ? TRUE : FALSE)
-                        ];
-                        
-                        $curlOpts   = [
-                            'auth'          => [
-                                bin2hex ($auth),
-                                '',
-                                'basic'
-                            ],
-                            'headers'       => [
-                                'Content-Type'  => HEADER_APP_JSON,
-                                'Accept'        => HEADER_APP_JSON,
-                                'User-Agent'    => $this->request->getUserAgent()
-                            ],
-                            'json'          => $params
-                        ];
-                        
-                        $response   = $this->sendRequest (site_url ("api-uniqore/users/$uuid?pollute=$pollute"), $curlOpts, 'put');
-                    }
-                }**/
+            $auth       = $this->encrypt ($this->getAuthToken ());
+            $curlOpts   = [
+                'auth'          => [
+                    bin2hex ($auth),
+                    '',
+                    'basic'
+                ],
+                'headers'       => [
+                    'Content-Type'  => HEADER_APP_JSON,
+                    'Accept'        => HEADER_APP_JSON,
+                    'User-Agent'    => $this->request->getUserAgent ()
+                ],
+                'json'          => $this->formParamFormatter ($routes, $post)
+            ];
+            
+            if ($uuid === 'none') {
+                $url        = site_url ("api-uniqore/$routes?pollute=$pollute");
+                $method     = 'post';
             } else {
-                $routes     = $this->routes[$get['route']];
-                $curlOpts   = [
-                    'auth'          => [
-                        bin2hex ($auth),
-                        '',
-                        'basic'
-                    ],
-                    'headers'       => [
-                        'Content-Type'  => HEADER_APP_JSON,
-                        'Accept'        => HEADER_APP_JSON,
-                        'User-Agent'    => $this->request->getUserAgent ()
-                    ],
-                    'json'          => $this->formParamFormatter ($routes, $post)
-                ];
-                
-                if ($uuid === 'none') {
-                    $url        = site_url ("api-uniqore/$routes?pollute=$pollute");
-                    $method     = 'post';
-                } else {
-                    $url        = site_url ("api-uniqore/$routes/$uuid?pollute=$pollute");
-                    $method     = 'put';
-                }
-                
-                $response   = $this->sendRequest ($url, $curlOpts, $method);
-                $json       = json_decode ($response->getBody (), TRUE);
-                return $json; 
+                $url        = site_url ("api-uniqore/$routes/$uuid?pollute=$pollute");
+                $method     = 'put';
             }
+            
+            $response   = $this->sendRequest ($url, $curlOpts, $method);
+            $json       = json_decode ($response->getBody (), TRUE);
+            return $json; 
         }
         return FALSE;
     }
@@ -151,7 +90,7 @@ class APIDashboard extends BaseUniqoreController {
         $this->initAssets(AssetType::STYLE, $styles);
         $scripts = [
             'assets/vendors/jquery-3.7.1/jquery-3.7.1.min.js',
-            'assets/vendors/bootstrap-5.3.3/js/bootstrap.bundle.min.js',
+            'assets/vendors/bootstrap-5.3.3/js/bootstrap.min.js',
             'assets/vendors/datatables-2.1.6/js/datatables.min.js',
             'assets/vendors/fontawesome-6.6.0/js/all.min.js',
             'assets/js/uniqore.js',
@@ -186,15 +125,13 @@ class APIDashboard extends BaseUniqoreController {
             $retVal     = $this->doSignOut();
         } 
         
-        usleep (1000);
         if ($render) {
             $pageData = [
                 'dashboard_url' => site_url ('uniqore/admin/dashboard'),
                 'validate_url'  => site_url ('uniqore/admin/dashboard/validate'),
                 'username'      => $this->getUserName (),
                 'realname'      => '',
-                'dts_fetch'     => base64_encode($dtsFetch),
-                'cpswd_fetch'   => ($dtsFetch === 'users') ? base64_encode('change-password') : ''
+                'dts_fetch'     => $dtsFetch,
             ];
             
             if (!$res) {
@@ -209,8 +146,7 @@ class APIDashboard extends BaseUniqoreController {
     public function formValidator () {
         if ($this->request->is ('post')) {
             $post   = $this->request->getPost ();
-            $fetch  = base64_decode ($post['target'], TRUE);
-            $uuid   = $post['input-uuid'];
+            $fetch  = $post['target'];
             $valid  = TRUE;
             $rules  = [];
             
@@ -220,32 +156,13 @@ class APIDashboard extends BaseUniqoreController {
                     break;
                 case 'programming':
                     $rules  = [
-                        'input-newcode'     => 'required|alpha|max_length[4]',
-                        'input-newname'     => 'required',
-                        'input-newdscript'  => 'required'
                     ];
-                    break;
                 case 'users':
-                    if ($uuid === 'none') 
-                        $rules  = [
-                            'input-newuser'     => 'required|alpha',
-                            'input-newmail'     => 'required|valid_email',
-                            'input-cnfmail'     => 'required|valid_email|matches[input-newmail]',
-                            'input-newphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
-                            'input-newpswd'     => 'required|password_strength',
-                            'input-cnfpswd'     => 'required|matches[input-newpswd]'
-                        ];
-                    else
-                        $rules  = [
-                            'input-newuser'     => 'required|alpha',
-                            'input-newmail'     => 'required|valid_email',
-                            'input-cnfmail'     => 'required|valid_email|matches[input-newmail]',
-                            'input-newphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
-                        ];
-                    break;
-                case 'change-password':
                     $rules  = [
-                        'input-oldpswd'     => 'required',
+                        'input-newuser'     => 'required|alpha',
+                        'input-newmail'     => 'required|valid_email',
+                        'input-cnfmail'     => 'required|valid_email|matches[input-newmail]',
+                        'input-newphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
                         'input-newpswd'     => 'required|password_strength',
                         'input-cnfpswd'     => 'required|matches[input-newpswd]'
                     ];

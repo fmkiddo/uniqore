@@ -36,7 +36,7 @@ class APIHome extends BaseUniqoreController {
     }
     
     public function index (): string {
-        if ($this->session->get ('logintime')) $this->response->redirect(base_url('uniqore/admin/dashboard?route=welcome'), 'get'); 
+        if ($this->session->get ('logintime')) $this->response->redirect (base_url('uniqore/admin/dashboard?route=welcome'), 'get'); 
         
         if (!$this->isReady ()) $this->response->redirect (base_url ('uniqore/forge/0'), 'get');
         $good   = TRUE;
@@ -100,7 +100,7 @@ class APIHome extends BaseUniqoreController {
                                 $this->response->redirect (base_url ('uniqore/admin/dashboard?route=welcome'), 'get');
                             }
                         }
-                }
+                } 
             }
         }
         

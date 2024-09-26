@@ -121,16 +121,19 @@ class DBForger {
                 $built      = TRUE;
                 for ($i = 0; $i < $this->dbtemplate->getTablesNum (); $i++) {
                     $table = $this->dbtemplate->getTable ($i);
+                    $pk = [];
                     $uk = [];
                     $ukname = '';
                     for ($j = 0; $j < $table->getFieldsNum (); $j++) {
                         $field = $table->getField ($j);
                         $forge->addField ($this->formForgeFieldParameter ($field));
-                        if ($field->isPrimaryKey ()) $forge->addPrimaryKey ($field->getFieldName ());
+                        if ($field->isPrimaryKey ()) array_push ($pk, $field->getFieldName());
+                        
                         if ($field->isUnique ()) {
                             array_push ($uk, $field->getFieldName ());
                             $ukname = $field->getUniqueKeyName ();
                         }
+                        
                         if ($field->isForeignKey ())
                             $forge->addForeignKey($field->getFieldName(), $field->getForeignTableName(), $field->getForeignFieldName());
                     }
@@ -160,6 +163,7 @@ class DBForger {
                             ],
                         ]);
                         
+                    $forge->addPrimaryKey ($pk);
                     if (count ($uk) > 0) $forge->addUniqueKey ($uk, $ukname);
                     $built = $forge->createTable ($table->getTableName ());
                     if (!$built) break;
