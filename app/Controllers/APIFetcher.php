@@ -75,14 +75,15 @@ class APIFetcher extends BaseUniqoreController {
             default:
                 break;
             case 'users':
-                $i = 1;
-                foreach ($payload as $user) {;
+                $i  = 1;
+                foreach ($payload as $user) {
                     $username   = $user['username'];
                     $email      = $user['email'];
                     $phone      = $user['phone'];
                     $phone      = sprintf ('%s-%s-%s', substr ($phone, 0, 4), substr ($phone, 4, 4), substr ($phone, 8, 4));
                     $password   = bin2hex ($this->encrypt ($user['password']));
                     $status     = $user['active'];
+                    
                     $viewData   = [
                         'uuid'      => base64_encode ($user['uid']),
                         'username'  => $username,
@@ -91,19 +92,42 @@ class APIFetcher extends BaseUniqoreController {
                         'password'  => $password,
                         'status'    => $status ? 'true' : 'false'
                     ];
+                    
                     $row        = [
                         $i,
                         $username,
                         $email,
                         $phone,
                         ($status ? 'active' : 'inactive'),
-                        view ('uniqore/user-dropdown', $viewData)
+                        view ('uniqore/dropdowns/user-dropdown', $viewData)
                     ];
-                    $i++;
                     array_push ($theData, $row);
+                    $i++;
                 }
                 break;
             case 'programming':
+                $i  = 1;
+                foreach ($payload as $api) {
+                    $code       = $api['api_code'];
+                    $name       = $api['api_name'];
+                    $dscript    = $api['api_dscript'];
+                    $status     = $api['status'];
+                    
+                    $viewData   = [
+                        
+                    ];
+                    
+                    $row        = [
+                        $i,
+                        $code,
+                        $name,
+                        $dscript,
+                        ($status ? 'active' : 'inactive'),
+                        view ('uniqore/dropdowns/api-dropdown', $viewData)
+                    ];
+                    array_push ($theData, $row);
+                    $i++;
+                }
                 break;
             case 'apiuser':
                 break;

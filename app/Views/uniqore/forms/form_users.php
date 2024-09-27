@@ -12,7 +12,7 @@
 									<div class="modal-body">
 										<div class="form-group">
 											<label for="input-newuser">Username:</label>
-											<input type="text" class="form-control" id="username" name="input-newuser" placeholder="e.g. johndoe" required />
+											<input type="text" class="form-control" id="username" name="input-newuser" placeholder="e.g. johndoe" data-readonly="true" required />
 										</div>
 										<div class="row">
 											<div class="col-md-6">
@@ -34,14 +34,14 @@
 										</div>
 										<div class="form-group">
 											<label for="input-newpswd">Password:</label>
-											<input type="password" class="form-control" name="input-newpswd" placeholder="Your password" required />
+											<input type="password" class="form-control" name="input-newpswd" placeholder="Your password" data-readonly="true" required />
 										</div>
 										<div class="d-none text-danger">
 											<p id="caps-lock">Caps Lock is on</p>
 										</div>
 										<div class="form-group">
 											<label for="input-cnfpswd">Confirm Password:</label>
-											<input type="password" class="form-control" name="input-cnfpswd" placeholder="Retype your password" required />
+											<input type="password" class="form-control" name="input-cnfpswd" placeholder="Retype your password" data-readonly="true" required />
 										</div>
 										<div class="form-check">
 											<input type="checkbox" class="form-check-input" id="active" name="input-active" checked />

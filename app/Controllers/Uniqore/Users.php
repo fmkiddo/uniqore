@@ -26,6 +26,7 @@ class Users extends BaseUniqoreAPIController {
             'updated_at'    => date ('Y-m-d H:i:s'),
             'updated_by'    => $userid
         ];
+        
         $this->model->insert ($insertParams);
         $insertID   = $this->model->getInsertID ();
         if (!$insertID) 

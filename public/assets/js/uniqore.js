@@ -53,18 +53,8 @@ $(function () {
 				
 				$form.find (':input').each (function () {
 					if ($(this).not ('[type="hidden"]')) {
-						$name = $(this).prop ('name');
-						switch ($name) {
-							default:
-								break;
-							case 'input-newuser':
-							case 'input-newpswd':
-							case 'input-cnfpswd':
-								$(this).attr ('readonly', true);
-						}
-						
-						if ($name === 'input-newpswd' || $name === 'input-cnfpswd')
-							$(this).val ('');
+						if ($(this).is ('[data-readonly="true"]')) $(this).prop ('readonly', true);
+						if ($(this).is ('[type="password"]')) $(this).val ('');
 					}
 					
 					if ($(this).is ('[type="password"]')) $(this).removeAttr ('required');
@@ -148,7 +138,7 @@ $(function () {
 					if ($(this).is ('#uuid')) $(this).val ('none');
 					if ($(this).is ('[type="password"]')) $(this).attr ('required', true);
 					if ($(this).is ('[type="checkbox"]')) $(this).prop ('checked', true);
-					if ($(this).is ('[readonly]')) $(this).removeAttr ('readonly');
+					if ($(this).is ('[data-readonly="true"]')) $(this).removeAttr ('readonly');
 				});
 			}
 				

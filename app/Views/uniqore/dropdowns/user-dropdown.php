@@ -18,7 +18,7 @@
                                                                     <hr class="dropdown-divider" />
                                                                 </li>
                                                                 <li>
-                                                                    <a id="edit-data" class="dropdown-item" href="#modal-form" data-bs-toggle="modal">Edit</a>
+                                                                    <a id="edit-data" class="dropdown-item" href="#modal-form" data-bs-toggle="modal">Update</a>
                                                                 </li>
                                                             </ul>
                                                         </div>

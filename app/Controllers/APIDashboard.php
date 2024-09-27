@@ -29,6 +29,12 @@ class APIDashboard extends BaseUniqoreController {
             default:
                 break;
             case 'programming':
+                return [
+                    'apicode'       => $post['input-newcode'],
+                    'apiname'       => $post['input-newname'],
+                    'apidscript'    => $post['input-newdscript'],
+                    'status'        => array_key_exists('input-newstatus', $post) ? TRUE : FALSE
+                ];
                 break;
             case 'users': 
                 if ($post['target'] === 'password-change') {

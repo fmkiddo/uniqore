@@ -3,11 +3,59 @@ namespace App\Controllers\Uniqore;
 
 
 use App\Controllers\BaseUniqoreAPIController;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class Programming extends BaseUniqoreAPIController {
     
+    
     protected $modelName    = 'App\Models\Uniqore\ApiModel';
     
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
+     */
+    protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+        $insertParams   = [
+            'uid'           => generate_random_uuid_v4 (),
+            'api_code'      => $json['apicode'],
+            'api_name'      => $json['apiname'],
+            'api_dscript'   => $json['apidscript'],
+            'status'        => $json['status'],
+            'created_by'    => $userid,
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
+        
+        $this->model->insert ($insertParams);
+        $insertID = $this->model->getInsertID ();
+        if (!$insertID)
+            $retJSON    = [
+                'status'    => 500,
+                'error'     => 500,
+                'messages'  => [
+                    'error'     => 'Failed to register new API'
+                ]
+            ];
+        else {
+            $payload    = [
+                'returnid'  => $insertID
+            ];
+            $retJSON    = [
+                'status'    => 200,
+                'error'     => NULL,
+                'messages'  => [
+                    'success'   => 'New API successfully registered to system'
+                ],
+                'data'      => [
+                    'uuid'      => time (),
+                    'timestamp' => date ('Y-m-d H:i:s'),
+                    'payload'   => bin2hex ($this->encrypt (serialize($payload)))
+                ]
+            ];
+            return $retJSON;
+        }
+    }
     /**
      * 
      * {@inheritDoc}

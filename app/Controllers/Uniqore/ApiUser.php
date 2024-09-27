@@ -3,6 +3,7 @@ namespace App\Controllers\Uniqore;
 
 
 use App\Controllers\BaseUniqoreAPIController;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class ApiUser extends BaseUniqoreAPIController {
     
