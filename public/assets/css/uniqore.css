@@ -383,6 +383,10 @@ a:not([href]):hover {
 	content: "\F140";
 }
 
+.table-title {
+	margin-bottom: 0;
+}
+
 .table,
 .jsgrid .jsgrid-table {
 	width: 100%;

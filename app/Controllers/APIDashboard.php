@@ -10,6 +10,8 @@ class APIDashboard extends BaseUniqoreController {
     
     private $routes = [
         'apiadmin'  => 'users',
+        'api'       => 'programming',
+        'clients'   => 'apiuser'
     ];
     
     private function doSignOut(): string {
@@ -26,14 +28,29 @@ class APIDashboard extends BaseUniqoreController {
         switch ($route) {
             default:
                 break;
+            case 'programming':
+                break;
             case 'users': 
-                $userActive = (array_key_exists('input-active', $post) ? TRUE : FALSE);
+                if ($post['target'] === 'password-change') {
+                    $userData   = explode ('#', $post['user-data']);
+                    $username   = $userData[1];
+                    $email      = $userData[2];
+                    $phone      = $userData[3];
+                    $password   = $post['input-newpswd'];
+                    $active     = boolval ($userData[4]);
+                } else {
+                    $username   = $post['input-newuser'];
+                    $email      = $post['input-newmail'];
+                    $phone      = $post['input-newphone'];
+                    $password   = $post['input-newpswd'];
+                    $active     = array_key_exists('input-active', $post) ? TRUE : FALSE;
+                }
                 return [
-                    'username'      => $post['input-newuser'],
-                    'email'         => $post['input-newmail'],
-                    'phone'         => str_replace ('-', '', $post['input-newphone']),
-                    'password'      => $post['input-newpswd'],
-                    'active'        => $userActive
+                    'username'      => $username,
+                    'email'         => $email,
+                    'phone'         => str_replace ('-', '', $phone),
+                    'password'      => $password,
+                    'active'        => $active
                 ];
         }
     }
@@ -43,6 +60,7 @@ class APIDashboard extends BaseUniqoreController {
             $post       = $this->request->getPost ();
             $pollute    = base64_encode($this->getLoggedUUID ());
             $uuid       = $post['input-uuid'];
+            
             $routes     = $this->routes[$get['route']];
             
             $auth       = $this->encrypt ($this->getAuthToken ());
@@ -158,6 +176,8 @@ class APIDashboard extends BaseUniqoreController {
                     break;
                 case 'programming':
                     $rules  = [
+                        'input-newcode'     => 'required|alpha',
+                        'input-newname'     => 'required',
                     ];
                     break;
                 case 'password-change':
@@ -216,7 +236,6 @@ class APIDashboard extends BaseUniqoreController {
                         ];
                     else {
                         $userData   = explode ('#', $post['user-data']);
-                        $uuid       = $userData[0];
                         $pswd       = $this->decrypt (hex2bin ($userData[5]));
                         $res        = password_verify ($post['input-oldpswd'], $pswd);
                         if (!$res)

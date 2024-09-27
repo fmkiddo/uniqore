@@ -1,7 +1,7 @@
 					<div id="modal-form" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modal-message" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
-								<form method="post" enctype="application/x-www-form-urlencoded" data-doajax="true" data-validator="{validate_url}">
+								<form method="post" enctype="application/x-www-form-urlencoded" autocomplete="off" data-doajax="true" data-validator="{validate_url}">
 									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 									<input type="hidden" name="target" value="{dts_fetch}" />
 									<input type="hidden" id="input-uuid" name="input-uuid" value="none" />
@@ -32,7 +32,7 @@
 									</div>
 									<div class="modal-footer text-end">
 										<button type="submit" class="d-hidden"></button>
-										<button type="button" id="submitter" class="btn btn-primary">
+										<button type="button" class="btn btn-primary" data-action="submitter">
 											<span class="mdi mdi-content-save-outline"></span>
 										</button>
 										<button type="button" class="btn btn-primary" data-bs-dismiss="modal">

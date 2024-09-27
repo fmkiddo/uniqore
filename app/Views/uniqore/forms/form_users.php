@@ -1,7 +1,7 @@
 					<div id="modal-form" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modal-message" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
-								<form method="post" enctype="application/x-www-form-urlencoded" data-doajax="true" data-validator="{validate_url}">
+								<form method="post" enctype="application/x-www-form-urlencoded" autocomplete="off" data-doajax="true" data-validator="{validate_url}">
 									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 									<input type="hidden" name="target" value="{dts_fetch}" />
 									<input type="hidden" id="uuid" name="input-uuid" value="none" />
@@ -67,7 +67,7 @@
 					<div id="modal-changepassword" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modal-message" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
-								<form method="post" enctype="application/x-www-form-urlencoded" data-doajax="true" data-validator="{validate_url}">
+								<form method="post" enctype="application/x-www-form-urlencoded" autocomplete="off" data-doajax="true" data-validator="{validate_url}">
 									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 									<input type="hidden" name="target" value="password-change" />
 									<input type="hidden" id="userdata" name="user-data" value="empty" />
@@ -98,6 +98,25 @@
 										<button type="button" class="btn btn-primary" data-bs-dismiss="modal">
 											<span class="mdi mdi-close-thick"></span>
 										</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div id="modal-deactivate" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modal-message" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<form method="post" enctype="application/x-www-form-urlencoded" autocomplete="off">
+									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
+									<div class="modal-header">
+										<h5 class="modal-title">Deactivate User <span id="user-name"></span></h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+									</div>
+									<div class="modal-body">
+										<p>Are you sure you want to deactivate user <span id="user-name"></span>?</p>
+										<p>Don't worry, you can reactivate this user anytime.</p>
+									</div>
+									<div class="modal-footer">
 									</div>
 								</form>
 							</div>
