@@ -17,17 +17,37 @@ $(function () {
 			}
 		};
 		
+		$.fn.openChangePasswordDialog = function () {
+			if ($(this).prop ('id') === 'pswd-change') {
+				$modalPswd	= $('body').find ('#modal-changepassword');
+				$form		= $modalPswd.find ('form');
+				$userData	= '';
+				$divData	= $(this).parents ('.dropend').find ('#data');				
+				$divData.find (':input').each (function () {
+					$userData	+= $(this).val () + '#';
+				});
+				$userData	+= $divData.attr ('data-user');
+				
+				$form.find ('#userdata').val ($userData);
+				$form.find ('#uuid').val ($divData.find ('#uuid').val ());
+			}
+		};
+		
 		$.fn.loadPropertiesToForm = function () {
-			if ($(this).prop ('id') == 'edit-data') {
+			if ($(this).prop ('id') === 'edit-data') {
 				$modalForm	= $('body').find ('#modal-form');
 				$form		= $modalForm.find ('form');
-				$target		= $modalForm.find ('input[name="target"]');
+				$target		= $form.find ('input[name="target"]');
 				$divData	= $(this).parents ('.dropend').find ('#data');
 
 				$divData.find ('input').each (function () {
 					$dataId = $(this).prop ('id');
 					$data	= $(this).val ();
-					$form.find ('#' + $dataId).val ($data);
+					$formEl	= $form.find ('#' + $dataId);
+					
+					if (! $formEl.is (':checkbox')) $formEl.val ($data);
+					else $formEl.prop ('checked', ($data === 'true'));
+					
 					if ($dataId === 'email') $('input#cnfmail').val ($data);
 				});
 				
@@ -56,27 +76,30 @@ $(function () {
 			$dts = $('.dataTable');
 			if ($dts.length > 0) {
 				$.each ($dts, function () {
-					$fetch = $(this).attr ('data-fetch');
+					$fetch	= $(this).attr ('data-fetch');
 					$.fn.dataTable.ext.errMode = 'throw';
-					$(this).addClass ('table-100').DataTable ({
-						ajax: {
-							url: $.base_url ('uniqore/fetch-data'),
-							type: 'POST',
-							data: function ($d) {
-								$d.fetch		= $fetch;
+					$dt		= $(this);
+					setTimeout (function () {
+						$dt.addClass ('table-100').DataTable ({
+							ajax: {
+								url: $.base_url ('uniqore/fetch-data'),
+								type: 'POST',
+								data: function ($d) {
+									$d.fetch		= $fetch;
+								},
+								complete: function () {
+									$dpToggle	= $('body').find ('.dropdown-toggle');
+									$btnRefresh	= $('body').find ('#refresh-table');
+									if ($dpToggle.length > 0) $dropDown	= new bootstrap.Dropdown ($dpToggle);
+									if ($btnRefresh.length > 0 && $btnRefresh.prop ('disabled')) $btnRefresh.prop ('disabled', false);
+								},
 							},
-							complete: function () {
-								$dpToggle	= $('body').find ('.dropdown-toggle');
-								$btnRefresh	= $('body').find ('#refresh-table');
-								if ($dpToggle.length > 0) $dropDown	= new bootstrap.Dropdown ($dpToggle);
-								if ($btnRefresh.length > 0 && $btnRefresh.prop ('disabled')) $btnRefresh.prop ('disabled', false);
-							},
-						},
-						order: [[1, 'asc']],
-						responsive: true,
-						processing: true,
-						serverSide: true
-					});
+							order: [[1, 'asc']],
+							responsive: true,
+							processing: true,
+							serverSide: true
+						});
+					}, 400);
 				});
 			}
 		});
@@ -114,18 +137,12 @@ $(function () {
 				$('.dataTable').DataTable ().ajax.reload ();
 			}
 			if ($(this).prop ('id') === 'edit-data') $(this).loadPropertiesToForm ();
-			if ($(this).prop ('id') === 'pswd-change') {
-				$uuid	= $(this).parents ('.dropend').find ('#uuid').val ();
-				$form	= $('#modal-changepassword').find ('form');
-				$form.find (':input').each (function () {
-					if ($(this).prop ('id') === 'uuid') $(this).val ($uuid);
-				});
-			}
+			if ($(this).prop ('id') === 'pswd-change') $(this).openChangePasswordDialog ();
 		});
 		
 		$('.modal').on ('hidden.bs.modal', function ($event) {
 			$modalId = $(this).prop ('id');
-			if ($modalId === 'modal-form') 
+			if ($modalId === 'modal-form') {
 				$(this).find ('form').find (':input').each (function () {
 					if (! $(this).is ('[type="hidden"]')) $(this).val ('');
 					if ($(this).is ('#uuid')) $(this).val ('none');
@@ -133,6 +150,15 @@ $(function () {
 					if ($(this).is ('[type="checkbox"]')) $(this).prop ('checked', true);
 					if ($(this).is ('[readonly]')) $(this).removeAttr ('readonly');
 				});
+			}
+				
+			if ($modalId === 'modal-changepassword') {
+				$(this).find ('form').find (':input').each (function () {
+					if (! $(this).is ('[type="hidden"]')) $(this).val ('');
+					if ($(this).is ('#userdata')) $(this).val ('empty');
+					if ($(this).is ('#uuid')) $(this).val ('none');
+				});
+			}
 		});
 	});
 });

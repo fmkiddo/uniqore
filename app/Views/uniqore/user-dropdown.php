@@ -4,7 +4,7 @@
                                                                 <input type="hidden" id="username" value="<?= esc($username); ?>" />
                                                                 <input type="hidden" id="email" value="<?= esc($email); ?>" />
                                                                 <input type="hidden" id="phone" value="<?= esc($phone); ?>" />
-                                                                <input type="hidden" id="active" value=<?= esc($status); ?>" />
+                                                                <input type="hidden" id="active" value="<?= esc($status); ?>" />
                                                             </div>
                                                             <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown">More</a>
                                                             <ul class="dropdown-menu">

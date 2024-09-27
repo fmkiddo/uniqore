@@ -69,9 +69,9 @@
 							<div class="modal-content">
 								<form method="post" enctype="application/x-www-form-urlencoded" data-doajax="true" data-validator="{validate_url}">
 									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
-									<input type="hidden" name="target" value="{dts_fetch}" />
-									<input type="hidden" name="user-data" value="" />
-									<input type="hidden" name="uuid" value="" />
+									<input type="hidden" name="target" value="password-change" />
+									<input type="hidden" id="userdata" name="user-data" value="empty" />
+									<input type="hidden" id="uuid" name="input-uuid" value="none" />
 									<div class="modal-header">
 										<h5 class="modal-title">Change User Password</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"></button>

@@ -27,11 +27,13 @@ class APIDashboard extends BaseUniqoreController {
             default:
                 break;
             case 'users': 
+                $userActive = (array_key_exists('input-active', $post) ? TRUE : FALSE);
                 return [
                     'username'      => $post['input-newuser'],
                     'email'         => $post['input-newmail'],
                     'phone'         => str_replace ('-', '', $post['input-newphone']),
                     'password'      => $post['input-newpswd'],
+                    'active'        => $userActive
                 ];
         }
     }
@@ -157,6 +159,14 @@ class APIDashboard extends BaseUniqoreController {
                 case 'programming':
                     $rules  = [
                     ];
+                    break;
+                case 'password-change':
+                    $rules  = [
+                        'input-oldpswd'     => 'required',
+                        'input-newpswd'     => 'required|password_strength',
+                        'input-cnfpswd'     => 'required|matches[input-newpswd]'
+                    ];
+                    break;
                 case 'users':
                     if ($post['input-uuid'] === 'none')
                         $rules  = [
@@ -195,14 +205,38 @@ class APIDashboard extends BaseUniqoreController {
                             'error'     => 'Form validation failed!'
                         ]
                     ];
-                else 
-                    $json = [
-                        'status'    => 200,
-                        'error'     => NULL,
-                        'messages'  => [
-                            'success'   => 'Input validation success!'
-                        ]
-                    ];
+                else {
+                    if ($fetch !== 'password-change') 
+                        $json = [
+                            'status'    => 200,
+                            'error'     => NULL,
+                            'messages'  => [
+                                'success'   => 'Input validation success!'
+                            ]
+                        ];
+                    else {
+                        $userData   = explode ('#', $post['user-data']);
+                        $uuid       = $userData[0];
+                        $pswd       = $this->decrypt (hex2bin ($userData[5]));
+                        $res        = password_verify ($post['input-oldpswd'], $pswd);
+                        if (!$res)
+                            $json       = [
+                                'status'    => 401,
+                                'error'     => 401,
+                                'messages'  => [
+                                    'error'     => 'Old password does not match'
+                                ]
+                            ];
+                        else
+                            $json       = [
+                                'status'    => 200,
+                                'error'     => NULL,
+                                'messages'  => [
+                                    'success'   => 'Old password verified!'
+                                ]
+                            ];
+                    }
+                }
             }
             $this->response->setContentType (HEADER_APP_JSON);
             $this->response->setJSON ($json);
