@@ -76,15 +76,28 @@ class APIFetcher extends BaseUniqoreController {
                 break;
             case 'users':
                 $i = 1;
-                foreach ($payload as $user) {
-                    $phone  = $user['phone'];
-                    $phone  = substr ($phone, 0, 4) . '-' . substr ($phone, 4, 4) . '-' . substr ($phone, 8); 
-                    $row    = [
-                        "<span class=\"text-center\" data-uuid=\"{$user['uid']}\">{$i}</span>",
-                        $user['username'],
-                        $user['email'],
+                foreach ($payload as $user) {;
+                    $username   = $user['username'];
+                    $email      = $user['email'];
+                    $phone      = $user['phone'];
+                    $phone      = sprintf ('%s-%s-%s', substr ($phone, 0, 4), substr ($phone, 4, 4), substr ($phone, 8, 4));
+                    $password   = bin2hex ($this->encrypt ($user['password']));
+                    $status     = $user['active'];
+                    $viewData   = [
+                        'uuid'      => base64_encode ($user['uid']),
+                        'username'  => $username,
+                        'email'     => $email,
+                        'phone'     => $phone,
+                        'password'  => $password,
+                        'status'    => $status ? 'true' : 'false'
+                    ];
+                    $row        = [
+                        $i,
+                        $username,
+                        $email,
                         $phone,
-                        "<a href=\"#\" class=\"info-box\"> More <span class=\"mdi mdi-menu-right\"></span></a>"
+                        ($status ? 'active' : 'inactive'),
+                        view ('uniqore/user-dropdown', $viewData)
                     ];
                     $i++;
                     array_push ($theData, $row);

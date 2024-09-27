@@ -17,7 +17,7 @@ class OCIS extends Table {
         $this->tableFields = [
             Field::__constructField ('id', 'VARCHAR', 128, '', FALSE, TRUE, TRUE),
             Field::__constructField ('ip_address', 'VARCHAR', 50, '', FALSE, TRUE),
-            Field::__constructField ('timestamp', 'TIMESTAMP', 0, new RawSql('CURRENT_TIMESTAMP'), FALSE, FALSE, TRUE),
+            Field::__constructField ('timestamp', 'TIMESTAMP', 0, new RawSql('CURRENT_TIMESTAMP')),
             Field::__constructField ('data', 'BLOB', 0, '')
         ];
     }

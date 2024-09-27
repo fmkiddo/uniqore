@@ -23,9 +23,18 @@
     									<label for="login-pword">Password:</label>
     									<input type="password" name="login-pword" class="form-control" placeholder="Input your password" required />
     								</div>
-    								<div class="form-check my-3">
-    									<input class="form-check-input" type="checkbox" name="login-stays" />
-    									<label class="form-check-label" for="login-stays">Stay signed in</label>
+    								<div class="row">
+    									<div class="col-6">
+            								<div class="form-check my-3">
+            									<input class="form-check-input" type="checkbox" name="login-stays" />
+            									<label class="form-check-label" for="login-stays">Stay signed in</label>
+            								</div>
+    									</div>
+    									<div class="col-6">
+            								<div class="d-none text-end text-danger">
+        										<p id="caps-lock">Caps Lock is on</p>
+            								</div>
+    									</div>
     								</div>{if !$validity}
     								<div class="my-3 text-danger">
     									<p>{error}</p>
@@ -43,3 +52,11 @@
 		<footer class="footer-login">
 			Copyright &copy; 2024 - fmkiddo
 		</footer>
+		<script type="text/javascript">
+		document.addEventListener ('keyup', function (event) {
+			var capsOn = event.getModifierState ('CapsLock');
+			var target = document.getElementById ('caps-lock').parentNode;
+			if (capsOn) target.classList.remove ('d-none');
+			else target.classList.add ('d-none');
+		});
+		</script>

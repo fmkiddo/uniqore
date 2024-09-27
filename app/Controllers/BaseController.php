@@ -47,7 +47,7 @@ abstract class BaseController extends Controller {
     
     protected $appConfig;
     
-    protected $session = NULL;
+    protected $session;
     
     protected $encryptor;
     
@@ -120,6 +120,7 @@ abstract class BaseController extends Controller {
     }
     
     protected function sendRequest ($url, $options, $method='get'): ResponseInterface {
+        usleep (400);
         return $this->curl->$method ($url, $options);
     }
 

@@ -90,7 +90,7 @@ class APIDashboard extends BaseUniqoreController {
         $this->initAssets(AssetType::STYLE, $styles);
         $scripts = [
             'assets/vendors/jquery-3.7.1/jquery-3.7.1.min.js',
-            'assets/vendors/bootstrap-5.3.3/js/bootstrap.min.js',
+            'assets/vendors/bootstrap-5.3.3/js/bootstrap.bundle.min.js',
             'assets/vendors/datatables-2.1.6/js/datatables.min.js',
             'assets/vendors/fontawesome-6.6.0/js/all.min.js',
             'assets/js/uniqore.js',
@@ -122,7 +122,7 @@ class APIDashboard extends BaseUniqoreController {
         else {
             $viewPaths  = [];
             $render     = FALSE;
-            $retVal     = $this->doSignOut();
+            $retVal     = $this->doSignOut ();
         } 
         
         if ($render) {
@@ -158,14 +158,22 @@ class APIDashboard extends BaseUniqoreController {
                     $rules  = [
                     ];
                 case 'users':
-                    $rules  = [
-                        'input-newuser'     => 'required|alpha',
-                        'input-newmail'     => 'required|valid_email',
-                        'input-cnfmail'     => 'required|valid_email|matches[input-newmail]',
-                        'input-newphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
-                        'input-newpswd'     => 'required|password_strength',
-                        'input-cnfpswd'     => 'required|matches[input-newpswd]'
-                    ];
+                    if ($post['input-uuid'] === 'none')
+                        $rules  = [
+                            'input-newuser'     => 'required|alpha',
+                            'input-newmail'     => 'required|valid_email',
+                            'input-cnfmail'     => 'required|valid_email|matches[input-newmail]',
+                            'input-newphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
+                            'input-newpswd'     => 'required|password_strength',
+                            'input-cnfpswd'     => 'required|matches[input-newpswd]',
+                        ];
+                    else
+                        $rules  = [
+                            'input-newuser'     => 'required|alpha',
+                            'input-newmail'     => 'required|valid_email',
+                            'input-cnfmail'     => 'required|valid_email|matches[input-newmail]',
+                            'input-newphone'    => 'required|regex_match[/^0[1-9]{3}-[0-9]{4}-[0-9]{2,5}$/]|max_length[20]',
+                        ];
                     break;
             }
             

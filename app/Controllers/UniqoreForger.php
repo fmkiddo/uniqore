@@ -34,6 +34,7 @@ class UniqoreForger extends BaseController {
         $dbtpl->setDatabaseUser ($db_conf[1]);
         $dbtpl->setDatabasePassword ($db_conf[2]);
         $envContent = "
+
 session.driver				= 'CodeIgniter\Session\Handlers\DatabaseHandler'
 session.cookieName			= 'uniqore_session_cookie'
 session.expiration			= 3600

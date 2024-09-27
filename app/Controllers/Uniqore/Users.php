@@ -61,13 +61,21 @@ class Users extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
     protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
-        $updateParams   = [
-            'email'         => $json['email'],
-            'phone'         => $json['phone'],
-            'password'      => password_hash ($json['password'], PASSWORD_BCRYPT),
-            'updated_at'    => date ('Y-m-d H:i:s'),
-            'updated_by'    => $userid
-        ];
+        if (strlen (trim ($json['password'])) > 0)
+            $updateParams   = [
+                'email'         => $json['email'],
+                'phone'         => $json['phone'],
+                'password'      => password_hash ($json['password'], PASSWORD_BCRYPT),
+                'updated_at'    => date ('Y-m-d H:i:s'),
+                'updated_by'    => $userid
+            ];
+        else
+            $updateParams   = [
+                'email'         => $json['email'],
+                'phone'         => $json['phone'],
+                'updated_at'    => date ('Y-m-d H:i:s'),
+                'updated_by'    => $userid
+            ];
         
         $this->model->set ($updateParams)
                         ->where ('uid', $id)
@@ -129,6 +137,7 @@ class Users extends BaseUniqoreAPIController {
                 'email'         => $data->email,
                 'phone'         => $data->phone,
                 'password'      => $data->password,
+                'active'        => $data->active,
                 'created_at'    => $data->created_at,
                 'created_by'    => $data->created_by,
                 'updated_at'    => $data->updated_at,
