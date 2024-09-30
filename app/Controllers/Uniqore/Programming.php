@@ -7,9 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Programming extends BaseUniqoreAPIController {
     
-    
     protected $modelName    = 'App\Models\Uniqore\ApiModel';
-    
     
     /**
      * {@inheritDoc}
@@ -56,6 +54,41 @@ class Programming extends BaseUniqoreAPIController {
             return $retJSON;
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
+     */
+    protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
+        $updateParams   = [
+            'name'          => $json['apiname'],
+            'dscript'       => $json['apidscript'],
+            'status'        => $json['status'],
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
+        $this->model->set ($updateParams)
+                ->where ('uid', $id)
+                ->update ();
+        
+        $affectedRows   = $this->model->affectedRows ();
+        $payload        = [
+            'affectedrows'  => $affectedRows
+        ];
+        return [
+            'status'    => 200,
+            'error'     => NULL,
+            'messages'  => [
+                'success'   => 'OK!'
+            ],
+            'data'      => [
+                'uuid'      => time (),
+                'timestamp' => date ('Y-m-d H:i:s'),
+                'payload'   => bin2hex ($this->encrypt (serialize ($payload)))
+            ]
+        ];
+    }
+    
     /**
      * 
      * {@inheritDoc}
