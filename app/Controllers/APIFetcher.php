@@ -108,13 +108,18 @@ class APIFetcher extends BaseUniqoreController {
             case 'programming':
                 $i  = 1;
                 foreach ($payload as $api) {
+                    $uuid       = base64_encode($api['uid']);
                     $code       = $api['api_code'];
                     $name       = $api['api_name'];
                     $dscript    = $api['api_dscript'];
                     $status     = $api['status'];
                     
                     $viewData   = [
-                        
+                        'uuid'      => $uuid,
+                        'code'      => $code,
+                        'name'      => $name,
+                        'dscript'   => $dscript,
+                        'status'    => $status ? 'true' : 'false'
                     ];
                     
                     $row        = [

@@ -1,5 +1,6 @@
 														<div class="dropend">
 															<div class="d-none" id="data">
+																<input type="hidden" id="uuid" value="<?= esc($uuid); ?>" />
 																<input type="hidden" id="code" value="<?= esc($code); ?>" />
 																<input type="hidden" id="name" value="<?= esc($name); ?>" />
 																<input type="hidden" id="dscript" value="<?= esc($dscript); ?>" />

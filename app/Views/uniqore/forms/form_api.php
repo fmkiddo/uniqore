@@ -4,7 +4,7 @@
 								<form method="post" enctype="application/x-www-form-urlencoded" autocomplete="off" data-doajax="true" data-validator="{validate_url}">
 									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 									<input type="hidden" name="target" value="{dts_fetch}" />
-									<input type="hidden" id="input-uuid" name="input-uuid" value="none" />
+									<input type="hidden" id="uuid" name="input-uuid" value="none" />
 									<div class="modal-header">
 										<h5 class="modal-title">API System Forms</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
