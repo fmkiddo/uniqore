@@ -12,18 +12,18 @@
 									<div class="modal-body">
 										<div class="form-group">
 											<label for="input-newcode">Code:</label>
-											<input type="text" class="form-control" name="input-newcode" placeholder="New API code" required />
+											<input type="text" class="form-control" id="code" name="input-newcode" placeholder="New API code" data-readonly="true"  required />
 										</div>
 										<div class="form-group">
 											<label for="input-newname">Name:</label>
-											<input type="text" class="form-control" name="input-newname" placeholder="New API name" required />
+											<input type="text" class="form-control" id="name" name="input-newname" placeholder="New API name" required />
 										</div>
 										<div class="form-group">
 											<label for="input-newdscript">Descriptions:</label>
-											<textarea class="form-control" name="input-newdscript" placeholder="Describe your API here"></textarea>
+											<textarea class="form-control" name="input-newdscript" id="dscript" placeholder="Describe your API here"></textarea>
 										</div>
 										<div class="form-check">
-    										<input class="form-check-input" type="checkbox" name="input-newstatus" checked />
+    										<input class="form-check-input" type="checkbox" id="status" name="input-newstatus" checked />
     										<label class="form-check-label" for="input-newstatus">Active</label>
 										</div>
 										<div class="d-none text-danger">
