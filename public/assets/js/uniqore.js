@@ -102,6 +102,11 @@ $(function () {
 				else $target.addClass ('d-none');
 			}
 		});
+		
+		$('body').on ('change', 'select', function ($event) {
+			$selected	= $('option:selected', this);
+			if ($selected) $('input#cdbprefix').val ($selected.attr ('data-prefix'));
+		});
 
 		$('body').on ('click', 'button,a', function ($event) {
 			if ($(this).attr ('data-action') === 'submitter') {
@@ -122,12 +127,48 @@ $(function () {
 					});
 				}
 			}
+			
+			if ($(this).attr ('data-action') === 'next') {
+				$currPage	= $(this).parents ('[data-type="form-section"]');
+				$currPage.fadeOut (400, function () {
+					$currPage.next ().fadeIn (400);
+				});
+			}
+			
+			if ($(this).attr ('data-action') === 'prev') {
+				$currPage	= $(this).parents ('[data-type="form-section"]');
+				$currPage.fadeOut (400, function () {
+					$currPage.prev ().fadeIn (400);
+				});
+			}
+			
 			if ($(this).is ('#refresh-table')) { 
 				$(this).prop ('disabled', true);
 				$('.dataTable').DataTable ().ajax.reload ();
 			}
-			if ($(this).prop ('id') === 'edit-data') $(this).loadPropertiesToForm ();
-			if ($(this).prop ('id') === 'pswd-change') $(this).openChangePasswordDialog ();
+			if ($(this).is ('#generate-dbprefix')) $(this).prev ().val ($('select#capi').children ('option:selected').attr ('data-prefix'));
+			if ($(this).is ('#edit-data')) $(this).loadPropertiesToForm ();
+			if ($(this).is ('#pswd-change')) $(this).openChangePasswordDialog ();
+			if ($(this).is ('#generate-ccode') || $(this).is ('#generate-cpcode') || $(this).is ('#generate-dbname')
+					|| $(this).is ('#generate-dbuser') || $(this).is ('#generate-dbpswd')) {
+				$id		= $(this).prop ('id');
+				$form	= $(this).parents ('form');
+				$.ajax ({
+					url: $form.attr ('data-generator'),
+					method: 'post',
+					data: $form.serialize () + '&event=' + $id,
+				}).done (function ($result) {
+					if ($result.status !== 200) alert ($result.messages.error);
+					else 
+						if ($id !== 'generate-dbname')
+							$($event.currentTarget).parents ('.form-group').find ('input').val ($result.data.payload);
+						else {
+							$formGroup = $($event.currentTarget).closest ('.form-group');
+							$formGroup.find ('input').val ($result.data.payload);
+							$formGroup.next ().find ('input').val ($result.data.payload);
+						}
+				});
+			}
 		});
 		
 		$('.modal').on ('hidden.bs.modal', function ($event) {
@@ -139,6 +180,10 @@ $(function () {
 					if ($(this).is ('[type="password"]')) $(this).attr ('required', true);
 					if ($(this).is ('[type="checkbox"]')) $(this).prop ('checked', true);
 					if ($(this).is ('[data-readonly="true"]')) $(this).removeAttr ('readonly');
+					if ($(this).is ('select')) {
+						$(this).children ().not (':first').remove ();
+						$(this).children (':first').prop ('selected', true);
+					}
 				});
 			}
 				
@@ -147,6 +192,31 @@ $(function () {
 					if (! $(this).is ('[type="hidden"]')) $(this).val ('');
 					if ($(this).is ('#userdata')) $(this).val ('empty');
 					if ($(this).is ('#uuid')) $(this).val ('none');
+				});
+			}
+		});
+		
+		$('.modal').on ('shown.bs.modal', function ($event) {
+			if ($('input[name="target"]').val () === 'apiuser') {
+				$data	= {
+					fetch: 'programming',
+					opttype: 'true' 
+				};
+				$.ajax ({
+					url: $.base_url ('uniqore/fetch-data'),
+					method: 'post',
+					data: $.param ($data),
+				}).done (function ($result) {
+					if ($result.recordsTotal) 
+						$.each ($result.data, function ($k, $v) {
+							$('<option/>', {
+								'data-api': $v.api,
+								'data-prefix': $v.apiprefix,
+								title: $v.apidscript,
+								value: $v.apicode,
+								text: $v.apiname
+							}).appendTo ($('select#capi'));
+						});
 				});
 			}
 		});

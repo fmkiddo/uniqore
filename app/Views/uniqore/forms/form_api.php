@@ -22,6 +22,10 @@
 											<label for="input-newdscript">Descriptions:</label>
 											<textarea class="form-control" name="input-newdscript" id="dscript" placeholder="Describe your API here"></textarea>
 										</div>
+										<div class="form-group">
+											<label for="input-newprefix">Default Table Prefix:</label>
+											<input type="text" class="form-control" name="input-newprefix" id="prefix" placeholder="Specify default api table prefix" required />
+										</div>
 										<div class="form-check">
     										<input class="form-check-input" type="checkbox" id="status" name="input-newstatus" checked />
     										<label class="form-check-label" for="input-newstatus">Active</label>

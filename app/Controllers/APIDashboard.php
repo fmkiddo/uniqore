@@ -33,6 +33,7 @@ class APIDashboard extends BaseUniqoreController {
                     'apicode'       => $post['input-newcode'],
                     'apiname'       => $post['input-newname'],
                     'apidscript'    => $post['input-newdscript'],
+                    'apiprefix'     => $post['input-newprefix'],
                     'status'        => array_key_exists('input-newstatus', $post) ? TRUE : FALSE
                 ];
                 break;
@@ -64,7 +65,7 @@ class APIDashboard extends BaseUniqoreController {
     private function apiProcessor ($get): array|bool {
         if ($this->request->is ('post')) {
             $post       = $this->request->getPost ();
-            $pollute    = base64_encode($this->getLoggedUUID ());
+            $pollute    = base64_encode ($this->getLoggedUUID ());
             $uuid       = $post['input-uuid'];
             
             $routes     = $this->routes[$get['route']];
@@ -84,6 +85,7 @@ class APIDashboard extends BaseUniqoreController {
                 'json'          => $this->formParamFormatter ($routes, $post)
             ];
             
+            $json   = [];
             if ($uuid === 'none') {
                 $url        = site_url ("api-uniqore/$routes?pollute=$pollute");
                 $method     = 'post';
@@ -91,10 +93,9 @@ class APIDashboard extends BaseUniqoreController {
                 $url        = site_url ("api-uniqore/$routes/$uuid?pollute=$pollute");
                 $method     = 'put';
             }
-            
             $response   = $this->sendRequest ($url, $curlOpts, $method);
             $json       = json_decode ($response->getBody (), TRUE);
-            return $json; 
+            return $json;
         }
         return FALSE;
     }
@@ -143,7 +144,6 @@ class APIDashboard extends BaseUniqoreController {
         $retVal     = "";
         $viewPaths  = [];
         $dtsFetch   = '';
-        
         if ($route !== 'sign-out') $this->pageViews->fetchPage ($route, $dtsFetch, $viewPaths);
         else {
             $viewPaths  = [];
@@ -155,6 +155,7 @@ class APIDashboard extends BaseUniqoreController {
             $pageData = [
                 'dashboard_url' => site_url ('uniqore/admin/dashboard'),
                 'validate_url'  => site_url ('uniqore/admin/dashboard/validate'),
+                'generate_url'  => site_url ('uniqore/generator'),
                 'username'      => $this->getUserName (),
                 'realname'      => '',
                 'dts_fetch'     => $dtsFetch,

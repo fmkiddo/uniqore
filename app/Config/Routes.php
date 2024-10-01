@@ -14,6 +14,7 @@ $routes->group ('uniqore', static function ($routes) {
     $routes->match (['get', 'post'], 'admin', 'APIHome::index');
     $routes->match (['get', 'post'], 'admin/dashboard', 'APIDashboard::index');
     $routes->match (['get', 'post'], 'admin/dashboard/validate', 'APIDashboard::formValidator');
+    $routes->match (['get', 'post'], 'generator', 'APIFetcher::dataGenerator');
     $routes->match (['get', 'post'], 'fetch-data', 'APIFetcher::index');
     $routes->match (['get', 'post'], 'forge/(:any)', 'UniqoreForger::index/$1');
 });

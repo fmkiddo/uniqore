@@ -72,6 +72,7 @@ class Filters extends BaseFilters
             // 'honeypot',
             'csrf'  => [
                 'except' => [
+                    'uniqore/generator',
                     'uniqore/fetch-data',
                     'uniqore/forge/starts',
                     'api-uniqore/*',

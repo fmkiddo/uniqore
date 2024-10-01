@@ -29,8 +29,8 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label for="input-newphone">Phone:</label>
-											<input type="tel" class="form-control" id="phone" name="input-newphone" placeholder="e.g. 0812-3456-7890" pattern="0[0-9]{3}-[0-9]{4}-[0-9]{2, 5}" required />
+											<label for="input-newphone">Phone <span class="text-muted">(081X-XXXX-XXXX)</span>:</label>
+											<input type="tel" class="form-control" id="phone" name="input-newphone" placeholder="e.g. 0812-3456-7890" pattern="(0[1-9]{3})(-)([0-9]{4})(-)([0-9]{3,6})" required />
 										</div>
 										<div class="form-group">
 											<label for="input-newpswd">Password:</label>

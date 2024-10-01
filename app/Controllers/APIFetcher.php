@@ -10,6 +10,7 @@ class APIFetcher extends BaseUniqoreController {
      * @see \App\Controllers\BaseController::__initComponents()
      */
     protected function __initComponents() {
+        array_push ($this->helpers, 'key_generator');
         parent::__initComponents();
     }
     
@@ -18,9 +19,11 @@ class APIFetcher extends BaseUniqoreController {
      * @see \App\Controllers\BaseController::index()
      */
     public function index(): string {
+        if ($this->request->is ('get')) return $this->generateJSON404 ();
         $post       = $this->request->getPost ();
+        $draw       = (array_key_exists ('draw', $post)) ? $post['draw'] : 0;
         $fetcher    = $post ['fetch'];
-        $searchVal  = $post ['search']['value'];
+        $searchVal  = (array_key_exists ('search', $post) ? $post['search']['value'] : '');
         $sortTarget = 0;
         $sort       = '';
         if (array_key_exists ('order', $post)) {
@@ -48,17 +51,18 @@ class APIFetcher extends BaseUniqoreController {
         $response   = $this->sendRequest($url, $curlOpts);
         $json       = json_get ($response);
         
-        if ($json['status'] !== 200) {
-            $theData    = [];
-        } else {
+        if ($json['status'] !== 200) $theData    = [];
+        else {
             $payload    = $json['data']['payload'];
             $payload    = unserialize ($this->decrypt (hex2bin ($payload)));
             $theData    = [];
-            $this->dataFormatter ($fetcher, $payload, $theData);
+            if (count ($payload) > 0) 
+                if (!array_key_exists ('opttype', $post)) $this->dataFormatter ($fetcher, $payload, $theData);
+                else $this->optionFormatter ($fetcher, $payload, $theData);
         }
         
         $fetched    = [
-            'draw'              => $post['draw'],
+            'draw'              => $draw,
             'recordsTotal'      => count ($theData),
             'recordsFiltered'   => count ($theData),
             'data'              => $theData
@@ -68,6 +72,138 @@ class APIFetcher extends BaseUniqoreController {
         $this->response->setJSON($fetched);
         $this->response->send ();
         return '';
+    }
+    
+    public function dataGenerator () {
+        if ($this->request->is ('get')) return $this->generateJSON404 (); 
+        $post   = $this->request->getPost ();
+        $json   = [];
+
+        if (array_key_exists('event', $post)) {
+            $clientName = $post['input-newcname'];
+            if (! strlen (trim ($clientName)))
+                $json   = [
+                    'status'    => 400,
+                    'error'     => 400,
+                    'messages'  => [
+                        'error'     => 'Please specify client name first before trying generate data'
+                    ]
+                ];
+            else {
+                $clientName     = explode (' ', $clientName);
+                switch ($post['event']) {
+                    default:
+                        $json   = [
+                            'status'    => 400,
+                            'error'     => 400,
+                            'messages'  => [
+                                'error'     => 'Bad Request: invalid request payload'
+                            ]
+                        ];
+                        break;
+                    case 'generate-ccode':
+                        if (count ($clientName) === 1) $low = substr (strtolower ($clientName[0]), 0, 6);
+                        else $low = substr (strtolower ($clientName[0]), 0, 3) . substr (strtolower ($clientName[1]), 0, 3);
+                        $random = generate_token (16);
+                        $result = "{$low}_{$random}";
+                        $json   = [
+                            'status'    => 200,
+                            'error'     => NULL,
+                            'messages'  => [
+                                'success'   => 'OK! Generated'
+                            ],
+                            'data'      => [
+                                'uuid'      => time (),
+                                'timestamp' => date ('Y-m-d H:i:s'),
+                                'payload'   => $result
+                            ]
+                        ];
+                        break;
+                    case 'generate-cpcode':
+                        $longStrongPassword = generate_password (32);
+                        $json   = [
+                            'status'    => 200,
+                            'error'     => NULL,
+                            'messages'  => [
+                                'success'   => 'OK! Generated'
+                            ],
+                            'data'      => [
+                                'uuid'      => time (),
+                                'timestamp' => date ('Y-m-d H:i:s'),
+                                'payload'   => $longStrongPassword
+                            ]
+                        ];
+                        break;
+                    case 'generate-dbname':
+                    case 'generate-dbuser':
+                        $api    = array_key_exists ('input-capi', $post) ? $post['input-capi'] : NULL;
+                        if ($api === NULL)
+                            $json   = [
+                                'status'    => 400,
+                                'error'     => NULL,
+                                'messages'  => [
+                                    'error'     => 'Please select client API before trying generate data'
+                                ]
+                            ];
+                        else {
+                            if (count ($clientName) === 1) $low = substr (strtolower ($clientName[0]), 0, 6);
+                            else $low = substr (strtolower ($clientName[0]), 0, 3) . substr (strtolower ($clientName[1]), 0, 2);
+                            $random =   generate_token (4);
+                            $result = "{$api}_$low$random";
+                            $json   = [
+                                'status'    => 200,
+                                'error'     => NULL,
+                                'messages'  => [
+                                    'success'   => 'OK! Generated'
+                                ],
+                                'data'      => [
+                                    'uuid'      => time (),
+                                    'timestamp' => date ('Y-m-d H:i:s'),
+                                    'payload'   => $result
+                                ]
+                            ];
+                        }
+                        break;
+                    case 'generate-dbpswd':
+                        $longStrongPassword = generate_password (16);
+                        $json   = [
+                            'status'    => 200,
+                            'error'     => NULL,
+                            'messages'  => [
+                                'success'   => 'OK! Generated'
+                            ],
+                            'data'      => [
+                                'uuid'      => time (),
+                                'timestamp' => date ('Y-m-d H:i:s'),
+                                'payload'   => $longStrongPassword
+                            ]
+                        ];
+                        break;
+                }
+            }
+        }
+        
+        $this->response->setHeader ('Content-Type', HEADER_APP_JSON);
+        $this->response->setBody (json_encode ($json));
+        $this->response->send ();
+    }
+    
+    private function optionFormatter ($fetcher, $payload, &$theData) {
+        switch ($fetcher) {
+            case 'programming':
+                foreach ($payload as $api) {
+                    $data   = [
+                        'fetch'         => $fetcher,
+                        'api'           => base64_encode ($api['uid']),
+                        'apicode'       => $api['api_code'],
+                        'apiname'       => $api['api_name'],
+                        'apidscript'    => $api['api_dscript'], 
+                        'apiprefix'     => $api['api_prefix'],
+                    ];
+                    array_push ($theData, $data);
+                }
+                break;
+        }
     }
     
     private function dataFormatter ($fetcher, $payload, &$theData) {
@@ -118,6 +254,7 @@ class APIFetcher extends BaseUniqoreController {
                         'code'      => $code,
                         'name'      => $name,
                         'dscript'   => $dscript,
+                        'prefix'    => $api['api_prefix'],
                         'status'    => $status ? 'true' : 'false'
                     ];
                     

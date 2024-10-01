@@ -20,7 +20,7 @@ class CAC2 extends Table {
             Field::__constructField ('db_name', 'VARCHAR', 100, ''),
             Field::__constructField ('db_user', 'VARCHAR', 100, ''),
             Field::__constructField ('db_password', 'VARCHAR', 500, ''),
-            Field::__constructField ('db_prefix', 'VARCHAR', 100, ''),
+            Field::__constructField ('db_prefix', 'VARCHAR', 5, ''),
         ];
     }
     
