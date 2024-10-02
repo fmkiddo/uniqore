@@ -12,7 +12,7 @@
 									<div class="modal-body">
 										<div class="form-group">
 											<label for="input-newcode">Code:</label>
-											<input type="text" class="form-control" id="code" name="input-newcode" placeholder="New API code" data-readonly="true"  required />
+											<input type="text" class="form-control" id="code" name="input-newcode" placeholder="New API code" data-readonly="true" size="4" maxlength="4" required />
 										</div>
 										<div class="form-group">
 											<label for="input-newname">Name:</label>

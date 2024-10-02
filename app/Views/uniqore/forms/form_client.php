@@ -18,7 +18,7 @@
 											<div class="form-group">
 												<label for="input-newccode">Client Code:</label>
 												<div class="input-group">
-													<input type="text" class="form-control" id="ccode" name="input-newccode" placeholder="Type new API client code or press button to let system generate client code" required />
+													<input type="text" class="form-control" id="ccode" name="input-newccode" data-readonly="true" placeholder="Type new API client code or press button to let system generate client code" required />
 													<button type="button" id="generate-ccode" class="btn btn-outline-primary" title="Generate data">
 														<i class="mdi mdi-pencil-circle-outline"></i>
 													</button>
@@ -27,7 +27,7 @@
 											<div class="form-group">
 												<label for="input-newcpcode">Client Passcode:</label>
 												<div class="input-group">
-													<input type="password" class="form-control" id="cpcode" name="input-newcpcode" placeholder="Click the button to generate client passcode" readonly required />
+													<input type="password" class="form-control" id="cpcode" name="input-newcpcode" data-readonly="true" placeholder="Click the button to generate client passcode" readonly required />
 													<button type="button" id="generate-cpcode" class="btn btn-outline-primary">
 														<i class="mdi mdi-lock-reset"></i>
 													</button>
@@ -35,13 +35,9 @@
 											</div>
 											<div class="form-group">
 												<label for="input-capi">API:</label>
-												<select class="form-control" id="capi" name="input-capi">
+												<select class="form-control" id="capi" name="input-newcapi">
 													<option disabled="disabled" selected="selected"> --- select API --- </option>
 												</select>
-											</div>
-											<div class="form-check">
-												<input type="checkbox" class="form-check-input" name="input-cstatus" value="true" checked />
-												<label class="form-check-labeel">Active</label>
 											</div>
         									<div class="d-flex align-items-center justify-content-end mt-3">
         										<button type="button" class="btn btn-primary" data-action="next" title="Next">
@@ -52,31 +48,31 @@
 										<div id="client-info" data-type="form-section" class="d-hidden">
 											<div class="form-group">
 												<label for="input-clname">Legal Name:</label>
-												<input type="text" id="clname" class="form-control" name="input-clname" required />
+												<input type="text" id="clname" class="form-control" name="input-newclname" required />
 											</div>
 											<div class="form-group">
 												<label for="input-caddr1">Address 1:</label>
-												<textarea id="addr1" class="form-control" name="input-caddr1" placeholder=""></textarea>
+												<textarea id="addr1" class="form-control" name="input-newcaddr1" placeholder=""></textarea>
 											</div>
 											<div class="form-group">
 												<label for="input-caddr2">Address 2:</label>
-												<textarea id="addr2" class="form-control" name="input-caddr2" placeholder=""></textarea>
+												<textarea id="addr2" class="form-control" name="input-newcaddr2" placeholder=""></textarea>
 											</div>
 											<div class="form-group">
 												<label for="input-ctax">Tax Number:</label>
-												<input type="text" id="ctax" class="form-control" name="input-ctax" placeholder="" />
+												<input type="text" id="ctax" class="form-control" name="input-newctax" placeholder="" />
 											</div>
 											<div class="form-group">
 												<label for="input-cpic">Client PIC:</label>
-												<input type="text" id="cpic" class="form-control" name="input-cpic" placeholder="" required />
+												<input type="text" id="cpic" class="form-control" name="input-newcpic" placeholder="" required />
 											</div>
 											<div class="form-group">
 												<label for="input-cpicmail">Client PIC Email:</label>
-												<input type="email" id="cpicmail" class="form-control" name="input-cpicmail" placeholder="" required />
+												<input type="email" id="cpicmail" class="form-control" name="input-newcpicmail" placeholder="" required />
 											</div>
 											<div class="form-group">
 												<label for="input-cpicphone">Client PIC Phone:</label>
-												<input type="tel" id="cpicphone" class="form-control" name="input-cpicphone" placeholder="" required />
+												<input type="tel" id="cpicphone" class="form-control" name="input-newcpicphone" placeholder="" required />
 											</div>
         									<div class="d-flex align-items-center justify-content-between mt-3">
         										<button type="button" class="btn btn-primary" data-action="prev" title="Previous">
@@ -92,7 +88,7 @@
 											<div class="form-group">
 												<label for="input-cdbname">DB Name:</label>
 												<div class="input-group">
-													<input type="text" id="cdbname" class="form-control" name="input-cdbname" placeholder="Type client db Name or click button to generate random db name" required>
+													<input type="text" id="cdbname" class="form-control" name="input-newcdbname" data-readonly="true" placeholder="Type client db Name or click button to generate random db name" required>
 													<button type="button" id="generate-dbname" class="btn btn-outline-primary" title="Generate data">
 														<i class="mdi mdi-pencil-circle-outline"></i>
 													</button>
@@ -101,7 +97,7 @@
 											<div class="form-group">
 												<label for="input-cdbuser">DB Username:</label>
 												<div class="input-group">
-													<input type="text" id="cdbuser" class="form-control" name="input-cdbuser" placeholder="Type client db user or click button to generate random db user" required>
+													<input type="text" id="cdbuser" class="form-control" name="input-newcdbuser" data-readonly="true" placeholder="Type client db user or click button to generate random db user" required>
 													<button type="button" id="generate-dbuser" class="btn btn-outline-primary" title="Generate data">
 														<i class="mdi mdi-pencil-circle-outline"></i>
 													</button>
@@ -110,7 +106,7 @@
 											<div class="form-group">
 												<label for="input-cdbpswd">DB Password:</label>
 												<div class="input-group">
-													<input type="password" id="cdbpswd" class="form-control" name="input-cdbpswd" placeholder="Type client db password or click button to generate random db password" required>
+													<input type="password" id="cdbpswd" class="form-control" name="input-newcdbpswd" data-readonly="true" placeholder="Type client db password or click button to generate random db password" required>
 													<button type="button" id="generate-dbpswd" class="btn btn-outline-primary" title="Generate data">
 														<i class="mdi mdi-lock-reset"></i>
 													</button>
@@ -119,7 +115,7 @@
 											<div class="form-group">
 												<label for="input-cdbprefix">DB Table Prefix:</label>
 												<div class="input-group">
-													<input type="text" id="cdbprefix" class="form-control" name="input-cdbprefix" maxlength="4" size="4" placeholder="Type client table custom prefix or click button to reset default table prefix" required>
+													<input type="text" id="cdbprefix" class="form-control" name="input-newcdbprefix" maxlength="4" size="4" data-readonly="true" placeholder="Type client table custom prefix or click button to reset default table prefix" required>
 													<button type="button" id="generate-dbprefix" class="btn btn-outline-primary" title="Return to default">
 														<i class="mdi mdi-refresh"></i>
 													</button>
@@ -130,6 +126,10 @@
         											<i class="mdi mdi-arrow-left-thick"></i>
         										</button>
         									</div>
+										</div>
+										<div class="form-check">
+											<input type="checkbox" class="form-check-input" name="input-newcstatus" value="true" checked />
+											<label class="form-check-labeel">Active</label>
 										</div>
 									</div>
 									<div class="modal-footer text-end">

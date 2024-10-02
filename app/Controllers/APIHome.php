@@ -113,7 +113,8 @@ class APIHome extends BaseUniqoreController {
         
         $pageData = [
             'validity'      => $good,
-            'error'         => $error
+            'error'         => $error,
+            'app_title'     => UNIQORE_TITLE . " | Login Page | Please login to your account"
         ];
         return $this->renderView ($viewPaths, $pageData);
     }

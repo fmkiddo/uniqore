@@ -136,7 +136,7 @@ class APIFetcher extends BaseUniqoreController {
                         break;
                     case 'generate-dbname':
                     case 'generate-dbuser':
-                        $api    = array_key_exists ('input-capi', $post) ? $post['input-capi'] : NULL;
+                        $api    = array_key_exists ('input-newcapi', $post) ? $post['input-newcapi'] : NULL;
                         if ($api === NULL)
                             $json   = [
                                 'status'    => 400,

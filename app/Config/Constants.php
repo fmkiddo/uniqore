@@ -120,3 +120,4 @@ defined ('HEADER_APP_FORM')                 || define ('HEADER_APP_FORM', 'appli
 defined ('HEADER_APP_MULTIPART')            || define ('HEADER_APP_MULTIPART', 'multipart/form-data');
 defined ('HEADER_APP_JSON')                 || define ('HEADER_APP_JSON', 'application/json');
 defined ('UNIQORE_NAME')                    || define ('UNIQORE_NAME', 'Uniqore');
+defined ('UNQIORE_TITLE')                   || define ('UNIQORE_TITLE', 'Uniqore API');

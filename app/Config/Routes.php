@@ -22,5 +22,7 @@ $routes->group ('uniqore', static function ($routes) {
 $routes->group ('api-uniqore', static function ($routes) {
     $routes->resource ('programming', ['namespace' => 'App\Controllers\Uniqore']);
     $routes->resource ('apiuser', ['namespace' => 'App\Controllers\Uniqore']);
+    $routes->resource ('apiuserprofile', ['namespace' => 'App\Controllers\Uniqore']);
+    $routes->resource ('apiuserconfig', ['namespace' => 'App\Controllers\Uniqore']);
     $routes->resource ('users', ['namespace' => 'App\Controllers\Uniqore']);
 });
