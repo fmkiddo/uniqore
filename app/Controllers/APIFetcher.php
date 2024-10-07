@@ -119,21 +119,6 @@ class APIFetcher extends BaseUniqoreController {
                             ]
                         ];
                         break;
-                    case 'generate-cpcode':
-                        $longStrongPassword = generate_password (32);
-                        $json   = [
-                            'status'    => 200,
-                            'error'     => NULL,
-                            'messages'  => [
-                                'success'   => 'OK! Generated'
-                            ],
-                            'data'      => [
-                                'uuid'      => time (),
-                                'timestamp' => date ('Y-m-d H:i:s'),
-                                'payload'   => $longStrongPassword
-                            ]
-                        ];
-                        break;
                     case 'generate-dbname':
                     case 'generate-dbuser':
                         $api    = array_key_exists ('input-newcapi', $post) ? $post['input-newcapi'] : NULL;
@@ -148,7 +133,7 @@ class APIFetcher extends BaseUniqoreController {
                         else {
                             if (count ($clientName) === 1) $low = substr (strtolower ($clientName[0]), 0, 6);
                             else $low = substr (strtolower ($clientName[0]), 0, 3) . substr (strtolower ($clientName[1]), 0, 2);
-                            $random =   generate_token (4);
+                            $random =   generate_token (UNIQORE_RANDOM_CLIENT);
                             $result = "{$api}_$low$random";
                             $json   = [
                                 'status'    => 200,
@@ -165,7 +150,7 @@ class APIFetcher extends BaseUniqoreController {
                         }
                         break;
                     case 'generate-dbpswd':
-                        $longStrongPassword = generate_password (16);
+                        $longStrongPassword = generate_password (UNQIORE_RANDOM_DBPSWD);
                         $json   = [
                             'status'    => 200,
                             'error'     => NULL,
@@ -271,6 +256,24 @@ class APIFetcher extends BaseUniqoreController {
                 }
                 break;
             case 'apiuser':
+                $i = 1;
+                foreach ($payload as $client) {
+                    $clientcode     = $client['client_code'];
+                    $clientdata     = $client['client_data'];
+                    $clientprofile  = $client['client_info'];
+                    $clientapi      = $client['client_api'];
+                    $status         = $clientdata['status'];
+                    $row    = [
+                        $i,
+                        $clientcode,
+                        $clientprofile['legal_name'],
+                        $clientapi['name'],
+                        ($status ? 'active' : 'inactive'),
+                        ''
+                    ];
+                    array_push ($theData, $row);
+                    $i++;
+                }
                 break;
         }
     }

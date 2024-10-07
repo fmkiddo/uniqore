@@ -76,7 +76,6 @@ class APIDashboard extends BaseUniqoreController {
                 return [
                     'account'   => [
                         'clientcode'        => $post['input-newccode'],
-                        'clientpcode'       => $post['input-newcpcode'],
                         'clientapi'         => $post['input-newcapi'],
                         'clientstatus'      => (array_key_exists ('input-newcstatus', $post) ? TRUE : FALSE),
                     ],
@@ -86,6 +85,7 @@ class APIDashboard extends BaseUniqoreController {
                         'clientlname'       => $post['input-newclname'],
                         'clientaddr1'       => $post['input-newcaddr1'],
                         'clientaddr2'       => $post['input-newcaddr2'],
+                        'clientphone'       => $post['input-newcphone'],
                         'clienttaxn'        => $post['input-newctax'],
                         'clientpicname'     => $post['input-newcpic'],
                         'clientpicmail'     => $post['input-newcpicmail'],
@@ -141,8 +141,19 @@ class APIDashboard extends BaseUniqoreController {
                 $json       = json_decode ($response->getBody (), TRUE);
                 return $json;
             } else {
+                $insertID       = 0;
+                $retPayload     = [
+                    'uuid'          => '',
+                    'clientid'      => '',
+                    'serial'        => ''
+                ];
+                
+                $i  = 0;
                 foreach ($formParam as $key => $param) {
+                    if ($insertID !== 0) $param['clientid']  = $insertID;
+                    
                     $curlOpts   = [
+                        'delay'         => 2000,
                         'auth'      => [
                             bin2hex ($auth),
                             '',
@@ -157,8 +168,52 @@ class APIDashboard extends BaseUniqoreController {
                     ];
                     
                     $subroutes  = $this->subroutes[$key];
-                    var_dump ($subroutes);
+                    if ($uuid === 'none') {
+                        $url    = site_url ("api-uniqore/$subroutes?pollute=$pollute");
+                        $method = 'post';
+                    } else {
+                    };
+                    
+                    $response   = $this->sendRequest ($url, $curlOpts, $method);
+                    $response   = json_decode ($response->getBody(), TRUE);
+                    if ($response['status'] === 200) {
+                        $payload    = $response['data']['payload'];
+                        $payload    = unserialize ($this->decrypt (hex2bin ($payload)));
+                        if ($key === 'account') {
+                            $insertID               = $payload['returnid'];
+                            $retPayload['uuid']     = $payload['uuid'];
+                            $retPayload['clientid'] = $param['clientcode'];
+                            $retPayload['serial']   = $payload['serial'];
+                        }
+                        $i++;
+                    }
                 }
+                
+                $json   = [];
+                if ($i === 3) {
+                    $hexed  = serialize ($retPayload);
+                    $hexed  = bin2hex ($this->encrypt ($hexed));
+                    $json   = [
+                        'status'    => 200,
+                        'error'     => NULL,
+                        'messages'  => [
+                            'success'   => 'New API user successfully registered!'
+                        ],
+                        'data'      => [
+                            'uuid'      => time (),
+                            'timestamp' => date ('Y-m-d H:i:s'),
+                            'payload'   => $hexed
+                        ]
+                    ];
+                } else 
+                    $json   = [
+                        'status'    => 500,
+                        'error'     => 500,
+                        'messages'  => [
+                            'error'     => 'New API user registration operation has failed'
+                        ]
+                    ];
+                return $json;
             }
         }
         return FALSE;
@@ -200,7 +255,7 @@ class APIDashboard extends BaseUniqoreController {
         
         $res    = $this->apiProcessor ($get);
         
-        if (count($get) > 0 && array_key_exists("route", $get)) $route = $get["route"];
+        if (count ($get) > 0 && array_key_exists("route", $get)) $route = $get["route"];
         else $route = "welcome";
         
         $render     = TRUE;
@@ -224,10 +279,16 @@ class APIDashboard extends BaseUniqoreController {
                 'username'      => $this->getUserName (),
                 'realname'      => '',
                 'dts_fetch'     => $dtsFetch,
+                'alertShow'     => FALSE
             ];
             
-            if (!$res) {
-                
+            if (is_array ($res)) {
+                $payload    = unserialize ($this->decrypt (hex2bin ($res['data']['payload'])));
+                if ($route === 'clients') {
+                    $pageData['alertShow']  = TRUE;
+                    $pageData['user_code']  = $payload['clientid'];
+                    $pageData['user_sn']    = $payload['serial'];
+                }
             }
             
             $retVal = $this->renderView ($viewPaths, $pageData);
@@ -281,7 +342,6 @@ class APIDashboard extends BaseUniqoreController {
                     $rules  = [
                         'input-newcname'        => 'required',
                         'input-newccode'        => 'required',
-                        'input-newcpcode'       => 'required',
                         'input-newcapi'         => 'required',
                         'input-newclname'       => 'required',
                         'input-newcpic'         => 'required',
@@ -289,7 +349,7 @@ class APIDashboard extends BaseUniqoreController {
                         'input-newcpicphone'    => 'required',
                         'input-newcdbname'      => 'required',
                         'input-newcdbuser'      => 'required',
-                        'input-newcdbpswd'      => 'required',
+                        'input-newcdbpswd'      => 'required|password_strength',
                         'input-newcdbprefix'    => 'required'
                     ];
                     break;

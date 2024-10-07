@@ -9,7 +9,7 @@
                                                             <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown">More</a>
                                                             <ul class="dropdown-menu">
                                                             	<li>
-                                                            		<a id="deactive" class="dropdown-item" href="#modal-deactivate" data-bs-toggle="modal">Deactivate User</a>
+                                                            		<a id="active-toggle" class="dropdown-item" href="#modal-deactivate" data-bs-toggle="modal"><?= esc(($status === 'true') ? 'Deactivate' : 'Activate'); ?></a>
                                                             	</li>
                                                             	<li>
                                                             		<a id="pswd-change" class="dropdown-item" href="#modal-changepassword" data-bs-toggle="modal">Change Password</a>

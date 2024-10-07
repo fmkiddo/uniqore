@@ -4,6 +4,7 @@ namespace App\Controllers\Uniqore;
 
 use App\Controllers\BaseUniqoreAPIController;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Encryption\Encryption;
 
 class ApiUser extends BaseUniqoreAPIController {
     
@@ -11,9 +12,63 @@ class ApiUser extends BaseUniqoreAPIController {
     
     /**
      * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoreAPIController::__initComponents()
+     */
+    protected function __initComponents() {
+        $this->addHelper ('key_generator');
+        parent::__initComponents();
+    }
+    
+    /**
+     * {@inheritDoc}
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
     protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+        $uuid           = generate_random_uuid_v4 ();
+        $sn             = generate_serialnumber (30, 5);
+        $key            = Encryption::createKey (SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_KEYBYTES);
+        $insertParams   = [
+            'uid'               => $uuid,
+            'client_code'       => $json['clientcode'],
+            'client_passcode'   => password_hash ($sn, PASSWORD_BCRYPT),
+            'client_keycode'    => bin2hex ($key),
+            'client_apicode'    => $json['clientapi'],
+            'status'            => $json['clientstatus'],
+            'created_by'        => $userid,
+            'updated_at'        => date ('Y-m-d H:i:s'),
+            'updated_by'        => $userid
+        ];
+        $this->model->insert ($insertParams);
+        $insertID   = $this->model->getInsertID ();
+        if (!$insertID)
+            $retJSON    = [
+                'status'    => 500,
+                'error'     => 500,
+                'messages'  => [
+                    'error'     => 'Failed to register new API client or user'
+                ]
+            ];
+        else {
+            $payload    = [
+                'returnid'  => $insertID,
+                'uuid'      => $uuid,
+                'serial'    => $sn
+            ];
+            
+            $retJSON    = [
+                'status'    => 200,
+                'error'     => NULL,
+                'messages'  => [
+                    'success'   => 'New API client or user successfully registered to system'
+                ],
+                'data'      => [
+                    'uuid'      => time (),
+                    'timestamp' => date ('Y-m-d H:i:s'),
+                    'payload'   => bin2hex ($this->encrypt (serialize($payload)))
+                ]
+            ];
+        }
+        return $retJSON;
     }
     
     /**
@@ -21,6 +76,7 @@ class ApiUser extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
     protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
+        return [];
     }
     
     /**
@@ -50,7 +106,7 @@ class ApiUser extends BaseUniqoreAPIController {
         
         return $this->model
                 ->select ('ocac.uid, ocac.client_code, ocac.client_passcode, ocac.client_keycode, cac1.client_name, ocac.client_apicode, 
-                    oapi.api_name, oapi.api_dscript, cac1.client_lname, cac1.address1, cac1.address2, cac1.tax_no, cac1.pic_name, 
+                    ocac.status, oapi.api_name, oapi.api_dscript, cac1.client_lname, cac1.address1, cac1.address2, cac1.tax_no, cac1.pic_name, 
                     cac1.pic_mail, cac1.pic_phone, cac2.db_name, cac2.db_user, cac2.db_prefix')
                 ->join ('cac1', 'cac1.client_id=ocac.id', 'left')
                 ->join ('cac2', 'cac2.client_id=ocac.id', 'left')
@@ -90,7 +146,7 @@ class ApiUser extends BaseUniqoreAPIController {
                         'error'     => 'Internal server error has occured!'
                     ]
                 ];
-                log_message('error', 'Error: Server failed to generate API Response. Cause: Encryption Error!');
+                log_message ('error', 'Error: Server failed to generate API Response. Cause: Encryption Error!');
                 return $this->failServerError ('Cannot generate response data!', 500);
             }
         } else {
@@ -119,7 +175,12 @@ class ApiUser extends BaseUniqoreAPIController {
                     'client_config'     => [
                         'dbname'            => $data->db_name,
                         'dbuser'            => $data->db_user,
-                        'dbpswd'
+                        'dbprefix'          => $data->db_prefix
+                    ],
+                    'client_api'        => [
+                        'code'              => $data->api_code,
+                        'name'              => $data->api_name,
+                        'dscript'           => $data->api_dscript,
                     ],
                     'created_at'        => $data->created_at,
                     'created_by'        => $data->created_by,

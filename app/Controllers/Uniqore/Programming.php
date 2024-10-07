@@ -14,8 +14,9 @@ class Programming extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
     protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+        $uuid           = generate_random_uuid_v4 ();
         $insertParams   = [
-            'uid'           => generate_random_uuid_v4 (),
+            'uid'           => $uuid,
             'api_code'      => $json['apicode'],
             'api_name'      => $json['apiname'],
             'api_dscript'   => $json['apidscript'],
@@ -38,7 +39,8 @@ class Programming extends BaseUniqoreAPIController {
             ];
         else {
             $payload    = [
-                'returnid'  => $insertID
+                'returnid'  => $insertID,
+                'uuid'      => $uuid
             ];
             $retJSON    = [
                 'status'    => 200,
@@ -52,8 +54,8 @@ class Programming extends BaseUniqoreAPIController {
                     'payload'   => bin2hex ($this->encrypt (serialize($payload)))
                 ]
             ];
-            return $retJSON;
         }
+        return $retJSON;
     }
     
     /**

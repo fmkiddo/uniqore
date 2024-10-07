@@ -96,7 +96,6 @@ abstract class BaseController extends Controller {
         helper($this->helpers);
         service ('security');
         $this->appConfig	= config ('App');
-        $this->curl         = \Config\Services::curlrequest ();
         $this->parser       = \Config\Services::parser ();
         $this->session      = \Config\Services::session ();
         $this->addPageData ('base_url', base_url ());
@@ -120,7 +119,7 @@ abstract class BaseController extends Controller {
     }
     
     protected function sendRequest ($url, $options, $method='get'): ResponseInterface {
-        usleep (400);
+        $this->curl = \Config\Services::curlrequest ();
         return $this->curl->$method ($url, $options);
     }
 

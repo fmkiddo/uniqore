@@ -16,8 +16,9 @@ class Users extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
     protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+        $uuid           = generate_random_uuid_v4 ();
         $insertParams   = [
-            'uid'           => generate_random_uuid_v4 (),
+            'uid'           => $uuid,
             'username'      => $json['username'],
             'email'         => $json['email'],
             'phone'         => $json['phone'],
@@ -39,8 +40,10 @@ class Users extends BaseUniqoreAPIController {
             ];
         else {
             $payload    = [
-                'returnid'  => $insertID
+                'returnid'  => $insertID,
+                'uuid'      => $uuid
             ];
+            
             $retJSON    = [
                 'status'    => 200,
                 'error'     => NULL,

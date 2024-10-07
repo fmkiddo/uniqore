@@ -61,6 +61,11 @@ $(function () {
 				});
 			}
 		};
+		
+		$(function () {
+			$modalClientInfo = $('body').find ('#modal-client-info');
+			if ($modalClientInfo.length && $modalClientInfo.attr ('data-show')) $modalClientInfo.modal ('show');
+		});
 
 		$(function () {
 			$dts = $('.dataTable');
@@ -149,7 +154,7 @@ $(function () {
 			if ($(this).is ('#generate-dbprefix')) $(this).prev ().val ($('select#capi').children ('option:selected').attr ('data-prefix'));
 			if ($(this).is ('#edit-data')) $(this).loadPropertiesToForm ();
 			if ($(this).is ('#pswd-change')) $(this).openChangePasswordDialog ();
-			if ($(this).is ('#generate-ccode') || $(this).is ('#generate-cpcode') || $(this).is ('#generate-dbname')
+			if ($(this).is ('#generate-ccode') || $(this).is ('#generate-dbname') 
 					|| $(this).is ('#generate-dbuser') || $(this).is ('#generate-dbpswd')) {
 				$id		= $(this).prop ('id');
 				$form	= $(this).parents ('form');
@@ -197,7 +202,7 @@ $(function () {
 		});
 		
 		$('.modal').on ('shown.bs.modal', function ($event) {
-			if ($('input[name="target"]').val () === 'apiuser') {
+			if ($('input[name="target"]').val () === 'apiuser' && $(this).prop ('id') === 'modal-form') {
 				$data	= {
 					fetch: 'programming',
 					opttype: 'true' 
