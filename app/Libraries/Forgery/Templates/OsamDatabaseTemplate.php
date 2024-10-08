@@ -33,6 +33,7 @@ use App\Libraries\Forgery\Templates\Osam\RQN1;
 use App\Libraries\Forgery\Templates\Osam\RQN2;
 use App\Libraries\Forgery\Templates\Osam\RQN3;
 use App\Libraries\Forgery\Templates\Osam\UGR1;
+use App\Libraries\Forgery\Templates\Osam\OFPT;
 
 class OsamDatabaseTemplate extends Database {
     
@@ -51,6 +52,7 @@ class OsamDatabaseTemplate extends Database {
             new OAST (),
             new OCFG (),
             new OCTA (),
+            new OFPT (),
             new OITA (),
             new OLCT (),
             new OMDL (),
