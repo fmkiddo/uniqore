@@ -184,6 +184,7 @@ class APIFetcher extends BaseUniqoreController {
                         'apiname'       => $api['api_name'],
                         'apidscript'    => $api['api_dscript'], 
                         'apiprefix'     => $api['api_prefix'],
+                        'apistatus'     => $api['status'] ? TRUE : FALSE
                     ];
                     array_push ($theData, $data);
                 }

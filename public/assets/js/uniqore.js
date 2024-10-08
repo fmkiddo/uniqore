@@ -224,13 +224,15 @@ $(function () {
 				}).done (function ($result) {
 					if ($result.recordsTotal) 
 						$.each ($result.data, function ($k, $v) {
-							$('<option/>', {
-								'data-api': $v.api,
-								'data-prefix': $v.apiprefix,
-								title: $v.apidscript,
-								value: $v.apicode,
-								text: $v.apiname
-							}).appendTo ($('select#capi'));
+							if ($v.apistatus) {
+								$('<option/>', {
+									'data-api': $v.api,
+									'data-prefix': $v.apiprefix,
+									title: $v.apidscript,
+									value: $v.apicode,
+									text: $v.apiname
+								}).appendTo ($('select#capi'));
+							}
 						});
 				});
 			}
