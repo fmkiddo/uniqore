@@ -12,7 +12,7 @@ class DBForger {
     private Forge $forge;
     
     private function createDatabase (): bool {
-        return $this->forge->createDatabase ($this->dbtemplate->getDatabaseName());
+        return $this->forge->createDatabase ($this->dbtemplate->getDatabaseName ());
     }
     
     private function createDatabaseUser (): bool {
@@ -23,10 +23,12 @@ class DBForger {
         return $db->simpleQuery ($sql);
     }
     
-    private function grantDatabaseUser (): bool {
+    private function grantDatabaseUser ($global=FALSE): bool {
         $db     = $this->forge->getConnection ();
         $dbuser = $this->dbtemplate->getDatabaseUser ();
-        $sql    = "GRANT ALL PRIVILEGES ON {$this->dbtemplate->getDatabaseName ()}.* TO `{$dbuser}`@`localhost`;";
+        $dbname = ($global) ? '*.*' : "{$this->dbtemplate->getDatabaseName ()}.*";
+        $option = ($global) ? 'WITH GRANT OPTION' : '';
+        $sql    = "GRANT ALL PRIVILEGES ON {$dbname} TO `{$dbuser}`@`localhost` {$option};";
         return $db->simpleQuery ($sql);
     }
     
@@ -51,22 +53,31 @@ class DBForger {
         switch ($field->getFieldType()) {
             default:
                 break;
-            case 'CHAR':
-            case 'VARCHAR':
+            case CHAR:
+            case VARCHAR:
+            case BINARY:
+            case VARBINARY: 
+            case ENUMERATION:
+            case SET:
                 $arrayField[$field->getFieldName ()]['constraint']       = $field->getConstraint ();
                 break;
-            CASE 'TINYINT':
-            CASE 'SMALLINT':
-            CASE 'MEDIUMINT':
-            CASE 'INT':
-            CASE 'TINYINT':
-            case 'DECIMAL':
-            case 'FLOAT':
-            case 'DOUBLE':
-            case 'REAL':
+            CASE TINYINT:
+            CASE SMALLINT:
+            CASE MEDIUMINT:
+            CASE INTEGER:
+            CASE BIGINT:
+            case DECIMAL:
+            case FLOATING:
+            case DOUBLE:
+            case REAL:
                 $arrayField[$field->getFieldName ()]['auto_increment']   = $field->isAutoIncrement ();
                 $arrayField[$field->getFieldName ()]['unsigned']         = $field->isUnsigned ();
                 break;
+        }
+        
+        if ($field->isAllowedNull ()) {
+            $arrayField[$field->getFieldName ()]['null']    = TRUE;
+            $arrayField[$field->getFieldName ()]['default'] = $field->getDefaultValue ();
         }
         
         return $arrayField;
@@ -89,12 +100,12 @@ class DBForger {
      * 
      * @return BaseConnection|bool
      */
-    public function buildDatabase (): BaseConnection|bool {
+    public function buildDatabase ($global=FALSE): BaseConnection|bool {
         $retVal = FALSE;
         
         if ($this->createDatabase ()) {
             $createUser = $this->createDatabaseUser ();
-            $grantUser  = $this->grantDatabaseUser ();
+            $grantUser  = $this->grantDatabaseUser ($global);
             
             if (!($createUser && $grantUser)) $this->forge->dropDatabase ($this->dbtemplate->getDatabaseName ());
             else {
@@ -141,22 +152,22 @@ class DBForger {
                     if ($table->hasAuxAttributes())
                         $forge->addField ([
                             'created_at'    => [
-                                'type'          => 'TIMESTAMP',
+                                'type'          => TIMESTAMP,
                                 'default'       => new RawSql('CURRENT_TIMESTAMP'),
                             ],
                             'created_by'    => [
-                                'type'          => 'INT',
+                                'type'          => INTEGER,
                                 'unsigned'      => TRUE,
                                 'null'          => TRUE,
                                 'default'       => new RawSql('NULL')
                             ],
                             'updated_at'    => [
-                                'type'          => 'DATETIME',
+                                'type'          => DATETIME,
                                 'null'          => TRUE,
                                 'default'       => new RawSql('NULL')
                             ],
                             'updated_by'    => [
-                                'type'          => 'INT',
+                                'type'          => INTEGER,
                                 'unsigned'      => TRUE,
                                 'null'          => TRUE,
                                 'default'       => new RawSql('NULL')

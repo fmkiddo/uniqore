@@ -15,12 +15,12 @@ class CAC2 extends Table {
     protected function __initTableAttributes() {
         $this->tableName    = 'cac2';
         $this->tableFields  = [
-            Field::__constructField ('id', 'INT', 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE),
-            Field::__constructField ('client_id', 'INT', 0, 0, TRUE, FALSE, TRUE),
-            Field::__constructField ('db_name', 'VARCHAR', 100, ''),
-            Field::__constructField ('db_user', 'VARCHAR', 100, ''),
-            Field::__constructField ('db_password', 'VARCHAR', 500, ''),
-            Field::__constructField ('db_prefix', 'VARCHAR', 5, ''),
+            Field::__constructUnsignedPrimaryIntegerField ('id'),
+            Field::__constructField ('client_id', INTEGER, 0, 0, TRUE, FALSE, TRUE),
+            Field::__constructField ('db_name', VARCHAR, 100, ''),
+            Field::__constructField ('db_user', VARCHAR, 100, ''),
+            Field::__constructField ('db_password', VARCHAR, 500, ''),
+            Field::__constructField ('db_prefix', VARCHAR, 5, ''),
         ];
     }
     

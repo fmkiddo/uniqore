@@ -63,6 +63,16 @@ $(function () {
 		};
 		
 		$(function () {
+			$get	= new URLSearchParams (window.location.search);
+			$('ul.page-navigation').find ('a.nav-link').each (function () {
+				if ($(this).prop ('href').indexOf ($get) >= 0) {
+					$(this).parent ().addClass ('active');
+					return false;
+				}
+			});
+		});
+		
+		$(function () {
 			$modalClientInfo = $('body').find ('#modal-client-info');
 			if ($modalClientInfo.length && $modalClientInfo.attr ('data-show')) $modalClientInfo.modal ('show');
 		});

@@ -1,5 +1,5 @@
 <?php
-namespace App\Libraries\Forgery\Templates\Uniqore;
+namespace App\Libraries\Forgery\Templates\Osam;
 
 
 use App\Libraries\Forgery\Table;

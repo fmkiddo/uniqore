@@ -14,28 +14,13 @@ class ApiUserConfig extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
     protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
-        /**
-        $payload    = [
-            'returnid'  => 1
-        ];
-        return [
-            'status'    => 200,
-            'error'     => NULL,
-            'messages'  => [
-                'success'   => 'API Call success'
-            ],
-            'data'      => [
-                'uuid'      => time (),
-                'timestamp' => date ('Y-m-d H:i:s'),
-                'payload'   => bin2hex ($this->encrypt ($payload))
-            ]
-        ];
-        **/
+        $dbPswd         = $json['clientdbpswd'];
+        $storedPswd     = bin2hex ($this->encrypt ($dbPswd));
         $insertParams   = [
             'client_id'     => $json['clientid'],
             'db_name'       => $json['clientdbname'],
             'db_user'       => $json['clientdbuser'],
-            'db_password'   => $json['clientdbpswd'],
+            'db_password'   => $storedPswd,
             'db_prefix'     => $json['clientdbprefix'],
             'created_by'    => $userid,
             'updated_at'    => date ('Y-m-d H:i:s'),

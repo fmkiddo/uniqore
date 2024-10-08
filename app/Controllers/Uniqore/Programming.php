@@ -17,7 +17,7 @@ class Programming extends BaseUniqoreAPIController {
         $uuid           = generate_random_uuid_v4 ();
         $insertParams   = [
             'uid'           => $uuid,
-            'api_code'      => $json['apicode'],
+            'api_code'      => strtoupper ($json['apicode']),
             'api_name'      => $json['apiname'],
             'api_dscript'   => $json['apidscript'],
             'api_prefix'    => $json['apiprefix'],

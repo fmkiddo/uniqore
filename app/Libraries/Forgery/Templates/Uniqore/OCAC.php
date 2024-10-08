@@ -16,13 +16,13 @@ class OCAC extends Table {
     protected function __initTableAttributes() {
         $this->tableName    = 'ocac';
         $this->tableFields  = [
-            Field::__constructField ('id', 'INT', 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE),
-            Field::__constructField ('uid', 'VARCHAR', 50, '', FALSE, FALSE, TRUE, 'OCAC_UUID'),
-            Field::__constructField ('client_code', 'VARCHAR', 50, '', FALSE, FALSE, TRUE),
-            Field::__constructField ('client_passcode', 'VARCHAR', 200, ''),
-            Field::__constructField ('client_keycode', 'VARCHAR', 200, ''),
-            Field::__constructField ('client_apicode', 'VARCHAR', 5, ''),
-            Field::__constructField ('status', 'BOOLEAN', 0, new RawSql('TRUE')),
+            Field::__constructUnsignedPrimaryIntegerField ('id'),
+            Field::__constructUUIDField ('uid'),
+            Field::__constructField ('client_code', VARCHAR, 50, '', FALSE, FALSE, TRUE),
+            Field::__constructField ('client_passcode',VARCHAR, 200, ''),
+            Field::__constructField ('client_keycode', VARCHAR, 200, ''),
+            Field::__constructField ('client_apicode', VARCHAR, 5, ''),
+            Field::__constructField ('status', BOOLEAN, 0, new RawSql('TRUE')),
         ];
     }
     

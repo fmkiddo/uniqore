@@ -15,17 +15,17 @@ class CAC1 extends Table {
     protected function __initTableAttributes() {
         $this->tableName    = 'cac1';
         $this->tableFields  = [
-            Field::__constructField ('id', 'INT', 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE),
-            Field::__constructField ('client_id', 'INT', TRUE, 0, 0, FALSE, TRUE),
-            Field::__constructField ('client_name', 'VARCHAR', 100, ''),
-            Field::__constructField ('client_lname', 'VARCHAR', 100, ''),
-            Field::__constructField ('address1', 'TEXT', 0, ''),
-            Field::__constructField ('address2', 'TEXT', 0, ''),
-            Field::__constructField ('client_phone', 'VARCHAR', 20, ''),
-            Field::__constructField ('tax_no', 'VARCHAR', 20, ''),
-            Field::__constructField ('pic_name', 'VARCHAR', 100, ''),
-            Field::__constructField ('pic_mail', 'VARCHAR', 100, ''),
-            Field::__constructField ('pic_phone', 'VARCHAR', 20, ''),
+            Field::__constructUnsignedPrimaryIntegerField ('id'),
+            Field::__constructField ('client_id', INTEGER, TRUE, 0, 0, FALSE, TRUE),
+            Field::__constructField ('client_name', VARCHAR, 100, ''),
+            Field::__constructField ('client_lname', VARCHAR, 100, ''),
+            Field::__constructField ('address1', TEXT, 0, ''),
+            Field::__constructField ('address2', TEXT, 0, ''),
+            Field::__constructField ('client_phone', VARCHAR, 20, ''),
+            Field::__constructField ('tax_no', VARCHAR, 20, ''),
+            Field::__constructField ('pic_name', VARCHAR, 100, ''),
+            Field::__constructField ('pic_mail', VARCHAR, 100, ''),
+            Field::__constructField ('pic_phone', VARCHAR, 20, ''),
         ];
     }
     

@@ -115,6 +115,9 @@ encryption.key              = hex2bin:{$secretKey}
             case 0:
                 if ($this->isInitiated ()) $this->response->redirect (base_url ('admin'));
                 
+                $pageData   = [
+                    'app_title' => 'Uniqore System Initiation'
+                ];
                 $viewPaths  = [
                     'template_html',
                     'template_header',
@@ -122,7 +125,7 @@ encryption.key              = hex2bin:{$secretKey}
                     'forger/uniqore_forgery_00',
                     'template_footer',
                 ];
-                $view = $this->renderView($viewPaths);
+                $view = $this->renderView($viewPaths, $pageData);
                 break;
             case 1:
                 if ($this->isInitiated ()) $this->response->redirect (base_url ('admin'));
@@ -146,6 +149,7 @@ encryption.key              = hex2bin:{$secretKey}
                                 'template_footer',
                             ];
                             $pageData   = [
+                                'app_title' => 'Uniqore System Initiation',
                                 'validated'     => TRUE,
                                 'newsukey'      => $post['newsukey'],
                                 'newsudb'       => $post['newsudb']
@@ -167,6 +171,7 @@ encryption.key              = hex2bin:{$secretKey}
                                 ];
                             else 
                                 $pageData = [
+                                    'app_title'         => 'Uniqore System Initiation',
                                     'forger_success'    => TRUE,
                                     'redirect'          => base_url ('admin')
                                 ];
@@ -203,6 +208,7 @@ encryption.key              = hex2bin:{$secretKey}
                             $newsudb    = "{$post['dbname']}.{$post['dbuser']}.{$post['dbpswd']}";
                             
                             $pageData   = [
+                                'app_title'     => 'Uniqore System Initiation',
                                 'validated'     => FALSE,
                                 'newsukey'      => $post['key'],
                                 'newsudb'       => $newsudb
@@ -228,7 +234,7 @@ encryption.key              = hex2bin:{$secretKey}
                         if ($this->generateRandomAuth () && $this->appendEnv ($post['newsukey'], $post['newsudb'], $dbtpl)) {
                             $forger = new DBForger ($dbtpl);
                             if (!$forger->isDatabaseExists ()) {
-                                $built = $forger->buildDatabase ();
+                                $built = $forger->buildDatabase (TRUE);
                                 if (!$built) {
                                     delete_files (SYS__UNIQORE_RANDAUTH_PATH);
                                     $json = [

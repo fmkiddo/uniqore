@@ -3,6 +3,9 @@ namespace App\Controllers;
 
 use App\Libraries\AssetType;
 use App\Libraries\PageViews;
+use App\Libraries\Forgery\Templates\OsamDatabaseTemplate;
+use App\Libraries\Forgery\DBForger;
+use App\Libraries\Forgery\DatabaseTemplate;
 
 class APIDashboard extends BaseUniqoreController {
     
@@ -32,6 +35,37 @@ class APIDashboard extends BaseUniqoreController {
         $this->session->destroy();
         $this->response->redirect (base_url ("uniqore/admin"));
         return "OK!";
+    }
+    
+    /**
+     * 
+     * @param string $api
+     * @param array $payload
+     * @return boolean
+     */
+    private function forgeClientDB (string $apiName, $payload=array ()) {
+        if ($apiName === NULL || strlen (trim ($apiName)) == 0) 
+            throw new \ErrorException ();
+        
+        $dbprefix   = "{$payload['clientdbprefix']}_";
+        $api        = ucfirst (strtolower ($apiName));
+        $dbTplName  = 'App\\Libraries\\Forgery\\Templates\\' . $api . 'DatabaseTemplate';
+        
+        /**
+         * 
+         * @var DatabaseTemplate $dbTemplate
+         */
+        $dbTemplate = new $dbTplName ($payload['clientdbname'], $dbprefix);
+        $dbTemplate->setDatabaseUser ($payload['clientdbuser']);
+        $dbTemplate->setDatabasePassword ($payload['clientdbpswd']);
+        
+        $forger     = new DBForger ($dbTemplate);
+        if ($forger->isDatabaseExists ()) return FALSE;
+        else {
+            $built = $forger->buildDatabase ();
+            if (!$built) return FALSE;
+            else return TRUE;
+        }
     }
     
     /**
@@ -149,6 +183,7 @@ class APIDashboard extends BaseUniqoreController {
                 ];
                 
                 $i  = 0;
+                $apiName    = '';
                 foreach ($formParam as $key => $param) {
                     if ($insertID !== 0) $param['clientid']  = $insertID;
                     
@@ -180,6 +215,7 @@ class APIDashboard extends BaseUniqoreController {
                         $payload    = $response['data']['payload'];
                         $payload    = unserialize ($this->decrypt (hex2bin ($payload)));
                         if ($key === 'account') {
+                            $apiName                = $param['clientapi'];
                             $insertID               = $payload['returnid'];
                             $retPayload['uuid']     = $payload['uuid'];
                             $retPayload['clientid'] = $param['clientcode'];
@@ -190,7 +226,7 @@ class APIDashboard extends BaseUniqoreController {
                 }
                 
                 $json   = [];
-                if ($i === 3) {
+                if ($i === 3 && $this->forgeClientDB ($apiName, $formParam['config'])) {
                     $hexed  = serialize ($retPayload);
                     $hexed  = bin2hex ($this->encrypt ($hexed));
                     $json   = [
@@ -252,7 +288,6 @@ class APIDashboard extends BaseUniqoreController {
         }
         
         $get = $this->request->getGet ();
-        
         $res    = $this->apiProcessor ($get);
         
         if (count ($get) > 0 && array_key_exists("route", $get)) $route = $get["route"];
@@ -282,7 +317,7 @@ class APIDashboard extends BaseUniqoreController {
                 'alertShow'     => FALSE
             ];
             
-            if (is_array ($res)) {
+            if (is_array ($res) && $res['status'] === 200) {
                 $payload    = unserialize ($this->decrypt (hex2bin ($res['data']['payload'])));
                 if ($route === 'clients') {
                     $pageData['alertShow']  = TRUE;

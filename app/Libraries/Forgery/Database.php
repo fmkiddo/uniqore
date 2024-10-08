@@ -12,8 +12,9 @@ abstract class Database implements DatabaseTemplate {
     
     protected abstract function __initDatabaseTemplate ();
     
-    public function __construct (string $dbname = '') {
-        $this->dbname = $dbname;
+    public function __construct (string $dbname = '', string $dbprefix = '') {
+        $this->dbname   = $dbname;
+        $this->dbprefix = $dbprefix;
         $this->__initDatabaseTemplate();
     }
     

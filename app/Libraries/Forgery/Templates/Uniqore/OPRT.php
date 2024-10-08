@@ -16,10 +16,10 @@ class OPRT extends Table {
     protected function __initTableAttributes() {
         $this->tableName    = 'oprt';
         $this->tableFields  = [
-            Field::__constructField ('generated', 'TIMESTAMP', 0, new RawSql('CURRENT_TIMESTAMP'), FALSE, TRUE),
-            Field::__constructField ('inquirer', 'VARCHAR', 200, ''),
-            Field::__constructField ('token', 'VARCHAR', 1000, ''),
-            Field::__constructField ('has_expired', 'BOOLEAN', 0, new RawSql('FALSE'))
+            Field::__constructField ('generated', TIMESTAMP, 0, new RawSql('CURRENT_TIMESTAMP'), FALSE, TRUE),
+            Field::__constructField ('inquirer', VARCHAR, 200, ''),
+            Field::__constructField ('token', VARCHAR, 1000, ''),
+            Field::__constructField ('has_expired', BOOLEAN, 0, new RawSql('FALSE'))
         ];
     }
     

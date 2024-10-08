@@ -93,6 +93,57 @@ define('EVENT_PRIORITY_NORMAL', 100);
  */
 define('EVENT_PRIORITY_HIGH', 10);
 
+/**
+ | --------------------------------------------------------------------------
+ | MySQL datatype constants
+ | --------------------------------------------------------------------------
+ 
+ */
+defined ('CHAR')                            || define ('CHAR', 'CHAR');
+defined ('VARCHAR')                         || define ('VARCHAR', 'VARCHAR');
+
+defined ('TINYTEXT')                        || define ('TINYTEXT', 'TINYTEXT');
+defined ('TEXT')                            || define ('TEXT', 'TEXT');
+defined ('MEDIUMTEXT')                      || define ('MEDIUMTEXT', 'MEDIUMTEXT');
+defined ('LONGTEXT')                        || define ('LONGTEXT', 'LONGTEXT');
+
+defined ('BINARY')                          || define ('BINARY', 'BINARY');
+defined ('VARBINARY')                       || define ('VARBINARY', 'VARBINARY');
+
+defined ('TINYBLOB')                        || define ('TINYBLOB', 'TINYBLOB');
+defined ('BLOB')                            || define ('BLOB', 'BLOB');
+defined ('MEDIUMBLOB')                      || define ('MEDIUMBLOB', 'MEDIUMBLOB');
+defined ('LONGBLOB')                        || define ('LONGBLOB', 'LONGBLOB');
+
+defined ('ENUMERATION')                     || define ('ENUMERATION', 'ENUM');
+defined ('SET')                             || define ('SET', 'SET');
+
+defined ('TINYINT')                         || define ('TINYINT', 'TINYINT');
+defined ('SMALLINT')                        || define ('SMALLINT', 'SMALLINT');
+defined ('MEDIUMINT')                       || define ('MEDIUMINT', 'MEDIUMINT');
+defined ('INTEGER')                         || define ('INTEGER', 'INT');
+defined ('BIGINT')                          || define ('BIGINT', 'BIGINT');
+
+defined ('DECIMAL')                         || define ('DECIMAL', 'DECIMAL');
+defined ('FLOATING')                        || define ('FLOATING', 'FLOAT');
+defined ('DOUBLE')                          || define ('DOUBLE', 'DOUBLE');
+defined ('REAL')                            || define ('REAL', 'REAL');
+
+defined ('BIT')                             || define ('BIT', 'BIT');
+defined ('BOOLEAN')                         || define ('BOOLEAN', 'BOOLEAN');
+defined ('SERIAL')                          || define ('SERIAL', 'SERIAL');
+
+defined ('DATE')                            || define ('DATE', 'DATE');
+defined ('DATETIME')                        || define ('DATETIME', 'DATETIME');
+defined ('TIMESTAMP')                       || define ('TIMESTAMP', 'TIMESTAMP');
+defined ('TIME')                            || define ('TIME', 'TIME');
+defined ('YEAR')                            || define ('YEAR', 'YEAR');
+
+/**
+ | --------------------------------------------------------------------------
+ | 
+ | --------------------------------------------------------------------------
+ */
 defined ('GOOGLE_RECAPTCHAV3_SITEKEY')      || define ('GOOGLE_RECAPTCHAV3_SITEKEY', '6LetgzQqAAAAAC2pL2jTdajJfI5JEwmL6PENqsAE');
 defined ('GOOGLE_RECAPTCHAV3_SECRETKEY ')   || define ('GOOGLE_RECAPTCHAV3_SECRETKEY ', '6LetgzQqAAAAAMU1J98txpddlNq_eOZz6ucm18-M');
 defined ('SYS__UNIQORE_RANDAUTH_PATH')      || define ('SYS__UNIQORE_RANDAUTH_PATH', '../.randauth');

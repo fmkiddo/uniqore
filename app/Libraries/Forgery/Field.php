@@ -36,6 +36,14 @@ class Field implements FieldTemplate {
                 $foreignKey, $foreignTable, $foreignFieldName, $auto_increment, $null);
     }
     
+    public static function __constructUnsignedPrimaryIntegerField (string $fieldName, bool $autoIncrement = TRUE) {
+        return Field::__constructField ($fieldName, INTEGER, 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', $autoIncrement, FALSE);
+    }
+    
+    public static function __constructUUIDField (string $fieldName, int $length = 50, bool $isPrimary = FALSE, bool $isUnique = TRUE) {
+        return Field::__constructField ($fieldName, VARCHAR, $length, '', FALSE, $isPrimary, $isUnique, 'UUID_FIELD');
+    }
+    
     public function __construct (
             string $fieldName, 
             string $fieldType,

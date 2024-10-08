@@ -16,13 +16,13 @@ class OUSR extends Table {
     protected function __initTableAttributes() {
         $this->tableName = 'ousr';
         $this->tableFields = [
-            Field::__constructField ('id', 'INT', 0, 0, TRUE, TRUE, FALSE, '', FALSE, '', '', TRUE, FALSE),
-            Field::__constructField ('uid', 'VARCHAR', 50, '', FALSE, FALSE, TRUE, 'OUSR_UUID'),
-            Field::__constructField ('username', 'VARCHAR', 50, '', FALSE, FALSE, TRUE),
-            Field::__constructField ('email', 'VARCHAR', 50, '', FALSE, FALSE, TRUE),
-            Field::__constructField ('phone', 'VARCHAR', 50, '', FALSE, FALSE, TRUE),
-            Field::__constructField ('password', 'VARCHAR', 150, ''),
-            Field::__constructField ('active', 'BOOLEAN', 0, new RawSql ('TRUE'))
+            Field::__constructUnsignedPrimaryIntegerField ('id'),
+            Field::__constructUUIDField ('uid'),
+            Field::__constructField ('username', VARCHAR, 50, '', FALSE, FALSE, TRUE),
+            Field::__constructField ('email', VARCHAR, 50, '', FALSE, FALSE, TRUE),
+            Field::__constructField ('phone', VARCHAR, 50, '', FALSE, FALSE, TRUE),
+            Field::__constructField ('password', VARCHAR, 150, ''),
+            Field::__constructField ('active', BOOLEAN, 0, new RawSql ('TRUE'))
         ];
     }
 }
