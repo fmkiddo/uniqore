@@ -84,9 +84,8 @@ class ApiUserProfile extends BaseUniqoreAPIController {
                 ->update ();
         
         $payload        = [
-            'affectedrows'  => 0
+            'affectedrows'  => $this->model->affectedRows ()
         ];
-        
         return [
             'status'    => 200,
             'error'     => NULL,

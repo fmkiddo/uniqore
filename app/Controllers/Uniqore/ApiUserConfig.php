@@ -63,14 +63,23 @@ class ApiUserConfig extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
     protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
+        $clientID       = $json['clientid'];
+        $updateParams   = [
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
+        $this->model->set ($updateParams)
+                ->where ('client_id', $clientID)
+                ->update ();
+        
         $payload        = [
-            'affectedrows'  => 0
+            'affectedrows'  => $this->model->affectedRows ()
         ];
         return [
             'status'    => 200,
             'error'     => NULL,
             'messages'  => [
-                'success'   => 'API User configuration update is not allowed'
+                'success'   => 'OK!'
             ],
             'data'      => [
                 'uuid'      => time (),
