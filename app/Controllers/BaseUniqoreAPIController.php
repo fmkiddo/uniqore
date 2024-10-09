@@ -200,7 +200,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
                     $messages   = "Query to $this->modelName::create was called on $time and return reported as failed";
                 }
                 $this->doLog ($level, $messages, $userid);
-                return $this->respond ($retVal);
+                return $this->respondCreated ($retVal);
             } 
         }
         return $this->generateUnauthorizedCommand ();
@@ -278,7 +278,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
                         $messages   = "Query to $this->modelName::update was called on $time reported query execution was failed";
                     }
                     $this->doLog ($level, $messages, $userid);
-                    return $this->respond ($retVal);
+                    return $this->respondUpdated ($retVal);
                 }
             }
         }

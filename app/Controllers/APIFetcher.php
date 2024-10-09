@@ -262,15 +262,38 @@ class APIFetcher extends BaseUniqoreController {
                     $clientcode     = $client['client_code'];
                     $clientdata     = $client['client_data'];
                     $clientprofile  = $client['client_info'];
+                    $clientpic      = $clientprofile['pic'];
                     $clientapi      = $client['client_api'];
+                    $clientconfig   = $client['client_config'];
                     $status         = $clientdata['status'];
+                    
+                    $viewData       = [
+                        'uuid'          => base64_encode ($client['uid']),
+                        'code'          => $clientcode,
+                        'status'        => $status ? 'true' : 'false' ,
+                        'api'           => $clientapi['code'],
+                        'name'          => $clientprofile['name'],
+                        'lname'         => $clientprofile['legal_name'],
+                        'addr1'         => $clientprofile['address1'],
+                        'addr2'         => $clientprofile['address2'],
+                        'cphone'        => $clientprofile['phone'],
+                        'taxno'         => $clientprofile['tax_no'],
+                        'picname'       => $clientpic['name'],
+                        'picmail'       => $clientpic['email'],
+                        'picphone'      => $clientpic['phone'],
+                        'dbname'        => $clientconfig['dbname'],
+                        'dbuser'        => $clientconfig['dbuser'],
+                        'dbpswd'        => base64_encode(generate_password (16)),
+                        'dbprefix'      => $clientconfig['dbprefix'],
+                    ];
+                    
                     $row    = [
                         $i,
                         $clientcode,
                         $clientprofile['legal_name'],
                         $clientapi['name'],
                         ($status ? 'active' : 'inactive'),
-                        ''
+                        view ('uniqore/dropdowns/client-dropdown', $viewData)
                     ];
                     array_push ($theData, $row);
                     $i++;

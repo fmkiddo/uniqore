@@ -76,7 +76,38 @@ class ApiUser extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
     protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
-        return [];
+        $returnid       = 0;
+        $client         = $this->model->where ('uid', $id)->find ();
+        if (count ($client)) $returnid  = $client[0]->id;
+        
+        $updateParams   = [
+            'status'            => $json['clientstatus'],
+            'updated_at'        => date ('Y-m-d H:i:s'),
+            'updated_by'        => $userid
+        ];
+        $this->model->set ($updateParams)
+                ->where ('uid', $id)
+                ->update ();
+                
+        $affectedRows   = $this->model->affectedRows ();
+        $payload        = [
+            'affectedrows'  => $affectedRows,
+            'returnid'      => $returnid,
+            'uuid'          => $id,
+            'serial'        => ''
+        ];
+        return [
+            'status'    => 200,
+            'error'     => NULL,
+            'messages'  => [
+                'success'   => 'OK!'
+            ],
+            'data'      => [
+                'uuid'      => time (),
+                'timestamp' => date ('Y-m-d H:i:s'),
+                'payload'   => bin2hex ($this->encrypt (serialize ($payload)))
+            ]
+        ];
     }
     
     /**
@@ -105,9 +136,9 @@ class ApiUser extends BaseUniqoreAPIController {
         if (strlen ($sortType) > 0) $this->model->orderBy ($sortCol, $sortType);
         
         return $this->model
-                ->select ('ocac.uid, ocac.client_code, ocac.client_passcode, ocac.client_keycode, cac1.client_name, ocac.client_apicode, 
-                    ocac.status, oapi.api_name, oapi.api_dscript, cac1.client_lname, cac1.address1, cac1.address2, cac1.tax_no, cac1.pic_name, 
-                    cac1.pic_mail, cac1.pic_phone, cac2.db_name, cac2.db_user, cac2.db_prefix')
+                ->select ('ocac.uid, ocac.client_code, ocac.client_passcode, ocac.client_keycode, cac1.client_name, ocac.client_apicode,
+                    cac1.client_phone, ocac.status, oapi.api_name, oapi.api_dscript, cac1.client_lname, cac1.address1, cac1.address2, 
+                    cac1.tax_no, cac1.pic_name, cac1.pic_mail, cac1.pic_phone, cac2.db_name, cac2.db_user, cac2.db_prefix')
                 ->join ('cac1', 'cac1.client_id=ocac.id', 'left')
                 ->join ('cac2', 'cac2.client_id=ocac.id', 'left')
                 ->join ('oapi', 'oapi.api_code=ocac.client_apicode', 'left')
@@ -178,7 +209,7 @@ class ApiUser extends BaseUniqoreAPIController {
                         'dbprefix'          => $data->db_prefix
                     ],
                     'client_api'        => [
-                        'code'              => $data->api_code,
+                        'code'              => $data->client_apicode,
                         'name'              => $data->api_name,
                         'dscript'           => $data->api_dscript,
                     ],

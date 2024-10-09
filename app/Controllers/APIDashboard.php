@@ -204,9 +204,11 @@ class APIDashboard extends BaseUniqoreController {
                     
                     $subroutes  = $this->subroutes[$key];
                     if ($uuid === 'none') {
-                        $url    = site_url ("api-uniqore/$subroutes?pollute=$pollute");
-                        $method = 'post';
+                        $url        = site_url ("api-uniqore/$subroutes?pollute=$pollute");
+                        $method     = 'post';
                     } else {
+                        $url        = site_url ("api-uniqore/$subroutes/$uuid?pollute=$pollute");
+                        $method     = 'put';
                     };
                     
                     $response   = $this->sendRequest ($url, $curlOpts, $method);
@@ -374,19 +376,31 @@ class APIDashboard extends BaseUniqoreController {
                         ];
                     break;
                 case 'apiuser':
-                    $rules  = [
-                        'input-newcname'        => 'required',
-                        'input-newccode'        => 'required',
-                        'input-newcapi'         => 'required',
-                        'input-newclname'       => 'required',
-                        'input-newcpic'         => 'required',
-                        'input-newcpicmail'     => 'required',
-                        'input-newcpicphone'    => 'required',
-                        'input-newcdbname'      => 'required',
-                        'input-newcdbuser'      => 'required',
-                        'input-newcdbpswd'      => 'required|password_strength',
-                        'input-newcdbprefix'    => 'required'
-                    ];
+                    if ($post['input-uuid'] === 'none')
+                        $rules  = [
+                            'input-newcname'        => 'required',
+                            'input-newccode'        => 'required',
+                            'input-newcapi'         => 'required',
+                            'input-newclname'       => 'required',
+                            'input-newcphone'       => 'required',
+                            'input-newcpic'         => 'required',
+                            'input-newcpicmail'     => 'required',
+                            'input-newcpicphone'    => 'required',
+                            'input-newcdbname'      => 'required',
+                            'input-newcdbuser'      => 'required',
+                            'input-newcdbpswd'      => 'required|password_strength',
+                            'input-newcdbprefix'    => 'required'
+                        ];
+                    else
+                        $rules  = [
+                            'input-newcname'        => 'required',
+                            'input-newccode'        => 'required',
+                            'input-newclname'       => 'required',
+                            'input-newcphone'       => 'required',
+                            'input-newcpic'         => 'required',
+                            'input-newcpicmail'     => 'required',
+                            'input-newcpicphone'    => 'required',
+                        ];
                     break;
             }
             

@@ -12,14 +12,14 @@
 									<div class="modal-body">
 										<div class="form-group">
 											<label for="input-newcname">Client Name:</label>
-											<input type="text" class="form-control" id="cname" name="input-newcname" placeholder="Type new API client name" required />
+											<input type="text" class="form-control" id="cname" name="input-newcname" placeholder="Type new API client name" required data-readonly="true" />
 										</div>
 										<div id="client-init" data-type="form-section">
 											<div class="form-group">
 												<label for="input-newccode">Client Code:</label>
 												<div class="input-group">
 													<input type="text" class="form-control" id="ccode" name="input-newccode" data-readonly="true" placeholder="Type new API client code or press button to let system generate client code" required />
-													<button type="button" id="generate-ccode" class="btn btn-outline-primary" title="Generate data">
+													<button type="button" id="generate-ccode" class="btn btn-outline-primary" title="Generate data" data-update-disabled="true">
 														<i class="mdi mdi-pencil-circle-outline"></i>
 													</button>
 												</div>
@@ -84,7 +84,7 @@
 												<label for="input-newcdbname">DB Name:</label>
 												<div class="input-group">
 													<input type="text" id="cdbname" class="form-control" name="input-newcdbname" data-readonly="true" placeholder="Type client db Name or click button to generate random db name" required>
-													<button type="button" id="generate-dbname" class="btn btn-outline-primary" title="Generate data">
+													<button type="button" id="generate-dbname" class="btn btn-outline-primary" title="Generate data" data-update-disabled="true">
 														<i class="mdi mdi-pencil-circle-outline"></i>
 													</button>
 												</div>
@@ -93,7 +93,7 @@
 												<label for="input-newcdbuser">DB Username:</label>
 												<div class="input-group">
 													<input type="text" id="cdbuser" class="form-control" name="input-newcdbuser" data-readonly="true" placeholder="Type client db user or click button to generate random db user" required>
-													<button type="button" id="generate-dbuser" class="btn btn-outline-primary" title="Generate data">
+													<button type="button" id="generate-dbuser" class="btn btn-outline-primary" title="Generate data" data-update-disabled="true">
 														<i class="mdi mdi-pencil-circle-outline"></i>
 													</button>
 												</div>
@@ -102,7 +102,7 @@
 												<label for="input-newcdbpswd">DB Password:</label>
 												<div class="input-group">
 													<input type="password" id="cdbpswd" class="form-control" name="input-newcdbpswd" data-readonly="true" placeholder="Type client db password or click button to generate random db password" required>
-													<button type="button" id="generate-dbpswd" class="btn btn-outline-primary" title="Generate data">
+													<button type="button" id="generate-dbpswd" class="btn btn-outline-primary" title="Generate data" data-update-disabled="true">
 														<i class="mdi mdi-lock-reset"></i>
 													</button>
 												</div>
@@ -111,7 +111,7 @@
 												<label for="input-newcdbprefix">DB Table Prefix:</label>
 												<div class="input-group">
 													<input type="text" id="cdbprefix" class="form-control" name="input-newcdbprefix" maxlength="4" size="4" data-readonly="true" placeholder="Type client table custom prefix or click button to reset default table prefix" required>
-													<button type="button" id="generate-dbprefix" class="btn btn-outline-primary" title="Return to default">
+													<button type="button" id="generate-dbprefix" class="btn btn-outline-primary" title="Return to default" data-update-disabled="true">
 														<i class="mdi mdi-refresh"></i>
 													</button>
 												</div>
@@ -123,7 +123,7 @@
         									</div>
 										</div>
 										<div class="form-check">
-											<input type="checkbox" class="form-check-input" name="input-newcstatus" value="true" checked />
+											<input id="status" type="checkbox" class="form-check-input" name="input-newcstatus" value="true" checked />
 											<label class="form-check-labeel" for="input-cstatus">Active</label>
 										</div>
 									</div>

@@ -59,6 +59,10 @@ $(function () {
 					
 					if ($(this).is ('[type="password"]')) $(this).removeAttr ('required');
 				});
+				
+				$form.find ('[data-update-disabled="true"]').each (function () {
+					$(this).prop ('disabled', true);
+				});
 			}
 		};
 		
@@ -209,6 +213,8 @@ $(function () {
 					if ($(this).is ('#uuid')) $(this).val ('none');
 				});
 			}
+			
+			$(this).find ('[data-update-disabled="true"]').prop ('disabled', false);
 		});
 		
 		$('.modal').on ('shown.bs.modal', function ($event) {

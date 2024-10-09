@@ -14,21 +14,6 @@ class ApiUserProfile extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
     protected function doCreate (array $json, $userid = 0): array|ResponseInterface {
-        /**$payload    = [
-            'returnid'  => 1
-        ];
-        return [
-            'status'    => 200,
-            'error'     => NULL,
-            'messages'  => [
-                'success'   => 'API Call success'
-            ],
-            'data'      => [
-                'uuid'      => time (),
-                'timestamp' => date ('Y-m-d H:i:s'),
-                'payload'   => bin2hex ($this->encrypt ($payload))
-            ]
-        ];**/
         $insertParams   = [
             'client_id'     => $json['clientid'],
             'client_name'   => $json['clientname'],
@@ -80,6 +65,40 @@ class ApiUserProfile extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
     protected function doUpdate ($id, array $json, $userid = 0): array|ResponseInterface {
+        $clientID       = $json['clientid'];
+        $updateParams   = [
+            'client_name'   => $json['clientname'],
+            'client_lname'  => $json['clientlname'],
+            'address1'      => $json['clientaddr1'],
+            'address2'      => $json['clientaddr2'],
+            'client_phone'  => $json['clientphone'],
+            'tax_no'        => $json['clienttaxn'],
+            'pic_name'      => $json['clientpicname'],
+            'pic_mail'      => $json['clientpicmail'],
+            'pic_phone'     => $json['clientpicphone'],
+            'updated_at'    => date ('Y-m-d H:i:s'),
+            'updated_by'    => $userid
+        ];
+        $this->model->set ($updateParams)
+                ->where ('client_id', $clientID)
+                ->update ();
+        
+        $payload        = [
+            'affectedrows'  => 0
+        ];
+        
+        return [
+            'status'    => 200,
+            'error'     => NULL,
+            'messages'  => [
+                'success'   => 'OK!'
+            ],
+            'data'      => [
+                'uuid'      => time (),
+                'timestamp' => date ('Y-m-d H:i:s'),
+                'payload'   => bin2hex ($this->encrypt (serialize ($payload)))
+            ]
+        ];
     }
     
     /**
@@ -96,6 +115,28 @@ class ApiUserProfile extends BaseUniqoreAPIController {
      * @see \App\Controllers\BaseUniqoreAPIController::findWithFilter()
      */
     protected function findWithFilter ($get) {
+        $payload    = explode ('#', $get['payload']);
+        $filter     = $payload[1];
+        $sortType   = (!array_key_exists ('typesort', $get)) ? '' : $get['typesort'];
+        $sortCol    = (!array_key_exists ('colsort', $get)) ? '' : $get['colsort'];
+        
+        if (strlen (trim ($filter))) {
+            $match   = [
+                'client_name'   => $filter,
+                'client_lname'  => $filter,
+                'address1'      => $filter,
+                'address2'      => $filter,
+                'client_phone'  => $filter,
+                'pic_name'      => $filter,
+                'pic_mail'      => $filter,
+                'pic_phone'     => $filter,
+            ];
+            $this->model->orLike ($match);
+        }
+        
+        if (strlen ($sortType) > 0) $this->model->orderBy ($sortCol, $sortType);
+        
+        return $this->model->findAll ();
     }
 
     
