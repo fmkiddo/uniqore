@@ -172,8 +172,9 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         $user_agent = $this->request->getUserAgent();
         if (!strlen (trim ($messages))) 
             $messages   = "API Access to {$api_name} successfully, host: {$host}, method: {$method}, type: {$type}, agent: {$user_agent}, ip: {$ip_address}, id: {$access_id}";
-        $query      = "INSERT INTO fmk_oalg (level, message, host, method, ctype, app_userid, agent, ip) 
-        VALUES ('{$level}', '{$messages}', '{$host}', '{$method}', '{$type}', '{$access_id}', '{$user_agent}', '{$ip_address}');";
+        $logid      = generate_random_uuid_v4();
+        $query      = "INSERT INTO fmk_oalg (uuid, level, message, host, method, ctype, app_userid, agent, ip) 
+        VALUES ('{$logid}', '{$level}', '{$messages}', '{$host}', '{$method}', '{$type}', '{$access_id}', '{$user_agent}', '{$ip_address}');";
         $db         = \Config\Database::connect ($this->getDatabaseConnection ());
         $db->simpleQuery ($query);
         $db->close ();

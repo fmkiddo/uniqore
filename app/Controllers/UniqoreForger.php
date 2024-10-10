@@ -47,7 +47,7 @@ database.default.password   = {$db_conf[2]}
 database.default.DBDriver   = MySQLi
 database.default.DBPrefix   = {$dbtpl->getDatabasePrefix ()}
 database.default.charset    = utf8mb4
-database.default.DBCOllat   = utf8mb4_general_ci
+database.default.DBCOllat   = utf8mb4_unicode_520_ci
 database.default.port       = 3306
 
 encryption.driver           = Sodium

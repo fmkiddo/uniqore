@@ -15,7 +15,8 @@ class OALG extends Table {
     protected function __initTableAttributes() {
         $this->tableName    = 'oalg';
         $this->tableFields  = [
-            Field::__constructField ('logtime', TIMESTAMP, 0, new RawSql ('CURRENT_TIMESTAMP'), FALSE, TRUE, FALSE, '', FALSE, '', '', FALSE, FALSE),
+            Field::__constructField ('uuid', VARCHAR, 100, '', FALSE, TRUE),
+            Field::__constructField ('logtime', TIMESTAMP, 0, new RawSql ('CURRENT_TIMESTAMP')),
             Field::__constructField ('level', VARCHAR, 10, ''),
             Field::__constructField ('message', TEXT, 0, ''),
             Field::__constructField ('host', VARCHAR, 100, ''),

@@ -120,7 +120,7 @@ class DBForger {
                     'pConnect'      => FALSE,
                     'DBDebug'       => FALSE,
                     'charset'       => 'utf8mb4',
-                    'DBCollat'      => 'utf8mb4_general_ci',
+                    'DBCollat'      => 'utf8mb4_unicode_520_ci',
                     'swapPre'       => '',
                     'encrypt'       => FALSE,
                     'compress'      => FALSE,
