@@ -21,7 +21,7 @@ class OAPI extends Table {
             Field::__constructField ('api_code', CHAR, 4, '', FALSE, FALSE, TRUE),
             Field::__constructField ('api_name', VARCHAR, 200, ''),
             Field::__constructField ('api_dscript', TEXT, 0, ''),
-            Field::__constructField ('api_prefix', CHAR, 3, ''),
+            Field::__constructField ('api_prefix', VARCHAR, 5, ''),
             Field::__constructField ('status', BOOLEAN, 0, new RawSql("TRUE"))
         ];   
     }
