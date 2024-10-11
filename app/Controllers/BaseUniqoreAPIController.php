@@ -163,6 +163,11 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
     
     abstract protected function responseFormatter ($queryResult): array;
     
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseRESTfulController::doLog()
+     */
     protected function doLog ($level, $messages='', $access_id=0) {
         $host       = $this->request->getUri ()->getHost ();
         $method     = $this->request->getMethod ();

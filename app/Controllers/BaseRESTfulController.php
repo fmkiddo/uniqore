@@ -68,16 +68,11 @@ abstract class BaseRESTfulController extends ResourceController {
     
     /**
      * 
-     * @param string $level
+     * @param mixed $level
+     * @param string $messages
      * @param number $access_id
-     * @return string|array
      */
-    protected function doLog ($level, $access_id=0) {
-        if ($this->apiName === UNIQORE_NAME) return 'default';
-        else {
-            
-        }
-    }
+    protected function doLog ($level, $messages='', $access_id=0) { }
     
     /**
      * {@inheritDoc}

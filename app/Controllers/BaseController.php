@@ -53,6 +53,7 @@ abstract class BaseController extends Controller {
     
     protected function addPageData ($name, $value) {
         $this->pageData[$name] = $value;
+        return $this;
     }
     
     protected function generateJSON404 () {
@@ -98,18 +99,18 @@ abstract class BaseController extends Controller {
         $this->appConfig	= config ('App');
         $this->parser       = \Config\Services::parser ();
         $this->session      = \Config\Services::session ();
-        $this->addPageData ('base_url', base_url ());
-        $this->addPageData ('site_url', site_url ());
-        $this->addPageData ('styles', $this->styleAssets);
-        $this->addPageData ('scripts', $this->scriptAssets);
+        $this->addPageData ('base_url', base_url ())
+                ->addPageData ('site_url', site_url ())
+                ->addPageData ('styles', $this->styleAssets)
+                ->addPageData ('scripts', $this->scriptAssets);
     }
     
     protected function renderView ($viewPaths, array $pageData=[]): string {
         foreach ($pageData as $key => $value) $this->addPageData($key, $value);
-        $this->addPageData ('charset', $this->appConfig->charset);
-        $this->addPageData ('csrf_name', csrf_token ());
-        $this->addPageData ('csrf_data', csrf_hash ());
-        $this->addPageData ('year', date ('Y'));
+        $this->addPageData ('charset', $this->appConfig->charset)
+                ->addPageData ('csrf_name', csrf_token ())
+                ->addPageData ('csrf_data', csrf_hash ())
+                ->addPageData ('year', date ('Y'));
         $this->parser->setData($this->pageData);
         $renderView = '';
         if (is_string ($viewPaths)) $renderView = $this->parser->render ($viewPaths);
