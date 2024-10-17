@@ -19,6 +19,7 @@ class CAC1 extends Table {
             Field::__constructField ('client_id', INTEGER, TRUE, 0, 0, FALSE, TRUE),
             Field::__constructField ('client_name', VARCHAR, 100, ''),
             Field::__constructField ('client_lname', VARCHAR, 100, ''),
+            Field::__constructField ('client_logo', VARCHAR, 1000, ''),
             Field::__constructField ('address1', TEXT, 0, ''),
             Field::__constructField ('address2', TEXT, 0, ''),
             Field::__constructField ('client_phone', VARCHAR, 20, ''),

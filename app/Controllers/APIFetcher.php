@@ -46,7 +46,7 @@ class APIFetcher extends BaseUniqoreController {
         
         $uuid   = base64_encode ($this->getLoggedUUID ());
         $load   = "find%23{$searchVal}&colsort={$sortTarget}&typesort={$sort}";
-        $url    = site_url ("api-uniqore/{$fetcher}?payload={$load}&pollute=$uuid");
+        $url    = site_url ("controls/{$fetcher}?payload={$load}&pollute=$uuid");
         
         $response   = $this->sendRequest($url, $curlOpts);
         $json       = json_get ($response);

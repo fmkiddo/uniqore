@@ -107,6 +107,8 @@ class APIDashboard extends BaseUniqoreController {
                     'active'        => $active
                 ];
             case 'apiuser':
+                $logoFile   = $this->request->getFile ('input-newclogo');
+                $contents   = base64_encode (file_get_contents ($logoFile));
                 return [
                     'account'   => [
                         'clientcode'        => $post['input-newccode'],
@@ -117,6 +119,12 @@ class APIDashboard extends BaseUniqoreController {
                         'clientid'          => '',
                         'clientname'        => $post['input-newcname'],
                         'clientlname'       => $post['input-newclname'],
+                        'clientlogo'        => [
+                            'name'              => generate_token (16),
+                            'mime-type'         => $logoFile->getMimeType (),
+                            'extension'         => $logoFile->getExtension (),
+                            'contents'          => $contents,
+                        ],
                         'clientaddr1'       => $post['input-newcaddr1'],
                         'clientaddr2'       => $post['input-newcaddr2'],
                         'clientphone'       => $post['input-newcphone'],
@@ -165,10 +173,10 @@ class APIDashboard extends BaseUniqoreController {
                 
                 $json   = [];
                 if ($uuid === 'none') {
-                    $url        = site_url ("api-uniqore/$routes?pollute=$pollute");
+                    $url        = site_url ("controls/$routes?pollute=$pollute");
                     $method     = 'post';
                 } else {
-                    $url        = site_url ("api-uniqore/$routes/$uuid?pollute=$pollute");
+                    $url        = site_url ("controls/$routes/$uuid?pollute=$pollute");
                     $method     = 'put';
                 }
                 $response   = $this->sendRequest ($url, $curlOpts, $method);
@@ -204,10 +212,10 @@ class APIDashboard extends BaseUniqoreController {
                     
                     $subroutes  = $this->subroutes[$key];
                     if ($uuid === 'none') {
-                        $url        = site_url ("api-uniqore/$subroutes?pollute=$pollute");
+                        $url        = site_url ("controls/$subroutes?pollute=$pollute");
                         $method     = 'post';
                     } else {
-                        $url        = site_url ("api-uniqore/$subroutes/$uuid?pollute=$pollute");
+                        $url        = site_url ("controls/$subroutes/$uuid?pollute=$pollute");
                         $method     = 'put';
                     };
                     

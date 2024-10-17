@@ -4,20 +4,43 @@ namespace App\Controllers\Uniqore;
 
 use App\Controllers\BaseUniqoreAPIController;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Files\File;
 
 class ApiUserProfile extends BaseUniqoreAPIController {
     
     protected $modelName    = 'App\Models\Uniqore\ClientDetail';
     
+    private function clientImageDumper (array $fileinfo): bool {
+        $dumpPath       = '../writable/uploads/uniqore';
+        if (!file_exists($dumpPath)) mkdir ($dumpPath, 0777, TRUE);
+        $fileSavePath   = "{$dumpPath}/{$fileinfo['name']}.{$fileinfo['extension']}";
+        $fileContents   = base64_decode ($fileinfo['contents']);
+        $written        = write_file ($fileSavePath, $fileContents, 'wb');
+        return $written;
+    }
+    
     /**
      * {@inheritDoc}
-     * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
+     * @see \App\Controllers\BaseUniqoreAPIController::__initComponents()
+     */
+    protected function __initComponents() {
+        $this->addHelper ('filesystem');
+        parent::__initComponents ();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseUniqoFile($path)ller::doCreate()
      */
     protected function doCreate (array $json, $userid = 0): array|ResponseInterface {
+        $clientLogo     = $json['clientlogo'];
+        $this->clientImageDumper ($clientLogo);
+        
         $insertParams   = [
             'client_id'     => $json['clientid'],
             'client_name'   => $json['clientname'],
             'client_lname'  => $json['clientlname'],
+            'client_logo'   => "{$clientLogo['name']}.{$clientLogo['extension']}",
             'address1'      => $json['clientaddr1'],
             'address2'      => $json['clientaddr2'],
             'client_phone'  => $json['clientphone'],

@@ -1,7 +1,7 @@
 					<div id="modal-form" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modal-message" aria-hidden="true">
 						<div class="modal-dialog modal-lg modal-dialog-centered">
 							<div class="modal-content">
-								<form method="post" enctype="application/x-www-form-urlencoded" autocomplete="off" data-doajax="true" data-validator="{validate_url}" data-generator="{generate_url}">
+								<form method="post" enctype="multipart/form-data" autocomplete="off" data-doajax="true" data-validator="{validate_url}" data-generator="{generate_url}">
 									<input type="hidden" name="{csrf_name}" value="{csrf_data}" />
 									<input type="hidden" name="target" value="{dts_fetch}" />
 									<input type="hidden" id="uuid" name="input-uuid" value="none" />
@@ -37,6 +37,10 @@
         									</div>
 										</div>
 										<div id="client-info" data-type="form-section" class="d-hidden">
+											<div class="form-group">
+												<label for="input-newclogo">Logo:</label>
+												<input type="file" class="form-control" id="clogo" name="input-newclogo" required />
+											</div>
 											<div class="form-group">
 												<label for="input-newclname">Legal Name:</label>
 												<input type="text" id="clname" class="form-control" name="input-newclname" required />

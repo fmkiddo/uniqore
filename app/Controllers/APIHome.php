@@ -67,7 +67,7 @@ class APIHome extends BaseUniqoreController {
                             'User-Agent'    => $this->request->getUserAgent (),
                         ],
                     ];
-                    $response   = $this->sendRequest (site_url ("api-uniqore/users?payload=find%23{$loginname}"), $curlOptions);
+                    $response   = $this->sendRequest (site_url ("controls/users?payload=find%23{$loginname}"), $curlOptions);
                     $json       = json_get ($response);
                     if (!is_array($json)) $error  = 'Invalid server response';
                     else 
