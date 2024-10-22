@@ -4,7 +4,6 @@ namespace App\Controllers\Uniqore;
 
 use App\Controllers\BaseUniqoreAPIController;
 use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\Files\File;
 
 class ApiUserProfile extends BaseUniqoreAPIController {
     

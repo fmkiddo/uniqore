@@ -175,3 +175,5 @@ defined ('UNQIORE_TITLE')                   || define ('UNIQORE_TITLE', 'Uniqore
 defined ('UNIQORE_RANDOM_PASSCODE')         || define ('UNIQORE_RANDOM_PASSCODE', 32);
 defined ('UNIQORE_RANDOM_CLIENT')           || define ('UNIQORE_RANDOM_CLIENT', 5);
 defined ('UNQIORE_RANDOM_DBPSWD')           || define ('UNQIORE_RANDOM_DBPSWD', 16);
+defined ('UNIQORE_DEFAULT_ENCDRIVER')       || define ('UNIQORE_DEFAULT_ENCDRIVER', 'Sodium');
+defined ('UNIQORE_DEFAULT_CIPHER')          || define ('UNIQORE_DEFAULT_CIPHER', 'XChaCha20-Poly1305');

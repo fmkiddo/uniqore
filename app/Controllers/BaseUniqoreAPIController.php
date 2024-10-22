@@ -20,18 +20,6 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         return base64_decode ($get['pollute'], TRUE);
     }
     
-    private function getUserID () {
-        $uuid   = $this->getPollute ();
-        if (!$uuid) return 0;
-        else {
-            $db     = \Config\Database::connect ();
-            $sql    = "SELECT id FROM fmk_ousr WHERE uid='$uuid'";
-            $res    = $db->query ($sql)->getResult ();
-            if (!count ($res)) return 0;
-            else return $res[0]->id;
-        }
-    }
-    
     /**
      * 
      * @return array
@@ -47,14 +35,12 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * @return array
      */
     private function readAuthHeader (): array|bool {
-        $headers    = $this->request->headers ();
-        if (!array_key_exists('Authorization', $headers)) return FALSE;
-        $auth = $headers['Authorization']->getValue ();
-        $auth = str_replace ('Basic ', '', $auth);
-        $auth = base64_decode ($auth);
-        $auth = str_replace (':', '', $auth);
+        $auth   = $this->getRequestAuthorization ();
+        if (!$auth) return FALSE;
+        $auth   = base64_decode ($auth);
+        $auth   = str_replace (':', '', $auth);
         if (!(ctype_xdigit ($auth) && strlen ($auth) % 2 == 0)) return FALSE;
-        $auth = hex2bin ($auth);
+        $auth   = hex2bin ($auth);
         if (!$auth) return FALSE;
         $decrypted = $this->decrypt ($auth);
         if (!$decrypted) return FALSE;
@@ -159,6 +145,22 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         return $this->fail (lang ('RESTful.notImplemented', ['delete']), 501);
     }
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseRESTfulController::getRequestUserID()
+     */
+    protected function getRequestUserID (): int {
+        $uuid   = $this->getPollute ();
+        if (!$uuid) return 0;
+        else {
+            $db     = \Config\Database::connect ();
+            $sql    = "SELECT id FROM fmk_ousr WHERE uid='$uuid'";
+            $res    = $db->query ($sql)->getResult ();
+            if (!count ($res)) return 0;
+            else return $res[0]->id;
+        }
+    }
+    
     abstract protected function findWithFilter ($get);
     
     abstract protected function responseFormatter ($queryResult): array;
@@ -192,8 +194,8 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
     public function create () {
         if ($this->modelName === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) {
-            $userid = $this->getUserID ();
-            $json   = json_decode ($this->request->getBody(), TRUE);
+            $userid = $this->getRequestUserID ();
+            $json   = json_decode ($this->request->getBody (), TRUE);
             $retVal = $this->doCreate ($json, $userid);
             if (!is_array ($retVal)) return $retVal;
             else {
@@ -219,9 +221,8 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
     public function index () {
         if ($this->modelName === NULL) return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) {
-            $time   = time ();
             $get    = $this->request->getGet ();
-            $userid = $this->getUserID ();
+            $userid = $this->getRequestUserID ();
             $res    = NULL;
             if (! count ($get) || ! array_key_exists ('payload', $get)) $res    = $this->model->findAll ();
             else $res = $this->findWithFilter ($get, $userid);
@@ -267,7 +268,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         if ($this->modelName === NULL || $id === NULL) 
             return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) {
-            $userid     = $this->getUserID ();
+            $userid     = $this->getRequestUserID ();
             $isBase64   = is_base64 ($id);
             if ($isBase64) {
                 $theId      = base64_decode ($id);
@@ -310,7 +311,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
         if ($this->modelName === NULL || $id === NULL) 
             return $this->failServerError ('Code Error: Unproper API Implementations => Null Object Reference');
         if ($this->validateRequestAuthorization ()) {
-            $userid     = $this->getUserID ();
+            $userid     = $this->getRequestUserID ();
             $isBase64   = is_base64 ($id);
             if (!$isBase64) {
                 $json   = [

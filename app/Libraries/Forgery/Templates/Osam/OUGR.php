@@ -7,7 +7,6 @@ use App\Libraries\Forgery\Field;
 use CodeIgniter\Database\RawSql;
 
 class OUGR extends Table {
-    
     /**
      * 
      * {@inheritDoc}

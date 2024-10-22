@@ -27,3 +27,7 @@ $routes->group ('controls', static function ($routes) {
     $routes->resource ('apiuserconfig', ['namespace' => 'App\Controllers\Uniqore']);
     $routes->resource ('users', ['namespace' => 'App\Controllers\Uniqore']);
 });
+
+$routes->group ('osam', static function ($routes) {
+    $routes->resource ('users', ['namespace' => 'App\Controllers\Osam']);
+});
