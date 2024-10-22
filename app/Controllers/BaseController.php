@@ -94,7 +94,7 @@ abstract class BaseController extends Controller {
         // Preload any models, libraries, etc, here.
         // E.g.: $this->session = \Config\Services::session();
         array_push ($this->helpers, 'json');
-        helper($this->helpers);
+        helper ($this->helpers);
         service ('security');
         $this->appConfig	= config ('App');
         $this->parser       = \Config\Services::parser ();
@@ -123,6 +123,8 @@ abstract class BaseController extends Controller {
         $this->curl = \Config\Services::curlrequest ();
         return $this->curl->$method ($url, $options);
     }
+    
+    abstract protected function doLog ($level, $messages='', $access_id=0);
 
     /**
      * Be sure to declare properties for any property fetch you initialized.

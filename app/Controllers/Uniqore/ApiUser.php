@@ -23,7 +23,7 @@ class ApiUser extends BaseUniqoreAPIController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
-    protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+    protected function doCreate (array $json, $userid = 0): array|ResponseInterface {
         $uuid           = generate_random_uuid_v4 ();
         $sn             = generate_serialnumber (30, 5);
         $key            = Encryption::createKey (SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_KEYBYTES);
@@ -75,7 +75,7 @@ class ApiUser extends BaseUniqoreAPIController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
-    protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
+    protected function doUpdate ($id, array $json, $userid = 0): array|ResponseInterface {
         $returnid       = 0;
         $client         = $this->model->where ('uid', $id)->find ();
         if (count ($client)) $returnid  = $client[0]->id;

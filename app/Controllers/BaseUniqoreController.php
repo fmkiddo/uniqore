@@ -8,7 +8,7 @@ use CodeIgniter\Files\File;
 use CodeIgniter\Encryption\Exceptions\EncryptionException;
 
 
-abstract class BaseUniqoreController extends BaseController {
+abstract class BaseUniqoreController extends BaseController { 
     
     private $authToken;
     
@@ -68,6 +68,27 @@ abstract class BaseUniqoreController extends BaseController {
     protected function isAuthFileExists (): bool {
         $authFile = new File (SYS__UNIQORE_RANDAUTH_PATH);
         return file_exists ($authFile->getPath ());
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseController::doLog()
+     */
+    protected function doLog($level, $messages = '', $access_id = 0) {
+        $host       = $this->request->getUri ()->getHost ();
+        $method     = $this->request->getMethod ();
+        $type       = $this->request->header ('Content-Type')->getValue ();
+        $api_name   = $this->apiName;
+        $ip_address = $this->request->getIPAddress ();
+        $user_agent = $this->request->getUserAgent();
+        if (!strlen (trim ($messages)))
+            $messages   = "API Access to {$api_name} successfully, host: {$host}, method: {$method}, type: {$type}, agent: {$user_agent}, ip: {$ip_address}, id: {$access_id}";
+        $logid      = generate_random_uuid_v4();
+        $query      = "INSERT INTO fmk_oalg (uuid, level, message, host, method, ctype, app_userid, agent, ip)
+        VALUES ('{$logid}', '{$level}', '{$messages}', '{$host}', '{$method}', '{$type}', '{$access_id}', '{$user_agent}', '{$ip_address}');";
+        $db         = \Config\Database::connect ($this->getDatabaseConnection ());
+        $db->simpleQuery ($query);
+        $db->close ();
     }
     
     /**
