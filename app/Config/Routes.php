@@ -30,4 +30,7 @@ $routes->group ('controls', static function ($routes) {
 
 $routes->group ('osam', static function ($routes) {
     $routes->resource ('users', ['namespace' => 'App\Controllers\Osam']);
+    $routes->resource ('controller', ['namespace' => 'App\Controllers\Osam', 'controller' => 'SystemGroup']);
+    $routes->resource ('acl', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AccessControl']);
+    $routes->resource ('user-profile', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserProfile']);
 });

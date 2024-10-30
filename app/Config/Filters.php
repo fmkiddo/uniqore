@@ -77,7 +77,7 @@ class Filters extends BaseFilters
                     'uniqore/forge/starts',
                     'uniqore/validator',
                     'uniqore/admin/dashboard/validate',
-                    'controls/*'
+                    'osam/*'
                 ]
             ],
             // 'invalidchars',

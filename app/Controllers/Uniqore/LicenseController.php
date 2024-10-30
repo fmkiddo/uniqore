@@ -5,8 +5,17 @@ namespace App\Controllers\Uniqore;
 use App\Controllers\BaseUniqoreController;
 use CodeIgniter\Encryption\Encryption;
 use CodeIgniter\Encryption\Exceptions\EncryptionException;
+use CodeIgniter\Files\File;
 
 class LicenseController extends BaseUniqoreController {
+    
+    private function readData (string $filename, &$fileContents) {
+        $dumpPath       = "../writable/uploads/uniqore/{$filename}";
+        $theFile        = new File ($dumpPath);
+        if (!file_exists($dumpPath)) return FALSE;
+        $fileContents   = file_get_contents($theFile->getPathname ());
+        return $theFile;
+    }
     
     /**
      * 
@@ -85,10 +94,25 @@ class LicenseController extends BaseUniqoreController {
                             ]
                         ];
                     else {
+                        $clientID       = $client[0]->id;
+                        $cdModel        = model ('App\Models\Uniqore\ClientDetail');
+                        $detail         = $cdModel->where ('client_id', $clientID)->find ();
+                        $fileContents   = '';
+                        $file           = $this->readData($detail[0]->client_logo, $fileContents);
+                        
                         $payloads       = [
+                            'data0'         => bin2hex ($cipherData1) . '$' . bin2hex ($aKey),
+                            'data1'         => [
+                                $fileContents,
+                                $file->getExtension ()
+                            ]
+                        ];
+                        
+                        
+                        $data           = [
                             'uuid'          => time (),
                             'timestamp'     => date ('Y-m-d H:i:s'),
-                            'payload'       => bin2hex ($cipherData1) . '$' . bin2hex ($aKey)
+                            'payload'       => base64_encode (serialize ($payloads))
                         ];
                         
                         $results        = [
@@ -97,7 +121,7 @@ class LicenseController extends BaseUniqoreController {
                             'messages'      => [
                                 'success'       => 'License generated!'
                             ],
-                            'data'          => $payloads
+                            'data'          => $data
                         ];
                     }
                 }

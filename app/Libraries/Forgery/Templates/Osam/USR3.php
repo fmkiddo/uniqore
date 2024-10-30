@@ -17,7 +17,7 @@ class USR3 extends Table {
         $this->tableFields  = [
             Field::__constructUnsignedPrimaryIntegerField ('id', FALSE),
             Field::__constructField ('fname', VARCHAR, 500, ''),
-            Field::__constructField ('mnamee', VARCHAR, 500, ''),
+            Field::__constructField ('mname', VARCHAR, 500, ''),
             Field::__constructField ('lname', VARCHAR, 500, ''),
             Field::__constructField ('addr1', TEXT, NULL, ''),
             Field::__constructField ('addr2', TEXT, NULL, ''),

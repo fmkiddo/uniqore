@@ -70,7 +70,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseRESTfulController::decrypt()
      */
-    protected function decrypt($encrypted): string|bool {
+    protected function decrypt ($encrypted): string|bool {
         $encConfig          = config ('Encryption');
         $this->encryptor    = \Config\Services::encrypter ($encConfig);
         try {
@@ -84,7 +84,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseRESTfulController::encrypt()
      */
-    protected function encrypt($plainText): string|bool {
+    protected function encrypt ($plainText): string|bool {
         $encConfig          = config ('Encryption');
         $this->encryptor    = \Config\Services::encrypter ($encConfig);
         try {
@@ -225,7 +225,7 @@ abstract class BaseUniqoreAPIController extends BaseRESTfulController {
             $userid = $this->getRequestUserID ();
             $res    = NULL;
             if (! count ($get) || ! array_key_exists ('payload', $get)) $res    = $this->model->findAll ();
-            else $res = $this->findWithFilter ($get, $userid);
+            else $res = $this->findWithFilter ($get);
             $rows   = count ($res);
             $time   = time ();
             $this->doLog ('warning', "Query to $this->modelName::index was called on $time and returned $rows result(s)", $userid);
