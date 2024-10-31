@@ -15,7 +15,6 @@ class OMDL extends Table {
         $this->tableName    = 'omdl';
         $this->tableFields  = [
             Field::__constructUnsignedPrimaryIntegerField ('id'),
-            Field::__constructUUIDField ('uuid'),
             Field::__constructField ('code', VARCHAR, 20, '', FALSE, FALSE, TRUE, 'OMDL_UNIQUE'),
             Field::__constructField('parent_id', INTEGER, 0, 0, TRUE),
             Field::__constructField('segment', INTEGER, 0, 0, TRUE),

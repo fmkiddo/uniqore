@@ -171,7 +171,8 @@ defined ('HEADER_APP_FORM')                 || define ('HEADER_APP_FORM', 'appli
 defined ('HEADER_APP_MULTIPART')            || define ('HEADER_APP_MULTIPART', 'multipart/form-data');
 defined ('HEADER_APP_JSON')                 || define ('HEADER_APP_JSON', 'application/json');
 defined ('UNIQORE_NAME')                    || define ('UNIQORE_NAME', 'Uniqore');
-defined ('UNQIORE_TITLE')                   || define ('UNIQORE_TITLE', 'Uniqore API');
+defined ('UNIQORE_TITLE')                   || define ('UNIQORE_TITLE', 'Uniqore API');
+defined ('UNIQORE_API_UPLOADFOLDER')        || define ('UNIQORE_API_UPLOADFOLDER', '');
 defined ('UNIQORE_RANDOM_PASSCODE')         || define ('UNIQORE_RANDOM_PASSCODE', 32);
 defined ('UNIQORE_RANDOM_CLIENT')           || define ('UNIQORE_RANDOM_CLIENT', 5);
 defined ('UNQIORE_RANDOM_DBPSWD')           || define ('UNQIORE_RANDOM_DBPSWD', 16);

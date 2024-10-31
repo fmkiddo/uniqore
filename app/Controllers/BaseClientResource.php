@@ -12,6 +12,7 @@ abstract class BaseClientResource extends BaseRESTfulController {
     protected $format           = 'json';
     
     private $validRequest       = FALSE;
+    private $clientCode         = NULL;
     /**
      * 
      * @var ConnectionInterface
@@ -54,8 +55,13 @@ abstract class BaseClientResource extends BaseRESTfulController {
                 }
             }
             $db->close ();
+            $this->clientCode   = $clientCode;
         }
         return $validClient;
+    }
+    
+    protected function getClientCode (): string {
+        return $this->clientCode;
     }
     
     protected final function generateInvalidRequest () {
