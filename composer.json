@@ -1,13 +1,13 @@
 {
-	"name" : "codeigniter4/appstarter",
-	"description" : "CodeIgniter4 starter app",
-	"license" : "MIT",
+	"name" : "fmkiddo/uniqore",
+	"description" : "API Subsystem Developed by FMKiddo",
+	"license" : "GPL-3.0",
 	"type" : "project",
-	"homepage" : "https://codeigniter.com",
+	"homepage" : "https://gitlab.com/fmkiddo/uniqore",
 	"support" : {
-		"forum" : "https://forum.codeigniter.com/",
-		"source" : "https://github.com/codeigniter4/CodeIgniter4",
-		"slack" : "https://codeigniterchat.slack.com"
+		"source" : "https://gitlab.com/fmkiddo/uniqore",
+		"slack" : "https://codeigniterchat.slack.com",
+		"email" : "rizkyfm64@gmail.com"
 	},
 	"require" : {
 		"php" : "^8.1",
@@ -41,5 +41,11 @@
 	},
 	"scripts" : {
 		"test" : "phpunit"
-	}
+	},
+	"authors" : [{
+			"name" : "fmkiddo",
+			"email" : "rizkyfm64@gmail.com",
+			"homepage" : "https://gitlab.com/fmkiddo"
+		}
+	]
 }
