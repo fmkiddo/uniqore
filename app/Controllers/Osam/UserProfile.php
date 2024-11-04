@@ -69,7 +69,46 @@ class UserProfile extends OsamBaseResourceController {
      * @see \App\Controllers\BaseClientResource::doUpdate()
      */
     protected function doUpdate ($id, array $json, $userid = 0) {
-        return parent::doUpdate ($id, $json, $userid);
+        $theId  = $this->model->select ('ousr.id')->join ('ousr', 'ousr.id=usr3.id')->where ('ousr.uuid', $id)->findAll ();
+        if (!count ($theId)) {
+            
+        } else {
+            $updateParams   = array (
+                'fname'         => $json['user-fname'],
+                'mname'         => $json['user-mname'],
+                'lname'         => $json['user-lname'],
+                'addr1'         => $json['user-addr1'],
+                'addr2'         => $json['user-addr2'],
+                'phone'         => $json['user-phone'],
+                'email'         => $json['user-email'],
+                'image'         => $json['user-image'],
+                'updated_at'    => date ('Y-m-d H:i:s'),
+                'updated_by'    => $userid
+            );
+            $this->model->set ($updateParams)
+                    ->where ('id', $theId[0]->id)
+                    ->update ();
+            $affected   = $this->model->affectedRows ();
+            $payloads   = array (
+                'uuid'          => $id,
+                'affectedrows'  => $affected
+            );
+            
+            $time       = time ();
+            $timestamp  = date ('Y-m-d H:i:s');
+            return array (
+                'status'    => 200,
+                'error'     => NULL,
+                'messages'  => array (
+                    'success'   => ''
+                ),
+                'data'      => array (
+                    'uuid'      => $time,
+                    'timestamp' => $timestamp,
+                    'payload'   => base64_encode (serialize ($payloads))
+                ),
+            );
+        }
     }
     
     /**

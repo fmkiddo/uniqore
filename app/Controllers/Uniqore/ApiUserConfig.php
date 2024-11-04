@@ -13,7 +13,7 @@ class ApiUserConfig extends BaseUniqoreAPIController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseUniqoreAPIController::doCreate()
      */
-    protected function doCreate(array $json, $userid = 0): array|ResponseInterface {
+    protected function doCreate (array $json, $userid = 0): array|ResponseInterface {
         $dbPswd         = $json['clientdbpswd'];
         $storedPswd     = bin2hex ($this->encrypt ($dbPswd));
         $insertParams   = [
@@ -62,7 +62,7 @@ class ApiUserConfig extends BaseUniqoreAPIController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseUniqoreAPIController::doUpdate()
      */
-    protected function doUpdate($id, array $json, $userid = 0): array|ResponseInterface {
+    protected function doUpdate ($id, array $json, $userid = 0): array|ResponseInterface {
         $clientID       = $json['clientid'];
         $updateParams   = [
             'updated_at'    => date ('Y-m-d H:i:s'),
