@@ -85,9 +85,10 @@ $(function () {
 			$dts = $('.dataTable');
 			if ($dts.length > 0) {
 				$.each ($dts, function () {
-					$fetch	= $(this).attr ('data-fetch');
-					$.fn.dataTable.ext.errMode = 'throw';
 					$dt		= $(this);
+					$fetch	= $dt.attr ('data-fetch');
+					$dt.find ("thead th:first-child").attr ('data-orderable', false);
+					$.fn.dataTable.ext.errMode = 'throw';
 					setTimeout (function () {
 						$dt.addClass ('table-100').DataTable ({
 							ajax: {
