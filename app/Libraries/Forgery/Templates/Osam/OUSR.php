@@ -4,6 +4,7 @@ namespace App\Libraries\Forgery\Templates\Osam;
 
 use App\Libraries\Forgery\Table;
 use App\Libraries\Forgery\Field;
+use CodeIgniter\Database\RawSql;
 
 class OUSR extends Table {
     
@@ -20,7 +21,8 @@ class OUSR extends Table {
             Field::__constructField ('group_id', INTEGER, 0, 0, TRUE),
             Field::__constructField ('username', VARCHAR, 100, '', FALSE, FALSE, TRUE, 'OUSR_UNIQUE'),
             Field::__constructField ('email', VARCHAR, 100, '', FALSE, FALSE, TRUE, 'OUSR_UNIQUE'),
-            Field::__constructField ('password', VARCHAR, '200', '')
+            Field::__constructField ('password', VARCHAR, '200', ''),
+            Field::__constructField ('active', BOOLEAN, 0, new RawSql ("TRUE"))
         ];
     }
     

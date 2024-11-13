@@ -9,6 +9,6 @@ class Users extends BaseModel {
     protected $table            = 'ousr';
     protected $primaryKey       = 'id';
     protected $allowedFields    = [
-        'uuid', 'group_id', 'username', 'email', 'password', 'created_by', 'updated_at', 'updated_by'
+        'uuid', 'group_id', 'username', 'email', 'password', 'active', 'created_by', 'updated_at', 'updated_by'
     ];
 }
