@@ -13,7 +13,7 @@ class OUSR extends Table {
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\Table::__initTableAttributes()
      */
-    protected function __initTableAttributes() {
+    protected function __initTableAttributes () {
         $this->tableName = 'ousr';
         $this->tableFields = [
             Field::__constructUnsignedPrimaryIntegerField ('id'),

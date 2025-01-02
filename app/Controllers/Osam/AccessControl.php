@@ -13,8 +13,8 @@ class AccessControl extends OsamBaseResourceController {
      */
     protected function doCreate(array $json, $userid = 0) {
         $groupUUID      = base64_decode ($json['group-id']);
-        $acl            = $this->model->select ('ougr.id')->join ('ougr', 'ougr.id=ugr1.group_id')
-                            ->where ('ougr.uuid', $groupUUID)->findAll ();
+        $acl            = $this->model->select ('ougr.id')->join ('ougr', 'ougr.id=ugr1.group_id', 'right')
+                            ->where ('ougr.uuid', $groupUUID)->find ();
         if (!count ($acl)) 
             $retVal = array (
                 'status'    => 500,

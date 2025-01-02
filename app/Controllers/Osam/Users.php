@@ -12,7 +12,8 @@ class Users extends OsamBaseResourceController {
      * @see \App\Controllers\BaseClientResource::doFindAll()
      */
     protected function doFindAll () {
-        return $this->model->select ('ousr.*, ougr.code, ougr.name')->join ('ougr', 'ougr.id=ousr.group_id')->findAll ();
+        return $this->model->select ('ousr.*, ougr.uuid as group_uuid, ougr.code, ougr.name')
+                ->join ('ougr', 'ougr.id=ousr.group_id')->findAll ();
     }
     
     /**
@@ -98,8 +99,9 @@ class Users extends OsamBaseResourceController {
      */
     protected function doCreate (array $json, $userid = 0) {
         $groupUUID      = base64_decode ($json['newuser-groupid']);
-        $acl            = $this->model->select ('ougr.id')->join ('ougr', 'ougr.id=ousr.group_id')
+        $acl            = $this->model->select ('ougr.id')->join ('ougr', 'ougr.id=ousr.group_id', 'right')
                             ->where ('ougr.uuid', $groupUUID)->findAll ();
+        
         if (!count ($acl)) {
             $retVal     = [
                 'status'    => 500,

@@ -301,7 +301,14 @@ abstract class BaseClientResource extends BaseRESTfulController {
         if (!$this->isValidRequest ()) return $this->generateInvalidRequest ();
         $userid     = $this->getRequestUserID ();
         if (!is_base64 ($id)) {
-            
+            $json   = [
+                'status'    => 442,
+                'error'     => 442,
+                'messages'  => [
+                    'error'     => 'Unknown input parameter format!'
+                ]
+            ];
+            $this->doLog ('alert', "Query to $this->modelName::show was call returned with {$json['messages']['error']}", $userid);
         } else {
             $theId  = base64_decode ($id);
             $json   = $this->doDelete ($theId, $userid);

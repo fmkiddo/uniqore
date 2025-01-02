@@ -7,12 +7,13 @@ use App\Libraries\Forgery\Field;
 use CodeIgniter\Database\RawSql;
 
 class OUGR extends Table {
+    
     /**
      * 
      * {@inheritDoc}
      * @see \App\Libraries\Forgery\Table::__initTableAttributes()
      */
-    protected function __initTableAttributes() {
+    protected function __initTableAttributes () {
         $this->tableName    = 'ougr';
         $this->tableFields  = [
             Field::__constructUnsignedPrimaryIntegerField ('id'),

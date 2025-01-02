@@ -18,6 +18,8 @@ class OACI extends Table {
             Field::__constructUUIDField ('uuid'),
             Field::__constructField ('ci_name', VARCHAR, 100, ''),
             Field::__constructField ('ci_dscript', TEXT, NULL, ''),
+            Field::__constructField ('depreciation_method', TINYINT, NULL, ''),
+            Field::__constructField ('salvage_value', DECIMAL, '6,2', ''),
         ];
     }
     

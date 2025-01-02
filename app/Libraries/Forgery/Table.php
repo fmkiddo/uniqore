@@ -2,12 +2,18 @@
 namespace App\Libraries\Forgery;
 
 
+use CodeIgniter\Database\Forge;
+
 abstract class Table implements TableTemplate {
+    
+    private $data;
+    
     protected string $tableName;
     protected array $tableFields;
     protected bool $hasAux;
     
     protected abstract function __initTableAttributes ();
+    
     
     public function __construct (bool $hasAux = TRUE, array $data=[]) {
         $this->hasAux = $hasAux;
@@ -56,5 +62,22 @@ abstract class Table implements TableTemplate {
      */
     public function hasAuxAttributes(): bool {
         return $this->hasAux;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Libraries\Forgery\TableTemplate::hasData()
+     */
+    public function hasData(): bool {
+        return (count ($this->data) > 0);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Libraries\Forgery\TableTemplate::loadDataToTable()
+     */
+    public function loadDataToTable(Forge $forger): bool {
+        $loaded = TRUE;
+        return $loaded;
     }
 }

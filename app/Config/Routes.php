@@ -7,6 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 $routes->get ('/', 'APIHome::welcome');
+$routes->get ('/test-constraint', 'APIHome::test');
 
 $routes->group ('uniqore', static function ($routes) {
     $routes->get ('generate-key', 'UniqoreForger::sodiumKey');
@@ -34,4 +35,12 @@ $routes->group ('osam', static function ($routes) {
     $routes->resource ('acl', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AccessControl']);
     $routes->resource ('user-profile', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserProfile']);
     $routes->resource ('user-pics', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserProfileImage']);
+    $routes->resource ('config-attributes', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Attributes']);
+    $routes->resource ('attr-pre-list', ['namespace' => 'App\Controllers\Osam', 'controller' => 'PredefinedList']);
+    $routes->resource ('config-items', ['namespace' => 'App\Controllers\Osam', 'controller' => 'ConfigurationItems']);
+    $routes->resource ('ci-attributes', ['namespace' => 'App\Controllers\Osam', 'controller' => 'ConfigItemAttributes']);
+    $routes->resource ('fixed-assets', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Assets']);
+    $routes->resource ('fa-attributes', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetConfigurations']);
+    $routes->resource ('locations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Locations']);
+    $routes->resource ('sublocations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Sublocations']);
 });

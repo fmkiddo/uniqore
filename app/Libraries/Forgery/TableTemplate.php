@@ -2,7 +2,7 @@
 namespace App\Libraries\Forgery;
 
 
-use CodeIgniter\Database\ConnectionInterface;
+use CodeIgniter\Database\Forge;
 
 interface TableTemplate extends Template {
     
@@ -30,4 +30,16 @@ interface TableTemplate extends Template {
      * @return bool
      */
     function hasAuxAttributes (): bool;
+    
+    /**
+     * 
+     * @return bool
+     */
+    function hasData (): bool;
+    
+    /**
+     * 
+     * @return bool
+     */
+    function loadDataToTable (Forge $forger): bool;
 }

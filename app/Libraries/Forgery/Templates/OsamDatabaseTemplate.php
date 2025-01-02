@@ -21,7 +21,6 @@ use App\Libraries\Forgery\Templates\Osam\OARV;
 use App\Libraries\Forgery\Templates\Osam\ACI1;
 use App\Libraries\Forgery\Templates\Osam\ARV1;
 use App\Libraries\Forgery\Templates\Osam\CTA1;
-use App\Libraries\Forgery\Templates\Osam\OMDL;
 use App\Libraries\Forgery\Templates\Osam\OMVI;
 use App\Libraries\Forgery\Templates\Osam\OMVO;
 use App\Libraries\Forgery\Templates\Osam\OMVR;
@@ -55,7 +54,6 @@ class OsamDatabaseTemplate extends Database {
             new OFPT (),
             new OITA (),
             new OLCT (),
-            new OMDL (),
             new OMVI (),
             new OMVO (),
             new OMVR (),

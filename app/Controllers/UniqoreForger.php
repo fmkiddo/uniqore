@@ -12,6 +12,7 @@ use CodeIgniter\Encryption\Encryption;
 
 class UniqoreForger extends BaseController {
     
+    
     private function isInitiated (): bool {
         $file           = new File (SYS__UNIQORE_RANDAUTH_PATH);
         $file_exists    = file_exists($file->getPathname ());
@@ -104,6 +105,14 @@ encryption.key              = hex2bin:{$secretKey}
      */
     protected function encrypt($plainText): string|bool {
         return FALSE;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseController::doLog()
+     */
+    protected function doLog($level, $messages = '', $access_id = 0) {
+        // TODO Auto-generated method stub
     }
     
     public function index ($pageNum=0): string {

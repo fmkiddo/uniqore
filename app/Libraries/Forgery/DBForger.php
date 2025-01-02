@@ -149,7 +149,7 @@ class DBForger {
                             $forge->addForeignKey($field->getFieldName(), $field->getForeignTableName(), $field->getForeignFieldName());
                     }
                     
-                    if ($table->hasAuxAttributes())
+                    if ($table->hasAuxAttributes ())
                         $forge->addField ([
                             'created_at'    => [
                                 'type'          => TIMESTAMP,
@@ -177,6 +177,7 @@ class DBForger {
                     $forge->addPrimaryKey ($pk);
                     if (count ($uk) > 0) $forge->addUniqueKey ($uk, $ukname);
                     $built = $forge->createTable ($table->getTableName ());
+                    if ($table->hasData ()) $table->loadDataToTable ($forge);
                     if (!$built) break;
                 }
                 
