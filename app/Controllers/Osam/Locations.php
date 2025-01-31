@@ -4,6 +4,16 @@ namespace App\Controllers\Osam;
 
 class Locations extends OsamBaseResourceController {
     
+    /**
+     * {@inheritDoc}
+     * @see \App\Controllers\BaseClientResource::doFindAll()
+     */
+    protected function doFindAll () {
+        // TODO Auto-generated method stub
+        return parent::doFindAll ();
+    }
+    
+    
     protected $modelName    = 'App\Models\OsamModels\Location';
     
     /**
@@ -147,7 +157,7 @@ class Locations extends OsamBaseResourceController {
      * {@inheritDoc}
      * @see \App\Controllers\BaseClientResource::responseFormatter()
      */
-    protected function responseFormatter($queryResult): array {
+    protected function responseFormatter ($queryResult): array {
         $payload        = [];
         
         foreach ($queryResult as $data)

@@ -35,6 +35,8 @@ $routes->group ('osam', static function ($routes) {
     $routes->resource ('acl', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AccessControl']);
     $routes->resource ('user-profile', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserProfile']);
     $routes->resource ('user-pics', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserProfileImage']);
+    $routes->resource ('user-allocations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserAllocations']);
+    $routes->resource ('user-locations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'UserLocations']);
     $routes->resource ('config-attributes', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Attributes']);
     $routes->resource ('attr-pre-list', ['namespace' => 'App\Controllers\Osam', 'controller' => 'PredefinedList']);
     $routes->resource ('config-items', ['namespace' => 'App\Controllers\Osam', 'controller' => 'ConfigurationItems']);
@@ -43,4 +45,6 @@ $routes->group ('osam', static function ($routes) {
     $routes->resource ('fa-attributes', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetConfigurations']);
     $routes->resource ('locations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Locations']);
     $routes->resource ('sublocations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Sublocations']);
+    $routes->resource ('fa-tsout', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetTransferOut']);
+    $routes->resource ('fa-tsout-item', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetTransferOutItem']);
 });

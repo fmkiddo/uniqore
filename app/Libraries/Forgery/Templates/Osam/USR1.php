@@ -16,8 +16,7 @@ class USR1 extends Table {
         $this->tableFields  = [
             Field::__constructUnsignedPrimaryIntegerField ('id'),
             Field::__constructField ('user_id', INTEGER, 0, 0, TRUE),
-            Field::__constructField ('location_id', INTEGER, 0, 0, TRUE),
-            Field::__constructField ('status', ENUMERATION, ['unassigned', 'assigned', 'revoked'], 'unassigned'),
+            Field::__constructField ('locations', VARCHAR, 100, ''),
         ];
     }
     

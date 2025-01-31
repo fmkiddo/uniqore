@@ -12,8 +12,8 @@ class Users extends OsamBaseResourceController {
      * @see \App\Controllers\BaseClientResource::doFindAll()
      */
     protected function doFindAll () {
-        return $this->model->select ('ousr.*, ougr.uuid as group_uuid, ougr.code, ougr.name')
-                ->join ('ougr', 'ougr.id=ousr.group_id')->findAll ();
+        return $this->model->select ('ousr.*, ougr.uuid as group_uuid, ougr.code, ougr.name, usr1.locations')
+                ->join ('ougr', 'ougr.id=ousr.group_id')->join ('usr1', 'usr1.user_id=ousr.id', 'left')->findAll ();
     }
     
     /**
@@ -181,7 +181,7 @@ class Users extends OsamBaseResourceController {
         if (strlen ($sortType) > 0) $this->model->orderBy ("ousr.{$sortCol}", $sortType);
         
         return $this->model->select ('ousr.*, ougr.uuid as group_uuid, ougr.code, ougr.name')
-                ->join ('ougr', 'ougr.id=ousr.group_id', 'left')->findAll ();
+                ->join ('ougr', 'ougr.id=ousr.group_id', 'left')->join ('usr1', 'usr1.user_id=ousr.id', 'left')->findAll ();
     }
     
     /**
@@ -201,6 +201,7 @@ class Users extends OsamBaseResourceController {
                 'email'         => $data->email,
                 'password'      => $data->password,
                 'active'        => $data->active,
+                'locations'     => $data->locations,
                 'created_at'    => $data->created_at,
                 'created_by'    => $data->created_by,
                 'updated_at'    => $data->updated_at,

@@ -4,25 +4,30 @@ namespace App\Controllers\Osam;
 
 class Assets extends OsamBaseResourceController {
     
+    
+    protected $modelName    = 'App\Models\OsamModels\Asset';
+    
     /**
      * {@inheritDoc}
      * @see \App\Controllers\BaseClientResource::doFindAll()
      */
     protected function doFindAll () {
+        $get    = $this->request->getGet ();
         
+        /**
+        $builder= $this->model->builder ();
         $selects    = array (
             'oaci.ci_dscript',
             'oita.code',
             'oita.name',
         );
         
-        if (array_key_exists ('joint', $this->request->getGet ())) {
-            $joint          = $this->request->getGet ('joint');
+        if (array_key_exists ('joint', $get)) {
+            $joint          = $get['joint'];
             if (is_base64 ($joint)) {
                 
                 $locationUUID   = base64_decode ($joint);
-                $this->model->select ('osbl.name as `sublocation`')->join ('osbl', 'osbl.id=oita.sublocation_id')
-                        ->join ('olct', 'olct.id=oita.location_id')->where ('olct.uuid', $locationUUID)->groupBy ('oita.sublocation_id');
+                $builder->select ('osbl.name as `sublocation`')->where ('olct.uuid', $locationUUID)->groupBy ('oita.sublocation_id');
             } else {
                 $selects    = array (
                     'oaci.ci_dscript',
@@ -31,18 +36,53 @@ class Assets extends OsamBaseResourceController {
                     'olct.name as `location_name`',
                     'osbl.name as `sublocation_name`'
                 );
-                $this->model->join ('olct', 'olct.id=oita.location_id')->join ('osbl', 'osbl.id=oita.sublocation_id')
-                        ->where ('oita.code', $joint)->groupBy (['oita.location_id', 'oita.sublocation_id']);
+                $builder->where ('oita.code', $joint)->groupBy (['oita.location_id', 'oita.sublocation_id']);
+            }
+            $builder->join ('olct', 'olct.id=oita.location_id')->join ('osbl', 'osbl.id=oita.sublocation_id');
+            if (array_key_exists ('ref', $get) && $get['ref'] === 'sublocations' && strlen (trim ($get['refdata'])) > 0) {
+                $sublocationUUID    = base64_decode($get['refdata']);
+                $builder->where ('osbl.uuid', $sublocationUUID);
             }
         }
         
-        $this->model->select ($selects)->selectSum ('oita.qty')->join ('oaci', 'oaci.id=oita.config_id')->groupBy ('oita.code');
+        $builder->select ($selects)->selectSum ('oita.qty')->join ('oaci', 'oaci.id=oita.config_id')->groupBy ('oita.code');
+        var_dump ($builder->getCompiledSelect ());
+        return array ();
+        **/
         
+        $selects    = array (
+            'oaci.ci_dscript',
+            'oita.code',
+            'oita.name',
+        );
+        
+        if (array_key_exists ('joint', $get)) {
+            $joint          = $get['joint'];
+            if (is_base64 ($joint)) {
+                
+                $locationUUID   = base64_decode ($joint);
+                $this->model->select ('osbl.name as `sublocation`')->where ('olct.uuid', $locationUUID)->groupBy ('oita.sublocation_id');
+            } else {
+                $selects    = array (
+                    'oaci.ci_dscript',
+                    'oita.code',
+                    'oita.name as `asset_name`',
+                    'olct.name as `location_name`',
+                    'osbl.name as `sublocation_name`'
+                );
+                $this->model->where ('oita.code', $joint)->groupBy (['oita.location_id', 'oita.sublocation_id']);
+            }
+            if (array_key_exists ('ref', $get) && $get['ref'] === 'sublocations' && strlen (trim ($get['refdata'])) > 0) {
+                $sublocationUUID    = base64_decode($get['refdata']);
+                $this->model->where ('osbl.uuid', $sublocationUUID);
+            }
+            $this->model->join ('olct', 'olct.id=oita.location_id')->join ('osbl', 'osbl.id=oita.sublocation_id');
+        }
+        
+        $this->model->select ($selects)->selectSum ('oita.qty')->join ('oaci', 'oaci.id=oita.config_id')->groupBy ('oita.code');
+       
         return $this->model->findAll ();
     }
-    
-    
-    protected $modelName    = 'App\Models\OsamModels\Asset';
     
     /**
      * {@inheritDoc}
@@ -165,6 +205,57 @@ class Assets extends OsamBaseResourceController {
         $filter     = $payload[1];
         $sortType   = (!array_key_exists ('typesort', $get)) ? '' : $get['typesort'];
         $sortCol    = (!array_key_exists ('colsort', $get)) ? '' : $get['colsort'];
+        $hasJoint   = array_key_exists ('joint', $get);
+        
+        /**
+        $builder    = $this->model->builder ();
+        if (strlen (trim ($filter))) {
+            $match  = array (
+                'oaci.ci_dscript'   => $filter,
+                'oita.code'         => $filter,
+                'oita.name'         => $filter
+            );
+            
+            if ($hasJoint) $match['osbl.name'] = $filter;
+            $builder->groupStart ()->orLike ($match)->groupEnd ();
+        }
+        
+        if (strlen ($sortType) > 0) $builder->orderBy ("oita.{$sortCol}", $sortType);
+        
+        $selects    = array (
+            'oaci.ci_dscript',
+            'oita.code',
+            'oita.name',
+        );
+        
+        if ($hasJoint) {
+            $joint  = $get['joint'];
+            if (is_base64 ($joint)) {
+                $locationUUID   = base64_decode ($joint);
+                $builder->select ('osbl.name as `sublocation`')->where ('olct.uuid', $locationUUID)->groupBy ('oita.sublocation_id');
+            } else {
+                $selects    = array (
+                    'oaci.ci_dscript',
+                    'oita.code',
+                    'oita.name as `asset_name`',
+                    'olct.name as `location_name`',
+                    'osbl.name as `sublocation_name`'
+                );
+                $this->model->where ('oita.code', $joint)->groupBy (['oita.location_id', 'oita.sublocation_id']);
+            }
+            if (array_key_exists ('ref', $get) && strlen (trim ($get['refdata'])) > 0) {
+                $sublocationUUID    = base64_decode ($get['refdata']);
+                $builder->where ('osbl.uuid', $sublocationUUID);
+            }
+            
+            $builder->join ('olct', 'olct.id=oita.location_id')->join ('osbl', 'osbl.id=oita.sublocation_id');
+        }
+        
+        $builder->select ($selects)->selectSum ('oita.qty')->join ('oaci', 'oaci.id=oita.config_id');
+        
+        var_dump ($builder->getCompiledSelect ());
+        return array ();
+        **/
         
         if (strlen (trim ($filter))) {
             $match  = array (
@@ -173,8 +264,8 @@ class Assets extends OsamBaseResourceController {
                 'oita.name'         => $filter
             );
             
-            if (array_key_exists('joint', $get)) $match['osbl.name'] = $filter;
-            $this->model->orLike ($match);
+            if ($hasJoint) $match['osbl.name'] = $filter;
+            $this->model->groupStart ()->orLike ($match)->groupEnd ();
         }
         
         if (strlen ($sortType) > 0) $this->model->orderBy ("oita.{$sortCol}", $sortType);
@@ -184,13 +275,34 @@ class Assets extends OsamBaseResourceController {
             'oita.code',
             'oita.name',
         );
-        if (array_key_exists ('joint', $get)) {
-            $locationUUID   = base64_decode ($get['joint']);
-            $this->model->select ('osbl.name as `sublocation`')->join ('osbl', 'osbl.id=oita.sublocation_id')
-                    ->join ('olct', 'olct.id=oita.location_id')->where ('olct.uuid', $locationUUID)->groupBy ('osbl.code');
+        
+        if ($hasJoint) {
+            $joint  = $get['joint'];
+            if (is_base64 ($joint)) {
+                $locationUUID   = base64_decode ($joint);
+                $this->model->select ('osbl.name as `sublocation`')->where ('olct.uuid', $locationUUID)->groupBy ('oita.sublocation_id');
+            } else {
+                $selects    = array (
+                    'oaci.ci_dscript',
+                    'oita.code',
+                    'oita.name as `asset_name`',
+                    'olct.name as `location_name`',
+                    'osbl.name as `sublocation_name`'
+                );
+                $this->model->where ('oita.code', $joint)->groupBy (['oita.location_id', 'oita.sublocation_id']);
+            }
+            
+            if (array_key_exists ('ref', $get) && strlen (trim ($get['refdata'])) > 0) {
+                $sublocationUUID    = base64_decode ($get['refdata']);
+                $this->model->where ('osbl.uuid', $sublocationUUID);
+            }
+            
+            $this->model->join ('olct', 'olct.id=oita.location_id')->join ('osbl', 'osbl.id=oita.sublocation_id');
         }
-        return $this->model->select ($selects)->selectSum ('oita.qty')->join ('oaci', 'oaci.id=oita.config_id')
-                        ->groupBy ('oita.code')->findAll ();
+        
+        $this->model->select ($selects)->selectSum ('oita.qty')->join ('oaci', 'oaci.id=oita.config_id')->groupBy ('oita.code');
+        
+        return $this->model->findAll ();
     }
     
     /**

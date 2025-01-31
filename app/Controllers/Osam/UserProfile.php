@@ -20,46 +20,71 @@ class UserProfile extends OsamBaseResourceController {
      * @see \App\Controllers\BaseClientResource::doCreate()
      */
     protected function doCreate (array $json, $userid = 0) {
-        $insertParams   = [
-            'id'            => $json['user-id'],
-            'fname'         => $json['user-fname'],
-            'mname'         => $json['user-mname'],
-            'lname'         => $json['user-lname'],
-            'addr1'         => $json['user-addr1'],
-            'addr2'         => $json['user-addr2'],
-            'phone'         => $json['user-phone'],
-            'image'         => $json['user-image'],
-            'created_by'    => $userid,
-            'updated_at'    => date ('Y-m-d H:i:s'),
-            'updated_by'    => $userid
-        ];
-        
-        $this->model->insert ($insertParams);
-        $insertID       = $json['user-id'];
-        if (!$insertID) 
-            $retVal         = [
+        $get = $this->request->getGet ();
+        if (!array_key_exists ('atom', $get))
+            $retVal = array (
                 'status'    => 500,
                 'error'     => 500,
-                'messages'  => [
-                    'error'     => 'Failed to initiate new user profile'
-                ]
-            ];
+                'messages'  => array (
+                    'error'     => '500 - Missing required parameter',
+                ),
+            );
         else {
-            $payload        = [
-                'returnid'      => $insertID
-            ];
-            $retVal         = [
-                'status'        => 200,
-                'error'         => NULL,
-                'messages'  => [
-                    'success'   => 'OK!'
-                ],
-                'data'      => [
-                    'uuid'      => time (),
-                    'timestamp' => date ('Y-m-d H:i:s'),
-                    'payload'   => base64_encode (serialize ($payload))
-                ]
-            ];
+            $userUID    = base64_decode ($get['atom']);
+            $ousr       = $this->model->select ('ousr.id')->join ('ousr', 'ousr.id=usr3.id', 'right')->where ('ousr.uuid', $userUID)->find ();
+            if (!count ($ousr)) 
+                $retVal = array (
+                    'status'    => 404,
+                    'error'     => 404,
+                    'messages'  => array (
+                        'error'     => '404 - User data not found!',
+                    ),
+                );
+            else {
+                $userid = $ousr[0]->id;
+                $insertParams   = [
+                    'id'            => $userid,
+                    'fname'         => $json['user-fname'],
+                    'mname'         => $json['user-mname'],
+                    'lname'         => $json['user-lname'],
+                    'addr1'         => $json['user-addr1'],
+                    'addr2'         => $json['user-addr2'],
+                    'phone'         => $json['user-phone'],
+                    'image'         => $json['user-image'],
+                    'created_by'    => $userid,
+                    'updated_at'    => date ('Y-m-d H:i:s'),
+                    'updated_by'    => $userid
+                ];
+                
+                $this->model->insert ($insertParams);
+                $insertID       = $userid;
+                if (!$insertID)
+                    $retVal         = [
+                        'status'    => 500,
+                        'error'     => 500,
+                        'messages'  => [
+                            'error'     => 'Failed to initiate new user profile'
+                        ]
+                    ];
+                else {
+                    $payload        = [
+                        'returnid'      => $insertID,
+                        'uuid'          => $get['atom'],
+                    ];
+                    $retVal         = [
+                        'status'        => 200,
+                        'error'         => NULL,
+                        'messages'  => [
+                            'success'   => 'OK!'
+                        ],
+                        'data'      => [
+                            'uuid'      => time (),
+                            'timestamp' => date ('Y-m-d H:i:s'),
+                            'payload'   => base64_encode (serialize ($payload))
+                        ]
+                    ];
+                }
+            }
         }
         return $retVal;
     }
@@ -69,10 +94,16 @@ class UserProfile extends OsamBaseResourceController {
      * @see \App\Controllers\BaseClientResource::doUpdate()
      */
     protected function doUpdate ($id, array $json, $userid = 0) {
-        $theId  = $this->model->select ('ousr.id')->join ('ousr', 'ousr.id=usr3.id')->where ('ousr.uuid', $id)->findAll ();
-        if (!count ($theId)) {
-            
-        } else {
+        $ousr   = $this->model->select ('ousr.id')->join ('ousr', 'ousr.id=usr3.id')->where ('ousr.uuid', $id)->findAll ();
+        if (!count ($ousr)) 
+            $retVal = array (
+                'status'    => 404,
+                'error'     => 404,
+                'messages'  => array (
+                    'error'     => '404 - Could not found user data - User not found!'
+                ),
+            );
+        else {
             $updateParams   = array (
                 'fname'         => $json['user-fname'],
                 'mname'         => $json['user-mname'],
@@ -86,7 +117,7 @@ class UserProfile extends OsamBaseResourceController {
                 'updated_by'    => $userid
             );
             $this->model->set ($updateParams)
-                    ->where ('id', $theId[0]->id)
+            ->where ('id', $ousr[0]->id)
                     ->update ();
             $affected   = $this->model->affectedRows ();
             $payloads   = array (
@@ -96,7 +127,7 @@ class UserProfile extends OsamBaseResourceController {
             
             $time       = time ();
             $timestamp  = date ('Y-m-d H:i:s');
-            return array (
+            $retVal     = array (
                 'status'    => 200,
                 'error'     => NULL,
                 'messages'  => array (
@@ -109,6 +140,7 @@ class UserProfile extends OsamBaseResourceController {
                 ),
             );
         }
+        return $retVal;
     }
     
     /**
