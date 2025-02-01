@@ -51,6 +51,7 @@ class Assets extends OsamBaseResourceController {
         **/
         
         $selects    = array (
+            'oita.uuid',
             'oaci.ci_dscript',
             'oita.code',
             'oita.name',
@@ -64,6 +65,7 @@ class Assets extends OsamBaseResourceController {
                 $this->model->select ('osbl.name as `sublocation`')->where ('olct.uuid', $locationUUID)->groupBy ('oita.sublocation_id');
             } else {
                 $selects    = array (
+                    'oita.uuid',
                     'oaci.ci_dscript',
                     'oita.code',
                     'oita.name as `asset_name`',
@@ -310,20 +312,26 @@ class Assets extends OsamBaseResourceController {
      * @see \App\Controllers\BaseClientResource::responseFormatter()
      */
     protected function responseFormatter ($queryResult): array {
-        $payload    = array ();
+        $payload    = array (
+            'joint'     => TRUE
+        );
         
-        if (!(array_key_exists ('joint', $this->request->getGet ())))
+        if (!(array_key_exists ('joint', $this->request->getGet ()))) {
+            $payload['joint'] = FALSE;
             foreach ($queryResult as $k => $data)
                 $payload[$k] = array (
+                    'asset_uuid'    => $data->uuid,
                     'asset_config'  => $data->ci_dscript,
                     'asset_code'    => $data->code,
                     'asset_dscript' => $data->name,
+                    'asset_subloc'  => $data->sublocation,
                     'asset_total'   => $data->qty,
                 );
-        elseif (array_key_exists ('joint', $this->request->getGet ())) 
+        } elseif (array_key_exists ('joint', $this->request->getGet ())) 
             foreach ($queryResult as $k => $data) 
                 if ($data->asset_name === NULL) 
                     $payload[$k] = array (
+                        'asset_uuid'    => $data->uuid,
                         'asset_config'  => $data->ci_dscript,
                         'asset_code'    => $data->code,
                         'asset_dscript' => $data->name,
@@ -332,6 +340,7 @@ class Assets extends OsamBaseResourceController {
                     );
                 else
                     $payload[$k] = array (
+                        'asset_uuid'        => $data->uuid,
                         'asset_config'      => $data->ci_dscript,
                         'asset_code'        => $data->code,
                         'asset_dscript'     => $data->asset_name,
