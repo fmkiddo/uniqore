@@ -81,7 +81,7 @@ class Attributes extends OsamBaseResourceController {
         
         if (strlen ($sortType) > 0) $this->model->orderBy ("octa.{$sortCol}", $sortType);
         
-        return $this->model->select ('octa.*')->findAll ();
+        return $this->doFindAll ();
     }
     
     /**

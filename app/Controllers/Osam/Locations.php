@@ -4,15 +4,6 @@ namespace App\Controllers\Osam;
 
 class Locations extends OsamBaseResourceController {
     
-    /**
-     * {@inheritDoc}
-     * @see \App\Controllers\BaseClientResource::doFindAll()
-     */
-    protected function doFindAll () {
-        // TODO Auto-generated method stub
-        return parent::doFindAll ();
-    }
-    
     
     protected $modelName    = 'App\Models\OsamModels\Location';
     
@@ -150,7 +141,7 @@ class Locations extends OsamBaseResourceController {
         
         if (strlen ($sortType) > 0) $this->model->orderBy ("olct.{$sortCol}", $sortType);
         
-        return $this->model->findAll ();
+        return $this->doFindAll ();
     }
     
     /**

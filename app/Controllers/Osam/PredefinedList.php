@@ -93,7 +93,7 @@ class PredefinedList extends OsamBaseResourceController {
         
         if (strlen ($sortType) > 0) $this->model->orderBy ("octa.{$sortCol}", $sortType);
         
-        return $this->model->select ('octa.*, cta1.attr_value')->join ('octa', 'octa.id=cta1.attr_id')->findAll ();
+        return $this->doFindAll ();
     }
     
     /**

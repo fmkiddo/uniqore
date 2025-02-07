@@ -175,13 +175,12 @@ class Users extends OsamBaseResourceController {
                 'ousr.username' => $filter,
                 'ousr.email'    => $filter
             ];
-            $this->model->orLike ($match);
+            $this->model->groupStart ()->orLike ($match)->groupEnd ();
         }
         
         if (strlen ($sortType) > 0) $this->model->orderBy ("ousr.{$sortCol}", $sortType);
         
-        return $this->model->select ('ousr.*, ougr.uuid as group_uuid, ougr.code, ougr.name')
-                ->join ('ougr', 'ougr.id=ousr.group_id', 'left')->join ('usr1', 'usr1.user_id=ousr.id', 'left')->findAll ();
+        return $this->doFindAll ();
     }
     
     /**

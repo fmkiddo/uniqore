@@ -76,7 +76,7 @@ class ConfigurationItems extends OsamBaseResourceController {
         
         if (strlen ($sortType) > 0) $this->model->orderBy ("oaci.{$sortCol}", $sortType);
         
-        return $this->model->select ('oaci.*')->findAll ();
+        return $this->doFindAll ();
     }
     
     /**

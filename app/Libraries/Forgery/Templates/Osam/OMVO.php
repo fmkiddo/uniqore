@@ -28,7 +28,7 @@ class OMVO extends Table {
             Field::__constructField ('sent_date', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
             Field::__constructField ('recipient', INTEGER, 0, 0, TRUE),
             Field::__constructField ('receipt_date', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
-            Field::__constructField ('status', TINYINT, 0, 0, TRUE),
+            Field::__constructField ('status', TINYINT, 0, 0),
             Field::__constructField ('status_comments', TEXT, 0, ''),
         ];
     }
