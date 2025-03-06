@@ -25,14 +25,14 @@ use App\Libraries\Forgery\Templates\Osam\OMVI;
 use App\Libraries\Forgery\Templates\Osam\OMVO;
 use App\Libraries\Forgery\Templates\Osam\OMVR;
 use App\Libraries\Forgery\Templates\Osam\OCFG;
-use App\Libraries\Forgery\Templates\Osam\ORQN;
 use App\Libraries\Forgery\Templates\Osam\MVI1;
 use App\Libraries\Forgery\Templates\Osam\MVO1;
-use App\Libraries\Forgery\Templates\Osam\RQN1;
-use App\Libraries\Forgery\Templates\Osam\RQN2;
-use App\Libraries\Forgery\Templates\Osam\RQN3;
 use App\Libraries\Forgery\Templates\Osam\UGR1;
 use App\Libraries\Forgery\Templates\Osam\OFPT;
+use App\Libraries\Forgery\Templates\Osam\ORQS;
+use App\Libraries\Forgery\Templates\Osam\OFAP;
+use App\Libraries\Forgery\Templates\Osam\FAP1;
+use App\Libraries\Forgery\Templates\Osam\FAP2;
 
 class OsamDatabaseTemplate extends Database {
     
@@ -41,6 +41,8 @@ class OsamDatabaseTemplate extends Database {
             new ACI1 (),
             new ARV1 (),
             new CTA1 (),
+            new FAP1 (),
+            new FAP2 (),
             new ITA1 (),
             new ITA2 (),
             new MVI1 (),
@@ -51,19 +53,17 @@ class OsamDatabaseTemplate extends Database {
             new OAST (),
             new OCFG (),
             new OCTA (),
+            new OFAP (),
             new OFPT (),
             new OITA (),
             new OLCT (),
             new OMVI (),
             new OMVO (),
             new OMVR (),
-            new ORQN (),
+            new ORQS (),
             new OSBL (),
             new OUGR (),
             new OUSR (),
-            new RQN1 (),
-            new RQN2 (),
-            new RQN3 (),
             new UGR1 (),
             new USR1 (),
             new USR2 (),

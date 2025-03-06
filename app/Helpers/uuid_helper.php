@@ -3,6 +3,7 @@
 use Ramsey\Uuid\Type\Hexadecimal;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Type\Integer as IntegerObject;
+use Ramsey\Uuid\Uuid;
 
 if (! function_exists ('generate_random_uuid_v1')) {
     
@@ -65,5 +66,12 @@ if (! function_exists ('is_base64')) {
     function is_base64 ($encoded): bool {
         if (base64_encode (base64_decode ($encoded, TRUE)) === $encoded) return TRUE;
         return FALSE;
+    }
+}
+
+if (! function_exists ('is_uuid')) {
+    
+    function is_uuid ($string) {
+        return Uuid::isValid ($string);
     }
 }

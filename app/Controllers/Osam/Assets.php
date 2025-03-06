@@ -22,6 +22,8 @@ class Assets extends OsamBaseResourceController {
         $get        = $this->request->getGet ();
         
         $isJoint    = array_key_exists ('joint', $get);
+        if ($isJoint) $isJoint = !($get['joint'] === '');
+        
         if (!$isJoint) {
             $showType   = (array_key_exists ('showType', $get) ? $get['showType'] : "0");
             $showType   = (is_numeric ($showType) ? intval ($showType) : 0);
@@ -34,9 +36,16 @@ class Assets extends OsamBaseResourceController {
                     break;
             }
         } else {
-            $sumQty = TRUE;
-            $joint  = $get['joint'];
-            if (!is_base64 ($joint)) $this->model->where ('T0.code', $joint)->groupBy ('T1.id, T2.id');
+            $sumQty     = TRUE;
+            $doJoint    = TRUE;
+            $joint      = $get['joint'];
+            if (!is_base64 ($joint)) $doJoint = FALSE;
+            else {
+                $challenge      = base64_decode ($joint);
+                if (!is_uuid ($challenge)) $doJoint = FALSE;
+            }
+            
+            if (!$doJoint) $this->model->where ('T0.code', $joint);
             else {
                 $locationUUID   = base64_decode ($joint);
                 $this->model->where ('T1.uuid', $locationUUID)->groupBy ('T0.code');
@@ -48,13 +57,16 @@ class Assets extends OsamBaseResourceController {
                         $this->model->where ('T2.uuid', $sublocationUUID);
                     }
                 }
-                $this->model->groupBy ('T1.id, T2.id');
             }
+            $this->model->groupBy ('T1.id, T2.id');
         }
         
         if (!$sumQty) $this->model->select ('T0.qty');
         else $this->model->selectSum ('T0.qty', 'qty');
+        
         $this->model->groupBy ('T0.code');
+        
+        // var_dump ($this->model);
         
         return $this->model->findAll ();
     }

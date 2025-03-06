@@ -24,12 +24,12 @@ class OMVI extends Table {
             Field::__constructField ('docfrom_id', INTEGER, 0, 0, TRUE),
             Field::__constructField ('docto_id', INTEGER, 0, 0, TRUE),
             Field::__constructField ('sent', BOOLEAN, 0, new RawSql ('FALSE')),
+            Field::__constructField ('sent_at', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
             Field::__constructField ('sent_by', INTEGER, 0, 0, TRUE),
-            Field::__constructField ('sent_date', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
+            Field::__constructField ('received_at', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
             Field::__constructField ('recipient', INTEGER, 0, 0, TRUE),
-            Field::__constructField ('receipt_date', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
+            Field::__constructField ('distributed_at', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
             Field::__constructField ('distributed_by', INTEGER, 0, 0, TRUE),
-            Field::__constructField ('distribution_date', DATETIME, 0, new RawSql ('NULL'), FALSE, FALSE, FALSE, '', FALSE, '', '', FALSE, TRUE),
         ];
     }
     

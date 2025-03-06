@@ -45,6 +45,8 @@ $routes->group ('osam', static function ($routes) {
     $routes->resource ('fa-attributes', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetConfigurations']);
     $routes->resource ('locations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Locations']);
     $routes->resource ('sublocations', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Sublocations']);
-    $routes->resource ('fa-tsout', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetTransferOut']);
-    $routes->resource ('fa-tsout-item', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetTransferOutItem']);
+    $routes->resource ('fa-request-sum', ['namespace' => 'App\Controllers\Osam', 'controller' => 'AssetRequestSummaries']);
+    $routes->resource ('fa-procure', ['namespace' => 'App\Controllers\Osam', 'controller' => 'Procurements']);
+    $routes->resource ('fa-tsout', ['namespace' => 'App\Controllers\Osam', 'controller' => 'TransferOut']);
+    $routes->resource ('fa-tsout-item', ['namespace' => 'App\Controllers\Osam', 'controller' => 'TransferOutItem']);
 });
